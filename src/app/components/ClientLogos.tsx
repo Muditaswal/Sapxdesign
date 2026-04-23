@@ -4,6 +4,7 @@ import mdhLogo from "../../assets/mdh.png";
 import erisLogo from "../../assets/eris.png";
 import issaLogo from "../../assets/issa.png";
 import daSalonLogo from "../../assets/dasalon.png";
+import mataChananDeviLogo from "../../assets/matachanandevihospital.png";
 
 export const brandLogos = {
   LVMH: () => (
@@ -73,6 +74,14 @@ export const brandLogos = {
     <img
       src={daSalonLogo}
       alt="DA SALON"
+      className="h-full w-auto object-contain"
+      style={{ minWidth: "120px" }}
+    />
+  ),
+  "MATA CHANAN DEVI HOSPITAL": () => (
+    <img
+      src={mataChananDeviLogo}
+      alt="MATA CHANAN DEVI HOSPITAL"
       className="h-full w-auto object-contain"
       style={{ minWidth: "120px" }}
     />

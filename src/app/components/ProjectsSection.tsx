@@ -199,7 +199,7 @@ export function ProjectsSection() {
                     <div
                       className={`relative overflow-hidden rounded-3xl border-4 border-transparent group-hover:border-[#EC0606] transition-colors duration-300 ${
                         project.span === "tall"
-                          ? "aspect-[3/4]"
+                          ? "aspect-[3/3.5]"
                           : project.span === "wide"
                           ? "aspect-[16/7]"
                           : "aspect-[4/3]"

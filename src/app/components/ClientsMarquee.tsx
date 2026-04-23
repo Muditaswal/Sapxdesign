@@ -16,6 +16,7 @@ const clients = [
   "ERIS",
   "ISSA FOUNDATION",
   "DA SALON",
+  "MATA CHANAN DEVI HOSPITAL",
 ] as const;
 
 // Duplicate to create seamless loop

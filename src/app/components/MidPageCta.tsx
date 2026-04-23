@@ -13,7 +13,7 @@ export function MidPageCta() {
                 className="text-[clamp(20px,3vw,32px)] tracking-[-0.01em] text-white/60"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
               >
-                Have a project in mind?{" "}
+                Book a free call with our experts.{" "}
                 <span
                   className="text-white italic"
                   style={{ fontWeight: 200, letterSpacing: "-0.02em" }}
@@ -36,7 +36,7 @@ export function MidPageCta() {
                 fontWeight: 700,
               }}
             >
-              Get in touch
+              Book now
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </motion.button>
           </div>
