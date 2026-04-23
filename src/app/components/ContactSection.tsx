@@ -106,7 +106,7 @@ export function ContactSection() {
                 <div className="space-y-4">
                   <a
                     href="mailto:hello@sapstudio.design"
-                    className="inline-flex items-center gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300"
+                    className="inline-flex items-center gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words"
                     style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
                   >
                     <div className="w-4 h-[2px] bg-[#0A0A0B]/40" />

@@ -1,5 +1,9 @@
 import React from "react";
 import { SiNike, SiSamsung, SiPolestar } from "react-icons/si";
+import mdhLogo from "../../assets/mdh.png";
+import erisLogo from "../../assets/eris.png";
+import issaLogo from "../../assets/issa.png";
+import daSalonLogo from "../../assets/dasalon.png";
 
 export const brandLogos = {
   LVMH: () => (
@@ -40,5 +44,37 @@ export const brandLogos = {
     <svg viewBox="0 0 200 40" className="h-full w-auto">
       <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fontFamily="Helvetica, Arial, sans-serif" fontSize="22" fontWeight="400" letterSpacing="0.05em" fill="currentColor">Acne Studios</text>
     </svg>
+  ),
+  MDH: () => (
+    <img
+      src={mdhLogo}
+      alt="MDH"
+      className="h-full w-auto object-contain"
+      style={{ minWidth: "44px" }}
+    />
+  ),
+  ERIS: () => (
+    <img
+      src={erisLogo}
+      alt="ERIS"
+      className="h-full w-auto object-contain"
+      style={{ minWidth: "64px" }}
+    />
+  ),
+  "ISSA FOUNDATION": () => (
+    <img
+      src={issaLogo}
+      alt="ISSA FOUNDATION"
+      className="h-full w-auto object-contain"
+      style={{ minWidth: "150px" }}
+    />
+  ),
+  "DA SALON": () => (
+    <img
+      src={daSalonLogo}
+      alt="DA SALON"
+      className="h-full w-auto object-contain"
+      style={{ minWidth: "120px" }}
+    />
   ),
 };

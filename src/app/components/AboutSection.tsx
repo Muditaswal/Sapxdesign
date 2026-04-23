@@ -3,9 +3,6 @@ import { ScrollReveal } from "./ScrollReveal";
 export function AboutSection() {
   return (
     <section id="about" className="py-20 md:py-28 px-6 md:px-12 relative overflow-hidden bg-white">
-      {/* Yellow vertical rule — system continuity from hero */}
-      <div className="absolute right-[9%] top-0 bottom-0 w-[3px] bg-[#0A0A0B]/5 hidden md:block" />
-      
       <div className="max-w-[1400px] mx-auto relative z-10">
         {/* Section label */}
         <ScrollReveal>

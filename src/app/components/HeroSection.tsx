@@ -85,7 +85,7 @@ function WorksSlideshow() {
   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + WORKS.length) % WORKS.length);
 
   return (
-    <section className="relative w-full h-[calc(100vh-60px)] md:h-screen bg-[#0A0A0B] overflow-hidden group border-b border-white/10">
+    <section className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-screen bg-[#0A0A0B] overflow-hidden group border-b border-white/10">
       {/* Background Images with Crossfade */}
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.div
@@ -126,7 +126,7 @@ function WorksSlideshow() {
 
         {/* Bottom Content & Controls */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 w-full">
-          <div className="overflow-hidden max-w-[800px]">
+          <div className="overflow-hidden w-full max-w-[1200px] min-w-0 pr-2">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -143,7 +143,7 @@ function WorksSlideshow() {
                   {WORKS[currentIndex].category}
                 </span>
                 <h2 
-                  className="text-[clamp(20px,6vw,64px)] leading-[0.85] tracking-[-0.04em] text-white font-black uppercase drop-shadow-2xl whitespace-nowrap" 
+                  className="text-[clamp(14px,5.2vw,64px)] leading-[0.92] md:leading-[0.85] tracking-[-0.03em] text-white font-black uppercase drop-shadow-2xl whitespace-nowrap" 
                   style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
                 >
                   {WORKS[currentIndex].title}
@@ -195,7 +195,7 @@ function AudienceMatrix() {
   };
 
   return (
-    <section id="services" className="relative w-full h-[calc(100vh-60px)] md:h-screen flex flex-col md:flex-row bg-[#0A0A0B] overflow-hidden gap-2 p-2">
+    <section id="services" className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-screen flex flex-col md:flex-row bg-[#0A0A0B] overflow-hidden gap-2 p-2">
       {AUDIENCES.map((aud) => {
         const isActive = activeId === aud.id;
         const isMuted = activeId !== null && activeId !== aud.id;
@@ -212,7 +212,7 @@ function AudienceMatrix() {
               flex: flexValue,
             }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex flex-col justify-between p-6 md:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
+            className="relative flex flex-col justify-between min-h-[180px] md:min-h-0 p-6 md:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
             style={{
               backgroundColor: isActive ? aud.color : "#0A0A0B",
               color: isActive ? aud.textColor : "#FFFFFF",

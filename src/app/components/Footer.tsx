@@ -84,7 +84,7 @@ export function Footer() {
               <div className="space-y-3">
                 <a
                   href="mailto:hello@sapstudio.design"
-                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300"
+                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
                   hello@sapstudio.design
@@ -136,7 +136,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t-2 border-white/8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p
-            className="text-[13px] text-white/25 tracking-[0.05em]"
+            className="text-[13px] text-white/25 tracking-[0.05em] whitespace-normal break-words text-center md:text-left"
             style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
           >
             &copy; 2026 SAP × Design — Space and Product. All rights reserved.

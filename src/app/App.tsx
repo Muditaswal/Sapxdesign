@@ -71,8 +71,8 @@ export default function App() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-[24px] md:text-[40px] tracking-[0.2em] font-bold"
-                  style={{ fontFamily: "'Nico Moji', sans-serif" }}
+                  className="text-[24px] md:text-[40px] tracking-[0.2em] font-extrabold"
+                  style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
                 >
                   SAP × DESIGN
                 </motion.h1>

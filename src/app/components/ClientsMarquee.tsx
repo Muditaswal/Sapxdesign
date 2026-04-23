@@ -12,6 +12,10 @@ const clients = [
   "HERMÈS",
   "BALENCIAGA",
   "ACNE STUDIOS",
+  "MDH",
+  "ERIS",
+  "ISSA FOUNDATION",
+  "DA SALON",
 ] as const;
 
 // Duplicate to create seamless loop
