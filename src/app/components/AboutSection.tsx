@@ -43,40 +43,51 @@ export function AboutSection() {
                 className="text-[clamp(20px,2.8vw,34px)] leading-[1.3] tracking-[-0.02em] text-[#0A0A0B]/70 max-w-[580px] mb-5"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
               >
-                A dialogue between material, space, and human need.
+                A dialogue between intent, human experience, and design systems.
               </p>
               <p
                 className="text-[14px] md:text-[15px] tracking-[0.02em] text-[#0A0A0B]/50 max-w-[480px] leading-[1.7]"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
               >
-                Residential, cultural, and commercial projects across Europe and the Middle East.
+                Collaborating with clients across India and globally.
               </p>
             </ScrollReveal>
           </div>
 
           {/* Right column — body text */}
-          <div className="md:col-span-4 md:col-start-9">
+          <div className="md:col-span-20 md:col-start-9">
             <ScrollReveal delay={0.25}>
               <p
-                className="text-[16px] leading-[1.8] text-[#0A0A0B]/60 mb-8"
+                className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-8"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
               >
-                Space and Product Studio is a multidisciplinary practice
-                working across architecture, interiors, product, and digital
-                design. Residential towers, cultural institutions, brand
-                systems, product lines — we approach every engagement with
-                the same principle: clarity through restraint.
+                Space and Product Studio operates at the intersection of spatial systems and digital infrastructures, engaging architecture, interiors, product, and interface design as a continuous field of practice.
+                <br></br>
+                Rather than isolating disciplines, we work through a trans-scalar lens — where decisions made at the level of space inform the logic of interaction, and digital systems reciprocally influence spatial organization.
+                <br></br>
+                This cross-pollination allows us to construct environments, objects, and interfaces that are not only formally resolved, but systemically coherent.
               </p>
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <div className="flex items-center gap-3 mb-10 md:mb-5">
+                <div className="w-8 h-[3px] bg-[#FFFF00]" />
+                <p
+                  className="text-[12px] uppercase tracking-[0.3em] text-[#0A0A0B]/50"
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                >
+                  For Founders
+                </p>
+              </div>
             </ScrollReveal>
             <ScrollReveal delay={0.35}>
               <p
-                className="text-[16px] leading-[1.8] text-[#0A0A0B]/60 mb-12"
+                className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-12"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
               >
-                Architecture informs our digital works. Digital
-                informs our spatial logic. The practices aren't
-                parallel — they're the same practice, applied at
-                different scales.
+                Building a product is complex. Making it simple to use is harder.<br></br>
+                We work with founders to turn ideas into clear, usable, and scalable products — from early concepts to fully developed systems.
+                Whether you're defining your first MVP or refining an existing product, we help you make better decisions, faster — across design, experience, and structure.
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.45}>
@@ -112,7 +123,7 @@ export function AboutSection() {
                       fontWeight: 800,
                     }}
                   >
-                    80
+                    100
                     <span
                       className="text-[24px] md:text-[28px] text-[#EC0606] ml-1"
                       style={{ fontWeight: 400 }}

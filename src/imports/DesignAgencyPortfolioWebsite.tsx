@@ -2150,7 +2150,7 @@ function Container111() {
 function Heading1() {
   return (
     <div className="absolute h-[340px] leading-[170px] left-0 text-[200px] text-center text-white top-0 tracking-[-10px] w-[1076.703px] whitespace-nowrap" data-name="Heading 2">
-      <p className="-translate-x-1/2 absolute font-['Montserrat:ExtraBold',sans-serif] font-extrabold left-[538.5px] top-0">From cities</p>
+      <p className="-translate-x-1/2 absolute font-['Montserrat:ExtraBold',sans-serif] font-extrabold left-[538.5px] top-0">From Spaces</p>
       <p className="-translate-x-1/2 absolute font-['Montserrat:ExtraLight_Italic',sans-serif] font-extralight italic left-[538.16px] top-[170px]">to screens.</p>
     </div>
   );

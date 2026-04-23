@@ -52,7 +52,7 @@ export function ImageStrip() {
             className="text-[clamp(48px,13vw,200px)] leading-[0.85] tracking-[-0.05em] text-white"
             style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800 }}
           >
-            From cities
+            From Spaces
             <br />
             <span className="italic" style={{ fontWeight: 200, letterSpacing: "-0.02em" }}>
               to screens.
