@@ -1,4 +1,5 @@
 import { ScrollReveal } from "./ScrollReveal";
+import { CTACards } from "./CTACards";
 
 export function AboutSection() {
   return (
@@ -51,6 +52,7 @@ export function AboutSection() {
               >
                 Collaborating with clients across India and globally.
               </p>
+              <CTACards />
             </ScrollReveal>
           </div>
 
