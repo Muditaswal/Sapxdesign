@@ -136,22 +136,13 @@ function WorksSlideshow({ services }: ServiceProp) {
         </motion.div>
       </AnimatePresence>
 
-      {/* Grid Lines */}
-      <div className="absolute inset-0 pointer-events-none border-x border-white/5 w-[calc(100%-48px)] md:w-[calc(100%-160px)] mx-auto" />
+
 
       {/* Content overlay */}
       <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-14 z-10 pointer-events-none">
         
-        {/* Top Header */}
-        <div className="flex justify-between items-start">
-          <div className="hidden"></div>
-          <div 
-            className="text-white text-[12px] md:text-[14px] uppercase tracking-[0.2em] font-bold" 
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-          >
-            {String(activeIndex + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-          </div>
-        </div>
+        {/* Top Header Spacer */}
+        <div className="h-6" />
 
         {/* Bottom Content & Controls */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 w-full">
@@ -172,8 +163,8 @@ function WorksSlideshow({ services }: ServiceProp) {
                   {activeSlide.category}
                 </span>
                 <h2 
-                  className="text-[clamp(12px,3.2vw,26px)] leading-[1] md:leading-[1] tracking-[-0.02em] text-white font-black uppercase whitespace-pre-line break-words" 
-                  style={{ fontFamily: "'Syne', sans-serif", fontWeight: 600 }}
+                  className="text-[clamp(32px,7vw,48px)] md:text-[clamp(48px,6.5vw,72px)] lg:text-[clamp(60px,8vw,100px)] leading-[0.9] tracking-[-0.03em] text-white font-black uppercase whitespace-pre-line break-words" 
+                  style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
                 >
                   {activeSlide.title}
                 </h2>
@@ -273,7 +264,7 @@ function AudienceMatrix({ services }: ServiceProp) {
               flex: flexValue,
             }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex flex-col justify-between min-h-[180px] md:min-h-0 p-6 md:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
+            className="relative flex flex-col justify-between min-h-[180px] md:min-h-0 p-6 md:p-6 lg:p-8 xl:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
             style={{
               backgroundColor: isActive ? aud.color : "#0A0A0B",
               color: isActive ? aud.textColor : "#FFFFFF",
@@ -339,7 +330,11 @@ function AudienceMatrix({ services }: ServiceProp) {
               <div className="flex flex-col justify-end h-full">
                 <h3
                   className={`leading-[0.9] tracking-[-0.02em] whitespace-pre-line break-words transition-all duration-500 uppercase ${
-                    isMuted ? "text-[11px] md:text-[12px] lg:text-[14px]" : "text-[clamp(18px,3.2vw,40px)] md:text-[clamp(20px,3.6vw,52px)]"
+                    isMuted 
+                      ? "text-[11px] md:text-[12px] lg:text-[14px]" 
+                      : isActive 
+                        ? "text-[clamp(20px,3.2vw,40px)] md:text-[clamp(24px,3.6vw,52px)]" 
+                        : "text-[clamp(18px,3vw,28px)] md:text-[clamp(14px,1.6vw,24px)] lg:text-[clamp(18px,2vw,28px)]"
                   }`}
                   style={{ 
                     fontFamily: "'Syne', sans-serif", 

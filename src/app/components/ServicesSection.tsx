@@ -187,15 +187,6 @@ export function ServicesSection() {
             <div className="flex flex-col md:flex-row gap-12 md:gap-24">
               <div className="flex-1">
                 <ScrollReveal delay={0.1}>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 bg-[#FFFF00] text-[#0A0A0B] rounded-full">
-                    <span
-                      className="text-[13px] uppercase tracking-[0.2em]"
-                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
-                    >
-                      {activeService.number} — {activeService.title}
-                    </span>
-                  </div>
-
                   <h3
                     className="text-[clamp(36px,5vw,72px)] tracking-[-0.02em] mb-8 text-white uppercase"
                     style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, lineHeight: 1 }}
