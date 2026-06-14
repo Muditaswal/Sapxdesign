@@ -172,8 +172,8 @@ function WorksSlideshow({ services }: ServiceProp) {
                   {activeSlide.category}
                 </span>
                 <h2 
-                  className="text-[clamp(14px,5.2vw,64px)] leading-[0.92] md:leading-[0.85] tracking-[-0.03em] text-white font-black uppercase drop-shadow-2xl whitespace-nowrap" 
-                  style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
+                  className="text-[clamp(12px,3.2vw,26px)] leading-[1] md:leading-[1] tracking-[-0.02em] text-white font-black uppercase whitespace-pre-line break-words" 
+                  style={{ fontFamily: "'Syne', sans-serif", fontWeight: 600 }}
                 >
                   {activeSlide.title}
                 </h2>
@@ -338,8 +338,8 @@ function AudienceMatrix({ services }: ServiceProp) {
               {/* Bottom */}
               <div className="flex flex-col justify-end h-full">
                 <h3
-                  className={`leading-[0.85] tracking-[-0.03em] whitespace-pre-line transition-all duration-500 uppercase ${
-                    isMuted ? "text-[10px] md:text-[12px] lg:text-[14px]" : "text-[clamp(20px,4vw,72px)]"
+                  className={`leading-[0.9] tracking-[-0.02em] whitespace-pre-line break-words transition-all duration-500 uppercase ${
+                    isMuted ? "text-[11px] md:text-[12px] lg:text-[14px]" : "text-[clamp(18px,3.2vw,40px)] md:text-[clamp(20px,3.6vw,52px)]"
                   }`}
                   style={{ 
                     fontFamily: "'Syne', sans-serif", 
