@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /admin
 
-Sitemap: https://sapstudio.design/sitemap.xml
+Sitemap: https://sapxdesign.com/sitemap.xml

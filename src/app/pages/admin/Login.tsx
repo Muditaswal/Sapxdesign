@@ -24,14 +24,14 @@ export default function Login() {
 
     const isPlaceholder = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes("placeholder");
     if (isPlaceholder) {
-      if (email === "admin@sapstudio.design" && password === "admin123") {
+      if (email === "admin@sapxdesign.com" && password === "admin123") {
         localStorage.setItem("sb-mock-session", "true");
         setTimeout(() => {
           navigate("/admin", { replace: true });
         }, 800);
         return;
       } else {
-        setError("Developer Mode: Please enter 'admin@sapstudio.design' and password 'admin123' to bypass unconfigured database credentials.");
+        setError("Developer Mode: Please enter 'admin@sapxdesign.com' and password 'admin123' to bypass unconfigured database credentials.");
         setLoading(false);
         return;
       }
@@ -93,7 +93,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@sapstudio.design"
+                placeholder="admin@sapxdesign.com"
                 className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-sm placeholder:text-white/20 focus:border-[#FFFF00] focus:outline-none transition-colors"
               />
             </div>

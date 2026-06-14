@@ -130,13 +130,13 @@ export function ContactSection() {
                     spaceandproductstudio@gmail.com
                   </a>
                   <a
-                    href="https://maps.app.goo.gl/vzF9GQWM8qTejamZ6"
+                    href="https://www.google.com/maps/place/Space+and+Product+Studio/@28.5265384,77.1953846,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce100221fc28d:0x38c5b13bc5648fbb!8m2!3d28.5265384!4d77.1953846!16s%2Fg%2F11y2skgw6m"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words pl-4"
                     style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
                   >
-                    New Delhi, India
+                    Space and Product Studio, New Delhi, India
                   </a>
                 </div>
               </ScrollReveal>

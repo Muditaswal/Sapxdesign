@@ -30,7 +30,7 @@ export default function AdminLayout() {
   useEffect(() => {
     const isPlaceholder = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes("placeholder");
     if (isPlaceholder) {
-      setUserEmail("admin@sapstudio.design");
+      setUserEmail("admin@sapxdesign.com");
       return;
     }
 

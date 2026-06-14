@@ -2448,7 +2448,7 @@ function Link() {
   return (
     <div className="absolute h-[22.5px] left-0 top-[5.25px] w-[212.242px]" data-name="Link">
       <Container133 />
-      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[22.5px] left-[24px] text-[15px] text-[rgba(10,10,11,0.8)] top-[-1px] whitespace-nowrap">hello@sapstudio.design</p>
+      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[22.5px] left-[24px] text-[15px] text-[rgba(10,10,11,0.8)] top-[-1px] whitespace-nowrap">spaceandproductstudio@gmail.com</p>
     </div>
   );
 }
@@ -2456,7 +2456,7 @@ function Link() {
 function Paragraph35() {
   return (
     <div className="absolute h-[22.5px] left-0 top-[43.75px] w-[516.664px]" data-name="Paragraph">
-      <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[22.5px] left-[16px] text-[15px] text-[rgba(10,10,11,0.4)] top-[-1px] whitespace-nowrap">Berlin, Germany</p>
+      <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[22.5px] left-[16px] text-[15px] text-[rgba(10,10,11,0.4)] top-[-1px] whitespace-nowrap">New Delhi, India</p>
     </div>
   );
 }
@@ -2704,7 +2704,7 @@ function Paragraph37() {
 function Link1() {
   return (
     <div className="h-[22.5px] relative shrink-0 w-full" data-name="Link">
-      <p className="absolute font-['Montserrat:Medium',sans-serif] font-medium leading-[22.5px] left-0 text-[15px] text-[rgba(255,255,255,0.5)] top-[-1px] whitespace-nowrap">hello@sapstudio.design</p>
+      <p className="absolute font-['Montserrat:Medium',sans-serif] font-medium leading-[22.5px] left-0 text-[15px] text-[rgba(255,255,255,0.5)] top-[-1px] whitespace-nowrap">spaceandproductstudio@gmail.com</p>
     </div>
   );
 }
@@ -2712,7 +2712,7 @@ function Link1() {
 function Paragraph38() {
   return (
     <div className="h-[22.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Montserrat:Light',sans-serif] font-light leading-[22.5px] left-0 text-[15px] text-[rgba(255,255,255,0.2)] top-[-1px] whitespace-nowrap">Brunnenstraße 12</p>
+      <p className="absolute font-['Montserrat:Light',sans-serif] font-light leading-[22.5px] left-0 text-[15px] text-[rgba(255,255,255,0.2)] top-[-1px] whitespace-nowrap">Space and Product Studio</p>
     </div>
   );
 }
@@ -2720,7 +2720,7 @@ function Paragraph38() {
 function Paragraph39() {
   return (
     <div className="h-[22.5px] relative shrink-0 w-full" data-name="Paragraph">
-      <p className="absolute font-['Montserrat:Light',sans-serif] font-light leading-[22.5px] left-0 text-[15px] text-[rgba(255,255,255,0.2)] top-[-1px] whitespace-nowrap">10119 Berlin, Germany</p>
+      <p className="absolute font-['Montserrat:Light',sans-serif] font-light leading-[22.5px] left-0 text-[15px] text-[rgba(255,255,255,0.2)] top-[-1px] whitespace-nowrap">IGNOU Road, New Delhi, India</p>
     </div>
   );
 }

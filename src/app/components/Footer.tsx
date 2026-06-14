@@ -97,15 +97,17 @@ export function Footer() {
                   +91 8368544334
                 </a>
                 <a
-                  href="https://maps.app.goo.gl/vzF9GQWM8qTejamZ6"
+                  href="https://www.google.com/maps/place/Space+and+Product+Studio/@28.5265384,77.1953846,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce100221fc28d:0x38c5b13bc5648fbb!8m2!3d28.5265384!4d77.1953846!16s%2Fg%2F11y2skgw6m"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words leading-relaxed"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  149 DDA Flat, Lado Sarai,
+                  Space and Product Studio,
                   <br />
-                  New Delhi 110030, INDIA
+                  IGNOU Road, Neb Sarai, Sainik Farm,
+                  <br />
+                  New Delhi 110068, INDIA
                 </a>
               </div>
             </ScrollReveal>
