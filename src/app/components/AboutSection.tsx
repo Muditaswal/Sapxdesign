@@ -31,10 +31,10 @@ export function AboutSection() {
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
               <h2
-                className="text-[clamp(64px,9vw,130px)] leading-[0.85] tracking-[-0.04em] text-[#0A0A0B] italic mb-2"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 200 }}
+                className="text-[clamp(20px,3.5vw,26px)] md:text-[clamp(26px,3.2vw,36px)] lg:text-[clamp(36px,3vw,48px)] xl:text-[clamp(44px,2.8vw,56px)] leading-[0.85] tracking-[-0.04em] text-[#0A0A0B] italic mb-2 uppercase"
+                style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800 }}
               >
-                care.
+                transformation
               </h2>
               {/* Bold yellow underline */}
               <div className="w-20 h-[4px] bg-[#FFFF00] mb-8" />
@@ -63,11 +63,10 @@ export function AboutSection() {
                 className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-8"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
               >
-                Space and Product Studio operates at the intersection of spatial systems and digital infrastructures, engaging architecture, interiors, product, and interface design as a continuous field of practice.
+                Space and Product Studio helps businesses and organizations transform spaces, products, brands, and experiences through strategic design.
+                By integrating strategy, design, and technology, we create meaningful change across physical and digital ecosystems.
                 <br></br>
-                Rather than isolating disciplines, we work through a trans-scalar lens — where decisions made at the level of space inform the logic of interaction, and digital systems reciprocally influence spatial organization.
-                <br></br>
-                This cross-pollination allows us to construct environments, objects, and interfaces that are not only formally resolved, but systemically coherent.
+                A multidisciplinary collective of designers, architects, strategists, and artists from leading institutions including IIT, NID, and NIFT.
               </p>
             </ScrollReveal>
 
@@ -78,7 +77,7 @@ export function AboutSection() {
                   className="text-[12px] uppercase tracking-[0.3em] text-[#0A0A0B]/50"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
                 >
-                  For Founders
+                  for organizations & business
                 </p>
               </div>
             </ScrollReveal>
@@ -87,9 +86,9 @@ export function AboutSection() {
                 className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-12"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
               >
-                Building a product is complex. Making it simple to use is harder.<br></br>
-                We work with founders to turn ideas into clear, usable, and scalable products — from early concepts to fully developed systems.
-                Whether you're defining your first MVP or refining an existing product, we help you make better decisions, faster — across design, experience, and structure.
+                Business today operate across physical and digital touchpoints. We partner with organizations to create cohesive systems that strengthen customer experiences, elevate brands, improve products, and shape environments that support growth.
+                <br></br>
+                From emerging ventures to established enterprises, we help turn complexity into clarity through thoughtful, scalable, and future-ready design solutions.
               </p>
             </ScrollReveal>
             <ScrollReveal delay={0.45}>

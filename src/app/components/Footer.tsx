@@ -3,10 +3,10 @@ import { motion } from "motion/react";
 import logo from "figma:asset/2d306c095ea00234c5fa5f873c0b0e0f431e1dc2.png";
 
 const socialLinks = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "LinkedIn", href: "https://linkedin.com" },
-  { label: "Behance", href: "https://behance.net" },
-  { label: "Pinterest", href: "https://pinterest.com" },
+  { label: "Instagram", href: "https://www.instagram.com/sapxdesign" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/space-and-product-studio/" },
+  { label: "Facebook", href: "https://www.facebook.com/people/Space-and-Product-Studio/61557185401633/" },
+  { label: "Pinterest", href: "https://www.pinterest.com/spaceandproductstudio/" },
 ];
 
 export function Footer() {
@@ -83,24 +83,30 @@ export function Footer() {
               </p>
               <div className="space-y-3">
                 <a
-                  href="mailto:hello@sapstudio.design"
+                  href="mailto:spaceandproductstudio@gmail.com"
                   className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  hello@sapstudio.design
+                  spaceandproductstudio@gmail.com
                 </a>
-                <p
-                  className="text-[15px] text-white/20"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 300 }}
+                <a
+                  href="tel:+918368544334"
+                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words"
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  Brunnenstra&szlig;e 12
-                </p>
-                <p
-                  className="text-[15px] text-white/20"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 300 }}
+                  +91 8368544334
+                </a>
+                <a
+                  href="https://maps.app.goo.gl/vzF9GQWM8qTejamZ6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words leading-relaxed"
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  10119 Berlin, Germany
-                </p>
+                  149 DDA Flat, Lado Sarai,
+                  <br />
+                  New Delhi 110030, INDIA
+                </a>
               </div>
             </ScrollReveal>
           </div>

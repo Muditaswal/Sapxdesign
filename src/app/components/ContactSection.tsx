@@ -51,7 +51,7 @@ export function ContactSection() {
           `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || "N/A"}\nProject Type: ${formData.projectType}\n\nMessage:\n${formData.message}`
         );
         window.open(
-          `mailto:hello@sapstudio.design?subject=${subject}&body=${body}`,
+          `mailto:spaceandproductstudio@gmail.com?subject=${subject}&body=${body}`,
           "_self"
         );
 
@@ -100,7 +100,7 @@ export function ContactSection() {
                   className="text-[15px] md:text-[17px] text-[#0A0A0B]/50 italic mb-10"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
                 >
-                  We'll tell you honestly if we can help.
+                  Every transformation begins with a conversation.
                 </p>
               </ScrollReveal>
               <ScrollReveal delay={0.15}>
@@ -116,27 +116,28 @@ export function ContactSection() {
                   className="text-[16px] leading-[1.8] text-[#0A0A0B]/60 max-w-[400px] mb-12"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
                 >
-                  Whether you have a defined brief or an early idea, we'd love
-                  to hear from you. Every great project begins with a simple
-                  conversation.
+                  Whether you're launching a product, redefining a brand, designing a space, or reimagining an experience, we'd love to hear what you're building.
                 </p>
               </ScrollReveal>
               <ScrollReveal delay={0.3}>
                 <div className="space-y-4">
                   <a
-                    href="mailto:hello@sapstudio.design"
+                    href="mailto:spaceandproductstudio@gmail.com"
                     className="inline-flex items-center gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words"
                     style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
                   >
                     <div className="w-4 h-[2px] bg-[#0A0A0B]/40" />
-                    hello@sapstudio.design
+                    spaceandproductstudio@gmail.com
                   </a>
-                  <p
-                    className="text-[15px] text-[#0A0A0B]/40 pl-4"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
+                  <a
+                    href="https://maps.app.goo.gl/vzF9GQWM8qTejamZ6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words pl-4"
+                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
                   >
-                    Berlin, Germany
-                  </p>
+                    New Delhi, India
+                  </a>
                 </div>
               </ScrollReveal>
             </div>
