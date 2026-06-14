@@ -18,7 +18,7 @@ const setStorageItem = (key: string, val: any) => {
 
 // Seed mock database on first load
 const seedMockDB = () => {
-  if (localStorage.getItem("crm-mock-seeded-v6") === "true") return;
+  if (localStorage.getItem("crm-mock-seeded-v7") === "true") return;
 
   const mockServices = [
     { 
@@ -39,7 +39,9 @@ const seedMockDB = () => {
         "Wayfinding & Signage",
         "3D Visualization"
       ], 
-      image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080" 
+      image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080",
+      show_in_slideshow: true,
+      show_in_matrix: true
     },
     { 
       id: "product", 
@@ -60,7 +62,9 @@ const seedMockDB = () => {
         "Conversational AI Design",
         "Usability Testing"
       ], 
-      image: "https://images.unsplash.com/photo-1668089677938-b52086753f77?q=80&w=1080" 
+      image: "https://images.unsplash.com/photo-1668089677938-b52086753f77?q=80&w=1080",
+      show_in_slideshow: true,
+      show_in_matrix: true
     },
     { 
       id: "brand", 
@@ -80,7 +84,9 @@ const seedMockDB = () => {
         "Motion Graphics",
         "Content Design"
       ], 
-      image: "https://images.unsplash.com/photo-1766411503626-0e2f5fb8ba0b?q=80&w=1080" 
+      image: "https://images.unsplash.com/photo-1766411503626-0e2f5fb8ba0b?q=80&w=1080",
+      show_in_slideshow: true,
+      show_in_matrix: true
     },
     { 
       id: "experience", 
@@ -102,7 +108,9 @@ const seedMockDB = () => {
         "AI-Powered Experiences",
         "Gamification Experiences"
       ], 
-      image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?q=80&w=1080" 
+      image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?q=80&w=1080",
+      show_in_slideshow: true,
+      show_in_matrix: true
     }
   ];
   setStorageItem("services", mockServices);
@@ -176,7 +184,7 @@ const seedMockDB = () => {
   setStorageItem("project_notes", []);
   setStorageItem("documents", []);
 
-  localStorage.setItem("crm-mock-seeded-v6", "true");
+  localStorage.setItem("crm-mock-seeded-v7", "true");
 };
 
 if (isPlaceholderMode) {
@@ -276,6 +284,17 @@ export const api = {
         };
         images.push(newImg);
         setStorageItem("project_images", images);
+
+        // Update project's cover_image if image_type is "hero"
+        if (additionalFields.image_type === "hero") {
+          const projs = getStorageItem<any[]>("projects", []);
+          const idx = projs.findIndex(p => p.id === projectId);
+          if (idx !== -1) {
+            projs[idx].cover_image = mockUrl;
+            setStorageItem("projects", projs);
+          }
+        }
+
         return newImg as any;
       } else if (path.includes("documents")) {
         const docs = getStorageItem<any[]>("documents", []);

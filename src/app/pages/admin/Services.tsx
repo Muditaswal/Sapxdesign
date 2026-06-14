@@ -68,6 +68,8 @@ export default function Services() {
   const [shortDesc, setShortDesc] = useState("");
   const [fullDesc, setFullDesc] = useState("");
   const [image, setImage] = useState("");
+  const [showInSlideshow, setShowInSlideshow] = useState(true);
+  const [showInMatrix, setShowInMatrix] = useState(true);
   
   // Custom capabilities list management
   const [capabilities, setCapabilities] = useState<string[]>([]);
@@ -118,7 +120,9 @@ export default function Services() {
       short_desc: shortDesc,
       full_desc: fullDesc,
       capabilities,
-      image: image || undefined
+      image: image || undefined,
+      show_in_slideshow: showInSlideshow,
+      show_in_matrix: showInMatrix
     };
 
     if (selectedService) {
@@ -159,6 +163,8 @@ export default function Services() {
       setFullDesc(service.full_desc);
       setImage(service.image || "");
       setCapabilities(service.capabilities || []);
+      setShowInSlideshow(service.show_in_slideshow !== false);
+      setShowInMatrix(service.show_in_matrix !== false);
     } else {
       resetForm();
     }
@@ -174,6 +180,8 @@ export default function Services() {
     setImage("");
     setCapabilities([]);
     setNewCapInput("");
+    setShowInSlideshow(true);
+    setShowInMatrix(true);
     setSelectedService(null);
   };
 
@@ -209,6 +217,10 @@ export default function Services() {
               <div>
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] text-[#FFFF00] font-extrabold uppercase tracking-wider">Service {service.number}</span>
+                  <div className="flex gap-2">
+                    {service.show_in_slideshow !== false && <span className="text-[8px] bg-red-500/10 text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded font-extrabold uppercase">Slideshow</span>}
+                    {service.show_in_matrix !== false && <span className="text-[8px] bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-1.5 py-0.5 rounded font-extrabold uppercase">Matrix</span>}
+                  </div>
                   <span className="text-[9px] text-white/30 font-semibold font-mono">ID: {service.id}</span>
                 </div>
 
@@ -347,6 +359,29 @@ export default function Services() {
                     Add Custom
                   </button>
                 </div>
+              </div>
+
+              {/* Visibility Settings */}
+              <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
+                <label className="flex items-center gap-2.5 text-xs text-white/70 hover:text-white cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={showInSlideshow}
+                    onChange={(e) => setShowInSlideshow(e.target.checked)}
+                    className="w-4 h-4 rounded border-white/20 text-[#FFFF00] focus:ring-0 focus:ring-offset-0 accent-[#FFFF00] bg-transparent cursor-pointer"
+                  />
+                  <span>Show in Hero Slideshow</span>
+                </label>
+
+                <label className="flex items-center gap-2.5 text-xs text-white/70 hover:text-white cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={showInMatrix}
+                    onChange={(e) => setShowInMatrix(e.target.checked)}
+                    className="w-4 h-4 rounded border-white/20 text-[#FFFF00] focus:ring-0 focus:ring-offset-0 accent-[#FFFF00] bg-transparent cursor-pointer"
+                  />
+                  <span>Show in Service Matrix</span>
+                </label>
               </div>
 
               {/* Action buttons */}

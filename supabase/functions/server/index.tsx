@@ -227,6 +227,8 @@ CREATE TABLE IF NOT EXISTS services (
   full_desc TEXT NOT NULL,
   capabilities TEXT[] NOT NULL,
   image TEXT,
+  show_in_slideshow BOOLEAN DEFAULT TRUE,
+  show_in_matrix BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -402,7 +404,9 @@ app.post(`${P}/seed`, async (c) => {
           "Wayfinding & Signage",
           "3D Visualization"
         ], 
-        image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080" 
+        image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080",
+        show_in_slideshow: true,
+        show_in_matrix: true
       },
       { 
         id: "product", 
@@ -423,7 +427,9 @@ app.post(`${P}/seed`, async (c) => {
           "Conversational AI Design",
           "Usability Testing"
         ], 
-        image: "https://images.unsplash.com/photo-1668089677938-b52086753f77?q=80&w=1080" 
+        image: "https://images.unsplash.com/photo-1668089677938-b52086753f77?q=80&w=1080",
+        show_in_slideshow: true,
+        show_in_matrix: true
       },
       { 
         id: "brand", 
@@ -443,7 +449,9 @@ app.post(`${P}/seed`, async (c) => {
           "Motion Graphics",
           "Content Design"
         ], 
-        image: "https://images.unsplash.com/photo-1766411503626-0e2f5fb8ba0b?q=80&w=1080" 
+        image: "https://images.unsplash.com/photo-1766411503626-0e2f5fb8ba0b?q=80&w=1080",
+        show_in_slideshow: true,
+        show_in_matrix: true
       },
       { 
         id: "experience", 
@@ -465,7 +473,9 @@ app.post(`${P}/seed`, async (c) => {
           "AI-Powered Experiences",
           "Gamification Experiences"
         ], 
-        image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?q=80&w=1080" 
+        image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?q=80&w=1080",
+        show_in_slideshow: true,
+        show_in_matrix: true
       }
     ];
     for (const service of defaultServices) {
@@ -875,6 +885,53 @@ app.post(`${P}/admin/projects/:id/notes`, async (c) => {
   const { data, error } = await supabase.from("project_notes").insert({ project_id: c.req.param("id"), content }).select().single();
   if (error) return c.json({ error: error.message }, 500);
   return c.json(data, 201);
+});
+
+app.post(`${P}/projects/:id/images`, async (c) => {
+  try {
+    const projectId = c.req.param("id");
+    const formData  = await c.req.formData();
+    const file      = formData.get("file") as File;
+    const imageType = formData.get("image_type") as string || "gallery";
+    const caption   = formData.get("caption") as string || "";
+
+    if (!file) {
+      return c.json({ error: "File is required" }, 400);
+    }
+
+    const ext      = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+    const filename = `projects/${projectId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const bytes    = await file.arrayBuffer();
+
+    const { error: uploadErr } = await supabase.storage
+      .from(BUCKET)
+      .upload(filename, bytes, { contentType: file.type, upsert: false });
+
+    if (uploadErr) return c.json({ error: `Storage upload failed: ${uploadErr.message}` }, 500);
+
+    const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(filename);
+
+    const { data, error } = await supabase.from("project_images").insert({
+      project_id: projectId,
+      image_url: publicUrl,
+      image_type: imageType,
+      caption,
+      sort_order: 0
+    }).select().single();
+
+    if (error) return c.json({ error: error.message }, 500);
+
+    if (imageType === "hero") {
+      const { error: projErr } = await supabase.from("projects")
+        .update({ cover_image: publicUrl })
+        .eq("id", projectId);
+      if (projErr) console.warn("Failed to update project cover_image:", projErr.message);
+    }
+
+    return c.json(data, 201);
+  } catch (err) {
+    return c.json({ error: err.message }, 500);
+  }
 });
 
 // ─── MEETINGS CRUD ───────────────────────────────────────────────────────────

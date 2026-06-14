@@ -186,6 +186,8 @@ export interface ServiceItem {
   full_desc: string;
   capabilities: string[];
   image?: string;
+  show_in_slideshow?: boolean;
+  show_in_matrix?: boolean;
   created_at?: string;
 }
 
