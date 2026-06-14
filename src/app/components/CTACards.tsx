@@ -24,7 +24,7 @@ export function CTACards() {
             </div>
           </div>
 
-          <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+
         </motion.a>
 
         <motion.a
@@ -45,7 +45,7 @@ export function CTACards() {
             </div>
           </div>
 
-          <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
+
         </motion.a>
       </div>
     </ScrollReveal>

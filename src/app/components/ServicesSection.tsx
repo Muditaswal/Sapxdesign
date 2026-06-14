@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ScrollReveal } from "./ScrollReveal";
 import { X } from "lucide-react";
+import { api } from "../services/api";
 
 interface Service {
   id: string;
@@ -13,93 +14,142 @@ interface Service {
   image: string;
 }
 
-const services: Service[] = [
+const fallbackServices: Service[] = [
   {
-    id: "architecture",
+    id: "space",
     number: "01",
-    title: "Architecture",
-    shortDesc: "Spatial systems for residential, commercial, industrial, and healthcare environments.",
+    title: "Space Design",
+    shortDesc: "Designing physical environments and built experiences.",
     fullDesc:
-      "We design buildings and spatial environments that respond to their context — physical, cultural, and temporal. Our architectural practice is rooted in material honesty, structural clarity, and the belief that great buildings are experienced, not just observed.",
+      "We design physical environments and built experiences where architecture, interior logic, graphics, and navigation work as one system — spaces that clarify purpose, carry brand presence, and feel intentional at every scale.",
     capabilities: [
-      "Concept Design",
-      "Master Planning",
-      "Residential Architecture",
-      "Cultural & Public Buildings",
-      "Adaptive Reuse",
-      "Healthcare & Hospitals",
-      "Industrial & Factories",
+      "Architecture",
+      "Interior Design",
+      "Retail Design",
+      "Workspace Design",
+      "Hospitality Design",
+      "Experience Centers",
+      "Exhibition Design",
+      "Environmental Graphics",
+      "Wayfinding & Signage",
+      "3D Visualization",
     ],
     image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcmNoaXRlY3R1cmUlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTY1ODc2MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
   },
   {
-    id: "interior",
-    number: "02",
-    title: "Interior Design",
-    shortDesc: "Human-centered environments shaped by material logic.",
-    fullDesc:
-      "Interior environments shape how we feel, think, and interact. We craft interiors that balance warmth with precision — spaces where every material, proportion, and detail has been considered in service of the whole.",
-    capabilities: [
-      "Spatial Planning",
-      "Material Selection",
-      "Custom Furniture",
-      "Lighting Design",
-      "Art Curation",
-      "Rapid Development"
-    ],
-    image: "https://images.unsplash.com/photo-1668089677938-b52086753f77?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBpbnRlcmlvciUyMGRlc2lnbiUyMG1pbmltYWx8ZW58MXx8fHwxNzcxNzExNjI0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-  {
     id: "product",
-    number: "03",
+    number: "02",
     title: "Product Design",
-    shortDesc: "Objects designed for usability and longevity.",
+    shortDesc: "Designing digital products and intelligent systems.",
     fullDesc:
-      "Our product design practice bridges the physical and conceptual. We design objects, furniture, and systems that are honest in their construction, intuitive in their use, and enduring in their appeal.",
+      "We shape digital products and intelligent systems from strategy through interface detail — connecting user insight, product architecture, design systems, and AI-native interaction patterns into experiences that scale with clarity.",
     capabilities: [
-      "Furniture Design",
-      "Lighting Objects",
-      "Consumer Products",
-      "Prototyping",
-      "Material Research",
-      "IOT",
-    ],
-    image: "https://images.unsplash.com/photo-1766411503626-0e2f5fb8ba0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwcHJvZHVjdCUyMGRlc2lnbiUyMGZ1cm5pdHVyZXxlbnwxfHx8fDE3NzE3MTE2MjV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  },
-  {
-    id: "uiux",
-    number: "04",
-    title: "UI/UX Design",
-    shortDesc: "Digital systems built for clarity and scale.",
-    fullDesc:
-      "We bring spatial and material sensibility to digital environments. Our interfaces are structured with the same care we give to buildings — clear hierarchy, considered typography, and interactions that feel intentional rather than decorative.",
-    capabilities: [
-      "Interface Design",
+      "UX Research",
+      "Product Strategy",
+      "UX/UI Design",
+      "Mobile App Design",
+      "Web Design",
+      "Enterprise UX",
+      "SaaS Design",
       "Design Systems",
-      "User Research",
-      "Prototyping",
-      "Brand Digital Identity",
+      "AI Product Design",
+      "Conversational AI Design",
+      "Usability Testing",
     ],
     image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwaW50ZXJmYWNlJTIwZGVzaWduJTIwbW9iaWxlJTIwYXBwfGVufDF8fHx8MTc3MTcxMTYyNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+  },
+  {
+    id: "brand",
+    number: "03",
+    title: "Brand Design",
+    shortDesc: "Building brands and communication systems.",
+    fullDesc:
+      "We build brands and communication systems that are strategically grounded and visually exacting — from identity foundations to guidelines, campaigns, packaging, content, and motion-led storytelling.",
+    capabilities: [
+      "Brand Strategy",
+      "Brand Identity",
+      "Visual Identity Systems",
+      "Packaging Design",
+      "Marketing Collateral",
+      "Social Media Design",
+      "Brand Guidelines",
+      "Campaign Design",
+      "Motion Graphics",
+      "Content Design",
+    ],
+    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&w=1080&auto=format&fit=crop",
+  },
+  {
+    id: "experience",
+    number: "04",
+    title: "Experience Design",
+    shortDesc: "Designing interactions between brands and people.",
+    fullDesc:
+      "We design interactions between brands and people — activations, launches, installations, service journeys, and immersive AI-powered experiences that transform attention into participation.",
+    capabilities: [
+      "Brand Activations",
+      "Experiential Marketing",
+      "Event Design",
+      "Interactive Installations",
+      "Pop-up Experiences",
+      "Product Launch Experiences",
+      "Retail Activations",
+      "Service Design",
+      "Customer Experience Design",
+      "AR/VR Experiences",
+      "AI-Powered Experiences",
+      "Gamification Experiences",
+    ],
+    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1080&auto=format&fit=crop",
   },
 ];
 
 export function ServicesSection() {
+  const [dbServices, setDbServices] = useState<Service[]>([]);
   const [activeService, setActiveService] = useState<Service | null>(null);
+
+  const servicesList = dbServices.length > 0 ? dbServices : fallbackServices;
+
+  useEffect(() => {
+    api.get<any[]>("/services")
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped: Service[] = data.map((item) => ({
+            id: item.id,
+            number: item.number,
+            title: item.title,
+            shortDesc: item.short_desc,
+            fullDesc: item.full_desc,
+            capabilities: item.capabilities || [],
+            image: item.image || "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080"
+          }));
+          setDbServices(mapped);
+        } else {
+          setDbServices(fallbackServices);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch services, using fallbacks:", err);
+        setDbServices(fallbackServices);
+      });
+  }, []);
 
   useEffect(() => {
     const handleOpenService = (e: Event) => {
       const customEvent = e as CustomEvent<string>;
       const serviceId = customEvent.detail;
-      const service = services.find((s) => s.id === serviceId);
+      const service = servicesList.find((s) => s.id === serviceId);
       if (service) {
         setActiveService(service);
+        setTimeout(() => {
+          document.getElementById('services-detail')?.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
       }
     };
 
     window.addEventListener("open-service", handleOpenService);
     return () => window.removeEventListener("open-service", handleOpenService);
-  }, []);
+  }, [servicesList]);
 
   return (
     <AnimatePresence>

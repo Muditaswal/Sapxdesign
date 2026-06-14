@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ScrollReveal } from "./ScrollReveal";
 import { Check, ArrowRight } from "lucide-react";
+import { api } from "../services/api";
 
 const projectTypes = [
   "Architecture",
@@ -16,6 +17,7 @@ export function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     projectType: "",
     message: "",
   });
@@ -26,22 +28,39 @@ export function ContactSection() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const subject = encodeURIComponent(
-      `New Inquiry: ${formData.projectType || "General"}`
-    );
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nProject Type: ${formData.projectType}\n\nMessage:\n${formData.message}`
-    );
-    window.open(
-      `mailto:hello@sapstudio.design?subject=${subject}&body=${body}`,
-      "_self"
-    );
+    api.post("/messages", {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      subject: formData.projectType || "General Inquiry",
+      message: formData.message
+    })
+      .then(() => {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ name: "", email: "", phone: "", projectType: "", message: "" });
+        }, 4000);
+      })
+      .catch((err) => {
+        console.error("Failed to submit message to database:", err);
+        const subject = encodeURIComponent(
+          `New Inquiry: ${formData.projectType || "General"}`
+        );
+        const body = encodeURIComponent(
+          `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || "N/A"}\nProject Type: ${formData.projectType}\n\nMessage:\n${formData.message}`
+        );
+        window.open(
+          `mailto:hello@sapstudio.design?subject=${subject}&body=${body}`,
+          "_self"
+        );
 
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: "", email: "", projectType: "", message: "" });
-    }, 4000);
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ name: "", email: "", phone: "", projectType: "", message: "" });
+        }, 4000);
+      });
   };
 
   const getFieldColor = (field: string) => {
@@ -212,6 +231,25 @@ export function ContactSection() {
                           fontFamily: "'Montserrat', sans-serif",
                           fontWeight: 400,
                           borderBottom: `2px solid ${focusedField === "email" ? "#FFFF00" : "rgba(255,255,255,0.15)"}`,
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        value={formData.phone}
+                        onFocus={() => setFocusedField("phone")}
+                        onBlur={() => setFocusedField(null)}
+                        onChange={(e) =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
+                        className="w-full bg-transparent py-5 text-[16px] text-white placeholder:text-white/30 focus:outline-none transition-colors duration-300"
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 400,
+                          borderBottom: `2px solid ${focusedField === "phone" ? "#FFFF00" : "rgba(255,255,255,0.15)"}`,
                         }}
                       />
                     </div>

@@ -1,111 +1,117 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import logo from "figma:asset/2d306c095ea00234c5fa5f873c0b0e0f431e1dc2.png";
-import { Navbar } from "./components/Navbar";
-import { HeroSection } from "./components/HeroSection";
-import { AboutSection } from "./components/AboutSection";
-import { ImageStrip } from "./components/ImageStrip";
-import { ServicesSection } from "./components/ServicesSection";
-import { MidPageCta } from "./components/MidPageCta";
-import { ProjectsSection } from "./components/ProjectsSection";
-import { TestimonialsSection } from "./components/TestimonialsSection";
-import { ContactSection } from "./components/ContactSection";
-import { Footer } from "./components/Footer";
-import { CustomCursor } from "./components/CustomCursor";
+import { useState, useEffect, lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { supabase } from "./services/supabase";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
-export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+// Public Views (Lazy Loaded)
+const Home = lazy(() => import("./pages/public/Home"));
+const ProjectDetail = lazy(() => import("./pages/public/ProjectDetail"));
+const Portfolios = lazy(() => import("./pages/public/Portfolios"));
+const BlogList = lazy(() => import("./pages/public/BlogList"));
+const BlogPost = lazy(() => import("./pages/public/BlogPost"));
+const NotFound = lazy(() => import("./pages/public/NotFound"));
 
-  // Smooth scroll behavior
+// Admin Views (Lazy Loaded)
+const Login = lazy(() => import("./pages/admin/Login"));
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Leads = lazy(() => import("./pages/admin/Leads"));
+const Clients = lazy(() => import("./pages/admin/Clients"));
+const Projects = lazy(() => import("./pages/admin/Projects"));
+const Meetings = lazy(() => import("./pages/admin/Meetings"));
+const Messages = lazy(() => import("./pages/admin/Messages"));
+const Documents = lazy(() => import("./pages/admin/Documents"));
+const Payments = lazy(() => import("./pages/admin/Payments"));
+const BlogCMS = lazy(() => import("./pages/admin/BlogCMS"));
+const Settings = lazy(() => import("./pages/admin/Settings"));
+const Services = lazy(() => import("./pages/admin/Services"));
+
+// Route Guard Wrapper for Admin space
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
-    
-    // Hide splash screen after 4 seconds
-    const timer = setTimeout(() => setShowSplash(false), 4000);
-    
-    return () => {
-      document.documentElement.style.scrollBehavior = "auto";
-      clearTimeout(timer);
-    };
+    const isPlaceholder = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes("placeholder");
+    if (isPlaceholder) {
+      const mockSession = localStorage.getItem("sb-mock-session") === "true";
+      setIsAuthenticated(mockSession);
+      setLoading(false);
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  return (
-    <div className="relative min-h-screen bg-[#0A0A0B] text-white flex flex-col md:cursor-none">
-      <CustomCursor />
-      <AnimatePresence>
-        {showSplash && (
-          <motion.div
-            key="splash"
-            className="fixed inset-0 z-[100] bg-[#0A0A0B] flex flex-col items-center justify-center pointer-events-none"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut", delay: 0.4 } }}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col items-center gap-8"
-            >
-              {/* Desktop Splash Logo */}
-              <div className="hidden md:block">
-                <motion.img
-                  layoutId="main-logo"
-                  src={logo}
-                  alt="SAP × Design"
-                  className="w-[200px] h-[200px] object-contain rounded-2xl"
-                />
-              </div>
-              
-              {/* Mobile Splash Logo */}
-              <div className="md:hidden block">
-                <motion.img
-                  layoutId="main-logo-mobile"
-                  src={logo}
-                  alt="SAP × Design"
-                  className="w-[120px] h-[120px] object-contain rounded-2xl"
-                />
-              </div>
-
-              <div className="flex flex-col items-center gap-2">
-                <motion.h1
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-[24px] md:text-[40px] tracking-[0.2em] font-extrabold"
-                  style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
-                >
-                  SAP × DESIGN
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-sm md:text-base tracking-[0.3em] text-white/50 uppercase font-light"
-                >
-                  Space and Product studio
-                </motion.p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <Navbar showSplash={showSplash} />
-      
-      {/* Content Wrapper */}
-      <div className="w-full">
-        <main className="relative">
-          <HeroSection />
-          <ServicesSection />
-          <AboutSection />
-          <ProjectsSection />
-          <MidPageCta />
-          <ImageStrip />
-          <TestimonialsSection />
-          <ContactSection />
-        </main>
-        <Footer />
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#0A0A0B] text-white">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FFFF00] border-t-transparent"></div>
       </div>
-    </div>
+    );
+  }
+
+  return isAuthenticated ? <>{children}</> : <Navigate to="/admin/login" replace />;
+}
+
+const PageLoader = () => (
+  <div className="flex h-screen items-center justify-center bg-[#0A0A0B] text-white">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FFFF00] border-t-transparent"></div>
+  </div>
+);
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/projects/:slug" element={<ProjectDetail />} />
+            <Route path="/portfolio/:category" element={<Portfolios />} />
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+
+            {/* Admin Login Route */}
+            <Route path="/admin/login" element={<Login />} />
+
+            {/* Protected Admin Routes */}
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="leads" element={<Leads />} />
+              <Route path="clients" element={<Clients />} />
+              <Route path="projects" element={<Projects />} />
+              <Route path="meetings" element={<Meetings />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="documents" element={<Documents />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="blog" element={<BlogCMS />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="services" element={<Services />} />
+            </Route>
+
+            {/* Fallback to 404 NotFound Page */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
+    </BrowserRouter>
   );
 }

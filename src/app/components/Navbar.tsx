@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "figma:asset/2d306c095ea00234c5fa5f873c0b0e0f431e1dc2.png";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
-  { label: "Works", href: "#works" },
-  { label: "Contact", href: "#contact" },
+  { label: "Services", href: "#services", isPage: false },
+  { label: "About", href: "#about", isPage: false },
+  { label: "Works", href: "#works", isPage: false },
+  { label: "Contact", href: "#contact", isPage: false },
 ];
 
 export function Navbar({ showSplash }: { showSplash?: boolean }) {
@@ -16,13 +17,16 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
   const [navVisible, setNavVisible] = useState(true);
   const lastScrollY = useRef(0);
   const mobileOpenRef = useRef(mobileOpen);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     mobileOpenRef.current = mobileOpen;
   }, [mobileOpen]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     const resetHideTimer = () => {
       clearTimeout(timer);
@@ -34,10 +38,14 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
     };
 
     const handleScroll = () => {
+      if (location.pathname !== "/") {
+        setActiveSection("");
+        return;
+      }
       const currentY = window.scrollY;
       
       // Detect active section
-      const sections = navLinks.map((l) => l.href.replace("#", ""));
+      const sections = navLinks.filter(l => !l.isPage).map((l) => l.href.replace("#", ""));
       let found = false;
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
@@ -78,20 +86,25 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
       window.removeEventListener("mousemove", handleMouseMove);
       clearTimeout(timer);
     };
-  }, []);
+  }, [location.pathname]);
 
-  const scrollTo = (href: string) => {
+  const handleNavClick = (link: typeof navLinks[number]) => {
     setMobileOpen(false);
     
-    // Open detailed service view when navigating to services
-    if (href === "#services") {
-      window.dispatchEvent(new CustomEvent('open-service', { detail: 'architecture' }));
+    if (link.isPage) {
+      navigate(link.href);
+    } else {
+      if (location.pathname !== "/") {
+        navigate("/");
+        setTimeout(() => {
+          const el = document.querySelector(link.href);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 150);
+      } else {
+        const el = document.querySelector(link.href);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }
     }
-    
-    setTimeout(() => {
-      const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 50);
   };
 
   return (
@@ -144,13 +157,14 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
           className="flex flex-row gap-8 items-center justify-center"
         >
           {navLinks.map((link) => {
-            const sectionId = link.href.replace("#", "");
-            const isActive = activeSection === sectionId;
+            const isActive = link.isPage 
+              ? location.pathname === link.href 
+              : (location.pathname === "/" && activeSection === link.href.replace("#", ""));
             
             return (
               <button
                 key={link.href}
-                onClick={() => scrollTo(link.href)}
+                onClick={() => handleNavClick(link)}
                 className="relative cursor-pointer group"
               >
                 <div 
@@ -263,7 +277,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
-                onClick={() => scrollTo(link.href)}
+                onClick={() => handleNavClick(link)}
                 className="text-[24px] uppercase tracking-[0.1em] text-white/80 hover:text-[#FFFF00] transition-colors"
                 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
               >

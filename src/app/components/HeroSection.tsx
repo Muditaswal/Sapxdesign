@@ -32,40 +32,40 @@ const WORKS = [
 
 const AUDIENCES = [
   {
-    id: "architecture",
-    title: "ARCHITECTURE",
-    heading: "PHYSICAL\nSPACES",
-    desc: "Building structures with absolute spatial logic and raw materiality.",
+    id: "space",
+    title: "SPACE DESIGN",
+    heading: "SPACE\nDESIGN",
+    desc: "We design physical environments and built experiences.",
     color: "#0A0A0B", // Black
     textColor: "#FFFFFF",
-    image: "https://images.unsplash.com/photo-1504625709867-b4e45e3bb9dd?q=80&w=1080",
-  },
-  {
-    id: "ui-ux",
-    title: "UI/UX DESIGN",
-    heading: "DIGITAL\nPLATFORMS",
-    desc: "Scalable design systems and high-conversion interfaces built for modern digital products.",
-    color: "#EC0606", // Brutalist Red
-    textColor: "#FFFFFF",
-    image: "https://images.unsplash.com/photo-1772272935464-2e90d8218987?q=80&w=1080",
-  },
-  {
-    id: "interior",
-    title: "INTERIOR DESIGN",
-    heading: "ENVIRONMENTS &\nSPACES",
-    desc: "Highly considered spaces and bespoke environments tailored to spatial logic.",
-    color: "#FFFF00", // Warning Yellow
-    textColor: "#0A0A0B",
-    image: "https://images.unsplash.com/photo-1545805453-e95c05f330dc?q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcmNoaXRlY3R1cmUlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTY1ODc2MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
   },
   {
     id: "product",
     title: "PRODUCT DESIGN",
-    heading: "INDUSTRIAL\nOBJECTS",
-    desc: "Physical embodiments of core identity. Industrial design that communicates quality.",
+    heading: "PRODUCT\nDESIGN",
+    desc: "We shape digital products and intelligent systems.",
+    color: "#EC0606", // Brutalist Red
+    textColor: "#FFFFFF",
+    image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwaW50ZXJmYWNlJTIwZGVzaWduJTIwbW9iaWxlJTIwYXBwfGVufDF8fHx8MTc3MTcxMTYyNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+  },
+  {
+    id: "brand",
+    title: "BRAND DESIGN",
+    heading: "BRAND\nDESIGN",
+    desc: "We build brands and communication systems.",
+    color: "#FFFF00", // Warning Yellow
+    textColor: "#0A0A0B",
+    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&w=1080&auto=format&fit=crop",
+  },
+  {
+    id: "experience",
+    title: "EXPERIENCE DESIGN",
+    heading: "EXPERIENCE\nDESIGN",
+    desc: "We design interactions between brands and people.",
     color: "#FFFFFF", // White
     textColor: "#0A0A0B",
-    image: "https://images.unsplash.com/photo-1769946797489-e99b2a5c1dfc?q=80&w=1080",
+    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1080&auto=format&fit=crop",
   },
 ];
 
@@ -308,9 +308,9 @@ function AudienceMatrix() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      window.dispatchEvent(new CustomEvent('open-service', { detail: aud.id === "ui-ux" ? "uiux" : aud.id }));
+                      window.dispatchEvent(new CustomEvent('open-service', { detail: aud.id }));
                       setTimeout(() => {
-                        document.getElementById('services-detail')?.scrollIntoView({ behavior: 'smooth' });
+                        document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
                       }, 100);
                     }}
                     className="mt-6 md:mt-8 px-6 py-3 text-[11px] uppercase tracking-[0.15em] border border-current rounded-full pointer-events-auto transition-colors duration-300"
