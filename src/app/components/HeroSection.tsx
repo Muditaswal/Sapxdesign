@@ -6,27 +6,27 @@ import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 const WORKS = [
   { 
     id: 1, 
-    src: "https://images.unsplash.com/photo-1768268959019-13e91660e381?q=80&w=1920", 
-    title: "ARCHITECTURE", 
+    src: "https://images.unsplash.com/photo-1695067440629-b5e513976100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcmNoaXRlY3R1cmUlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTY1ODc2MHww&ixlib=rb-4.1.0&q=80&w=1920&utm_source=figma&utm_medium=referral", 
+    title: "SPACE DESIGN", 
     category: "Physical Space" 
   },
   { 
     id: 2, 
-    src: "https://images.unsplash.com/photo-1663153203126-08bbadc178ad?q=80&w=1920", 
-    title: "DIGITAL PLATFORMS", 
+    src: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwaW50ZXJmYWNlJTIwZGVzaWduJTIwbW9iaWxlJTIwYXBwfGVufDF8fHx8MTc3MTcxMTYyNnww&ixlib=rb-4.1.0&q=80&w=1920&utm_source=figma&utm_medium=referral", 
+    title: "PRODUCT DESIGN", 
     category: "Interface" 
   },
   { 
     id: 3, 
-    src: "https://images.unsplash.com/photo-1680210851164-906d2940ff34?q=80&w=1920", 
-    title: "INTERIOR DESIGN", 
-    category: "Environment" 
+    src: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&w=1920&auto=format&fit=crop", 
+    title: "BRAND DESIGN", 
+    category: "Brand Identity" 
   },
   { 
     id: 4, 
-    src: "https://images.unsplash.com/photo-1551907234-fb773fb08a2a?q=80&w=1920", 
-    title: "INDUSTRIAL DESIGN", 
-    category: "Object" 
+    src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1920&auto=format&fit=crop", 
+    title: "EXPERIENCE DESIGN", 
+    category: "Interaction & Experience" 
   },
 ];
 
