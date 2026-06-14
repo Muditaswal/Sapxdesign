@@ -3,12 +3,20 @@ import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
 import { createClient } from "npm:@supabase/supabase-js";
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_KEY  = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const DB_URL       = Deno.env.get("SUPABASE_DB_URL")!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
+const SERVICE_KEY  = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+const DB_URL       = Deno.env.get("SUPABASE_DB_URL") || "";
 const BUCKET       = "project-media";
 
-const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
+if (!SUPABASE_URL || !SERVICE_KEY) {
+  console.warn("\n⚠️  [Warning] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables are missing.");
+  console.warn("The server will start on http://localhost:8000, but database API calls will fail until real secrets are configured.\n");
+}
+
+const supabase = createClient(
+  SUPABASE_URL || "https://placeholder-project.supabase.co",
+  SERVICE_KEY || "placeholder-key"
+);
 
 // Ensure storage bucket exists on cold start
 (async () => {
