@@ -127,6 +127,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
         {/* Left: Logo */}
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
           className="cursor-pointer h-[44px] flex flex-row items-center gap-4 relative"
         >
           {!showSplash && (
@@ -226,6 +227,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
       >
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
           className="flex items-center gap-2 cursor-pointer h-[28px]"
         >
           <div className="w-[28px] h-[28px] relative flex items-center justify-center">
@@ -255,6 +257,8 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
           animate={{ opacity: showSplash ? 0 : 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileOpen}
           className="text-white/80 p-2"
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}

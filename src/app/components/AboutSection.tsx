@@ -57,7 +57,7 @@ export function AboutSection() {
           </div>
 
           {/* Right column — body text */}
-          <div className="md:col-span-20 md:col-start-9">
+          <div className="md:col-span-4 md:col-start-9">
             <ScrollReveal delay={0.25}>
               <p
                 className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-8"

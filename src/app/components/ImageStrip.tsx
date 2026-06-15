@@ -29,6 +29,9 @@ export function ImageStrip() {
         <img
           src={manifestoImage}
           alt="Dramatic architectural space"
+          loading="lazy"
+          width={1920}
+          height={1080}
           className="w-full h-[120%] object-cover"
         />
         {/* Dark overlay for contrast */}

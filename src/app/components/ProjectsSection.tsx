@@ -100,8 +100,10 @@ function ProjectCardSlideshow({
         >
           <img
             src={activeImage.image_url || activeImage.image || defaultImage}
-            alt={title}
+            alt={`${title} Project Case Study | Space and Product Studio`}
             loading="lazy"
+            width={800}
+            height={600}
             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         </motion.div>

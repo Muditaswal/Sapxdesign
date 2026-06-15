@@ -26,6 +26,9 @@ export function Footer() {
                 <img
                   src={logo}
                   alt="SAP × Design logo"
+                  width={96}
+                  height={96}
+                  loading="lazy"
                   className="w-24 h-24 rounded-xl object-contain"
                 />
                 <div className="flex flex-col leading-none">
@@ -153,6 +156,9 @@ export function Footer() {
             <img
               src={logo}
               alt="SAP × Design"
+              width={16}
+              height={16}
+              loading="lazy"
               className="w-4 h-4 rounded-sm object-contain"
             />
             <p

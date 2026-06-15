@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { api } from "../../services/api";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
+import { SEO } from "../../components/SEO";
 
 interface Project {
   id: string;
@@ -60,8 +61,6 @@ export default function Portfolios() {
     window.scrollTo({ top: 0 });
     setLoading(true);
     const dbCat = getDBCategory(category || "");
-    const titleText = getTitle(category || "");
-    document.title = `${titleText} | Space and Product Studio`;
 
     api.get<Project[]>(`/projects?category=${dbCat}`)
       .then((data) => {
@@ -74,8 +73,30 @@ export default function Portfolios() {
       });
   }, [category]);
 
+  const titleText = getTitle(category || "");
+  const seoDesc = `Explore the ${titleText} by Space and Product Studio. We specialize in Architecture Design Studio, Interior Design, and Digital UX/UI Services in India.`;
+  const seoSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://sapxdesign.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": titleText,
+        "item": `https://sapxdesign.com/portfolio/${category}`
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col">
+      <SEO title={`${titleText} | Space and Product Studio`} description={seoDesc} schema={seoSchema} />
       <Navbar showSplash={false} />
 
       {/* Header Banner */}
@@ -125,6 +146,9 @@ export default function Portfolios() {
                   <img
                     src={proj.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080"}
                     alt={proj.name}
+                    loading="lazy"
+                    width={800}
+                    height={600}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-end p-6">

@@ -14,21 +14,114 @@ import { ContactSection } from "../../components/ContactSection";
 import { Footer } from "../../components/Footer";
 import { CustomCursor } from "../../components/CustomCursor";
 
+import { SEO } from "../../components/SEO";
+
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
-    document.title = "Space and Product Studio | SAP × Design Portfolio";
     const timer = setTimeout(() => setShowSplash(false), 4000);
+    
+    const handleScroll = () => {
+      const sections = ["services", "about", "works", "contact"];
+      let currentSection = "";
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.getBoundingClientRect().top <= 300) {
+          currentSection = sections[i];
+          break;
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
     return () => {
       document.documentElement.style.scrollBehavior = "auto";
       clearTimeout(timer);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
+  let seoTitle = "Space and Product Studio | Designing Spaces, Products, Brands & Experiences";
+  let seoDescription = "Space and Product Studio helps businesses and organizations transform spaces, products, brands, and experiences through strategic architecture and digital UX/UI design.";
+  let seoSchema: any = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://sapxdesign.com/#website",
+      "name": "Space and Product Studio",
+      "url": "https://sapxdesign.com/"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://sapxdesign.com/#organization",
+      "name": "Space and Product Studio",
+      "url": "https://sapxdesign.com/",
+      "logo": "https://sapxdesign.com/og-image.jpg",
+      "description": "Space and Product Studio helps businesses and organizations transform spaces, products, brands, and experiences through strategic design.",
+      "sameAs": [
+        "https://www.instagram.com/sapxdesign",
+        "https://www.linkedin.com/company/space-and-product-studio/",
+        "https://www.facebook.com/people/Space-and-Product-Studio/61557185401633/"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ArchitecturalOffice",
+      "@id": "https://sapxdesign.com/#localbusiness",
+      "name": "Space and Product Studio",
+      "image": "https://sapxdesign.com/og-image.jpg",
+      "url": "https://sapxdesign.com/",
+      "telephone": "+91 8368544334",
+      "email": "spaceandproductstudio@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "149 DDA Flat, Lado Sarai",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110030",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 28.5265384,
+        "longitude": 77.1953846
+      }
+    }
+  ];
+
+  if (activeSection === "services") {
+    seoTitle = "Studio Design Services | Architecture, Interior & UX/UI Design Services";
+    seoDescription = "Explore our trans-disciplinary design services including Space Design, Architecture Design Studio, Interior Design Consultancy, Product Design Studio, and UI UX Design Services.";
+    seoSchema = {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Space and Product Studio Services",
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "Space and Product Studio"
+      },
+      "description": "Professional services across Architecture Design Studio, Interior Design Consultancy, Product Design Studio, UX Design Agency, UI UX Design Services, and Experience Design."
+    };
+  } else if (activeSection === "about") {
+    seoTitle = "About Space and Product Studio | Human Centered Design & Innovation Consulting";
+    seoDescription = "We are an India-based trans-disciplinary Architecture and Design Studio. We apply Design Strategy, Design Research, and Human Centered Design to create digital & physical ecosystems.";
+  } else if (activeSection === "works") {
+    seoTitle = "Selected Works & Case Studies | Spatial Design & Digital Product Design Portfolio";
+    seoDescription = "Browse selected case studies from Space and Product Studio, demonstrating spatial architecture, enterprise UX/UI design, and brand identity projects.";
+  } else if (activeSection === "contact") {
+    seoTitle = "Contact Space and Product Studio | New Delhi India Design Studio";
+    seoDescription = "Get in touch with Space and Product Studio. Contact us for architectural consulting, interior design services, product innovation, or enterprise UX design inquiries.";
+  }
+
   return (
     <div className="relative min-h-screen bg-[#0A0A0B] text-white flex flex-col md:cursor-none">
+      <SEO title={seoTitle} description={seoDescription} schema={seoSchema} />
       <CustomCursor />
       <AnimatePresence>
         {showSplash && (

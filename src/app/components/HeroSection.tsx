@@ -127,7 +127,10 @@ function WorksSlideshow({ services }: ServiceProp) {
         >
           <img 
             src={activeSlide.src} 
-            alt={activeSlide.title} 
+            alt={`${activeSlide.title} Case Study | Space and Product Studio`} 
+            width={1920}
+            height={1080}
+            fetchPriority="high"
             className="w-full h-full object-cover opacity-60 mix-blend-lighten" 
           />
           {/* Dark gradients to preserve text legibility */}
@@ -176,12 +179,14 @@ function WorksSlideshow({ services }: ServiceProp) {
           <div className="flex items-center gap-4 pointer-events-auto shrink-0 mb-2 md:mb-0">
             <button 
               onClick={prevSlide} 
+              aria-label="Previous slide"
               className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border border-white/20 hover:bg-white hover:text-[#0A0A0B] transition-colors text-white rounded-full cursor-pointer backdrop-blur-md bg-[#0A0A0B]/40"
             >
               <ChevronLeft className="w-5 h-5 md:w-8 md:h-8" />
             </button>
             <button 
               onClick={nextSlide} 
+              aria-label="Next slide"
               className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center border border-white/20 hover:bg-[#FFFF00] hover:text-[#0A0A0B] hover:border-[#FFFF00] transition-colors text-white rounded-full cursor-pointer backdrop-blur-md bg-[#0A0A0B]/40"
             >
               <ChevronRight className="w-5 h-5 md:w-8 md:h-8" />
@@ -282,7 +287,10 @@ function AudienceMatrix({ services }: ServiceProp) {
             >
               <img
                 src={aud.image}
-                alt={aud.title}
+                alt={`${aud.title} Capability | Space and Product Studio`}
+                loading="lazy"
+                width={800}
+                height={600}
                 className="w-full h-full object-cover mix-blend-multiply"
               />
             </motion.div>

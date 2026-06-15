@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Tag, Folder } from "lucide-react";
 import { api } from "../../services/api";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
+import { SEO } from "../../components/SEO";
 
 interface BlogTag {
   id: string;
@@ -40,45 +41,11 @@ export default function BlogPost() {
       .then((data) => {
         setPost(data);
         setLoading(false);
-
-        // SEO Optimization
-        if (data) {
-          document.title = data.seo_title || `${data.title} | SAP × DESIGN`;
-          
-          let metaDesc = document.querySelector('meta[name="description"]');
-          if (!metaDesc) {
-            metaDesc = document.createElement("meta");
-            metaDesc.setAttribute("name", "description");
-            document.head.appendChild(metaDesc);
-          }
-          metaDesc.setAttribute("content", data.seo_description || data.excerpt || "");
-          
-          // Open Graph (OG) tags injection
-          let ogTitle = document.querySelector('meta[property="og:title"]');
-          if (!ogTitle) {
-            ogTitle = document.createElement("meta");
-            ogTitle.setAttribute("property", "og:title");
-            document.head.appendChild(ogTitle);
-          }
-          ogTitle.setAttribute("content", data.seo_title || data.title);
-
-          let ogImage = document.querySelector('meta[property="og:image"]');
-          if (!ogImage) {
-            ogImage = document.createElement("meta");
-            ogImage.setAttribute("property", "og:image");
-            document.head.appendChild(ogImage);
-          }
-          ogImage.setAttribute("content", data.cover_image || "");
-        }
       })
       .catch((err) => {
         console.error("Failed to load blog post details:", err);
         setLoading(false);
       });
-
-    return () => {
-      document.title = "SAP × Design | Space and Product Studio";
-    };
   }, [slug]);
 
   if (loading) {
@@ -99,8 +66,58 @@ export default function BlogPost() {
     );
   }
 
+  const seoTitle = post.seo_title || `${post.title} | Space and Product Studio Blog`;
+  const seoDesc = post.seo_description || post.excerpt || `${post.title} - An article by Space and Product Studio.`;
+  const seoSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://sapxdesign.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://sapxdesign.com/blog"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": post.title,
+          "item": `https://sapxdesign.com/blog/${post.slug}`
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "image": post.cover_image,
+      "datePublished": post.published_at,
+      "description": post.excerpt || post.seo_description,
+      "author": {
+        "@type": "Organization",
+        "name": "Space and Product Studio"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Space and Product Studio",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://sapxdesign.com/og-image.jpg"
+        }
+      }
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col">
+      <SEO title={seoTitle} description={seoDesc} schema={seoSchema} ogImage={post.cover_image} />
       <Navbar showSplash={false} />
 
       {/* Main Container */}
@@ -139,7 +156,14 @@ export default function BlogPost() {
         {/* Cover Image */}
         {post.cover_image && (
           <div className="relative overflow-hidden rounded-[30px] border border-white/5 aspect-[16/9] mb-12">
-            <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover" />
+            <img
+              src={post.cover_image}
+              alt={post.title}
+              width={1200}
+              height={675}
+              fetchPriority="high"
+              className="w-full h-full object-cover"
+            />
             <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-[#EC0606]" />
           </div>
         )}

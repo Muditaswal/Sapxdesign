@@ -17,9 +17,9 @@ export const brandLogos = {
       <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fontFamily="'Times New Roman', serif" fontSize="28" fontWeight="700" letterSpacing="0.15em" fill="currentColor">PRADA</text>
     </svg>
   ),
-  NIKE: () => <SiNike className="h-full w-auto" style={{ minWidth: "40px" }} />,
-  SAMSUNG: () => <SiSamsung className="h-full w-auto" style={{ minWidth: "100px" }} />,
-  POLESTAR: () => <SiPolestar className="h-full w-auto" style={{ minWidth: "40px" }} />,
+  NIKE: () => <SiNike className="h-full w-auto" style={{ minWidth: "40px" }} aria-label="Nike Logo" />,
+  SAMSUNG: () => <SiSamsung className="h-full w-auto" style={{ minWidth: "100px" }} aria-label="Samsung Logo" />,
+  POLESTAR: () => <SiPolestar className="h-full w-auto" style={{ minWidth: "40px" }} aria-label="Polestar Logo" />,
   AESOP: () => (
     <svg viewBox="0 0 200 40" className="h-full w-auto">
       <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fontFamily="'Optima', 'Segoe UI', sans-serif" fontSize="28" fontWeight="400" letterSpacing="0.1em" fill="currentColor">Aēsop.</text>
@@ -30,7 +30,7 @@ export const brandLogos = {
       <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="24" fontWeight="400" letterSpacing="0.2em" fill="currentColor">RIMOWA</text>
     </svg>
   ),
-  HERMÈS: () => (
+  "HERMÈS": () => (
     <svg viewBox="0 0 200 50" className="h-full w-auto">
       <text x="50%" y="45%" dominantBaseline="middle" textAnchor="middle" fontFamily="Georgia, serif" fontSize="26" fontWeight="400" letterSpacing="0.05em" fill="currentColor">HERMÈS</text>
       <text x="50%" y="85%" dominantBaseline="middle" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="8" fontWeight="400" letterSpacing="0.3em" fill="currentColor">PARIS</text>
@@ -49,7 +49,10 @@ export const brandLogos = {
   MDH: () => (
     <img
       src={mdhLogo}
-      alt="MDH"
+      alt="MDH Logo"
+      loading="lazy"
+      width={44}
+      height={40}
       className="h-full w-auto object-contain"
       style={{ minWidth: "44px" }}
     />
@@ -57,7 +60,10 @@ export const brandLogos = {
   ERIS: () => (
     <img
       src={erisLogo}
-      alt="ERIS"
+      alt="Eris Lifesciences Logo"
+      loading="lazy"
+      width={64}
+      height={40}
       className="h-full w-auto object-contain"
       style={{ minWidth: "64px" }}
     />
@@ -65,7 +71,10 @@ export const brandLogos = {
   "ISSA FOUNDATION": () => (
     <img
       src={issaLogo}
-      alt="ISSA FOUNDATION"
+      alt="Issa Foundation Logo"
+      loading="lazy"
+      width={150}
+      height={40}
       className="h-full w-auto object-contain"
       style={{ minWidth: "150px" }}
     />
@@ -73,7 +82,10 @@ export const brandLogos = {
   "DA SALON": () => (
     <img
       src={daSalonLogo}
-      alt="DA SALON"
+      alt="Da Salon Logo"
+      loading="lazy"
+      width={120}
+      height={40}
       className="h-full w-auto object-contain"
       style={{ minWidth: "120px" }}
     />
@@ -81,9 +93,12 @@ export const brandLogos = {
   "MATA CHANAN DEVI HOSPITAL": () => (
     <img
       src={mataChananDeviLogo}
-      alt="MATA CHANAN DEVI HOSPITAL"
+      alt="Mata Chanan Devi Hospital Logo"
+      loading="lazy"
+      width={120}
+      height={40}
       className="h-full w-auto object-contain"
       style={{ minWidth: "120px" }}
     />
   ),
-};
+};;

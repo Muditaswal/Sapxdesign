@@ -215,6 +215,7 @@ export function ContactSection() {
                       <input
                         type="text"
                         placeholder="Your Name"
+                        aria-label="Your Name"
                         required
                         value={formData.name}
                         onFocus={() => setFocusedField("name")}
@@ -235,6 +236,7 @@ export function ContactSection() {
                       <input
                         type="email"
                         placeholder="Email Address"
+                        aria-label="Email Address"
                         required
                         value={formData.email}
                         onFocus={() => setFocusedField("email")}
@@ -255,6 +257,7 @@ export function ContactSection() {
                       <input
                         type="tel"
                         placeholder="Phone Number"
+                        aria-label="Phone Number"
                         value={formData.phone}
                         onFocus={() => setFocusedField("phone")}
                         onBlur={() => setFocusedField(null)}
@@ -274,6 +277,8 @@ export function ContactSection() {
                     <div className="relative">
                       <button
                         type="button"
+                        aria-label="Select Project Type"
+                        aria-expanded={isDropdownOpen}
                         onClick={() => {
                           setIsDropdownOpen(!isDropdownOpen);
                           setFocusedField("projectType");
@@ -348,6 +353,7 @@ export function ContactSection() {
                     <div>
                       <textarea
                         placeholder="Tell us about your project..."
+                        aria-label="Project details"
                         required
                         rows={4}
                         value={formData.message}

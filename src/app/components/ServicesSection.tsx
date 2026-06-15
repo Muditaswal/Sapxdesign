@@ -235,6 +235,9 @@ export function ServicesSection() {
                     <img 
                       src={activeService.image} 
                       alt={activeService.title}
+                      loading="lazy"
+                      width={800}
+                      height={600}
                       className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"
                     />
                   </div>

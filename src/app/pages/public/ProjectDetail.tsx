@@ -5,6 +5,7 @@ import { ArrowLeft, MapPin, Calendar, Briefcase, ChevronLeft, ChevronRight, Maxi
 import { api } from "../../services/api";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
+import { SEO } from "../../components/SEO";
 
 interface ProjectSection {
   id: string;
@@ -55,9 +56,6 @@ export default function ProjectDetail() {
     api.get<ProjectData>(`/projects/${slug}`)
       .then((data) => {
         setProject(data);
-        if (data && data.name) {
-          document.title = `${data.name} | Space and Product Studio`;
-        }
         setLoading(false);
       })
       .catch((err) => {
@@ -131,8 +129,54 @@ export default function ProjectDetail() {
     setGalleryIndex((prev) => (prev + 1) % displayImages.length);
   };
 
+  const seoTitle = project 
+    ? `${project.name} | ${project.project_type} Case Study | Space and Product Studio`
+    : "Project Case Study | Space and Product Studio";
+  const seoDesc = project
+    ? `Explore our project ${project.name}, a detailed case study in ${project.project_type}. ${project.description?.slice(0, 120)}...`
+    : "Read trans-disciplinary spatial and digital design case studies by Space and Product Studio.";
+  
+  const seoSchema = project ? [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://sapxdesign.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects",
+          "item": "https://sapxdesign.com/#works"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": project.name,
+          "item": `https://sapxdesign.com/projects/${project.slug}`
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": project.name,
+      "description": project.description,
+      "image": project.cover_image,
+      "creator": {
+        "@type": "Organization",
+        "name": "Space and Product Studio"
+      }
+    }
+  ] : [];
+
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col">
+      <SEO title={seoTitle} description={seoDesc} schema={seoSchema} ogImage={project?.cover_image} />
       <Navbar showSplash={false} />
 
       {/* Hero Gallery Section */}
@@ -153,7 +197,10 @@ export default function ProjectDetail() {
           >
             <img
               src={displayImages[galleryIndex].image_url}
-              alt={displayImages[galleryIndex].caption || project.name}
+              alt={displayImages[galleryIndex].caption || `${project.name} - ${project.project_type} Case Study`}
+              width={1200}
+              height={800}
+              fetchPriority="high"
               className="w-full h-full object-cover"
             />
           </motion.div>
@@ -225,7 +272,14 @@ export default function ProjectDetail() {
                 idx === galleryIndex ? "border-[#FFFF00] scale-105" : "border-white/10 opacity-40 hover:opacity-100"
               }`}
             >
-              <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+              <img 
+                src={img.image_url} 
+                alt={`${project.name} thumbnail selection ${idx + 1}`} 
+                loading="lazy"
+                width={112}
+                height={64}
+                className="w-full h-full object-cover" 
+              />
             </button>
           ))}
         </div>
@@ -267,7 +321,9 @@ export default function ProjectDetail() {
 
               <img
                 src={displayImages[galleryIndex].image_url}
-                alt=""
+                alt={`${project.name} fullscreen view`}
+                width={1600}
+                height={1200}
                 className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
               />
 
@@ -410,7 +466,10 @@ export default function ProjectDetail() {
                 <div key={img.id} className="relative overflow-hidden rounded-3xl aspect-[4/3] group border border-white/5">
                   <img
                     src={img.image_url}
-                    alt={img.caption || project.name}
+                    alt={img.caption || `${project.name} media gallery item`}
+                    loading="lazy"
+                    width={800}
+                    height={600}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   {img.caption && (

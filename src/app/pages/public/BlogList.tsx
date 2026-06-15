@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { api } from "../../services/api";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
+import { SEO } from "../../components/SEO";
 
 interface BlogPost {
   id: string;
@@ -23,7 +24,6 @@ export default function BlogList() {
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
-    document.title = "Blog & Insights | Space and Product Studio";
     api.get<BlogPost[]>("/posts")
       .then((data) => {
         setPosts(data || []);
@@ -35,8 +35,30 @@ export default function BlogList() {
       });
   }, []);
 
+  const seoTitle = "Design Insights & Blog | Space and Product Studio";
+  const seoDesc = "Read essays and design reflections on spatial architecture, enterprise UX/UI design, design strategy, and product innovation by Space and Product Studio.";
+  const seoSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://sapxdesign.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://sapxdesign.com/blog"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col">
+      <SEO title={seoTitle} description={seoDesc} schema={seoSchema} />
       <Navbar showSplash={false} />
 
       {/* Header Banner */}
@@ -86,6 +108,9 @@ export default function BlogList() {
                   <img
                     src={post.cover_image || "https://images.unsplash.com/photo-1658232190602-be6cd5b976f1?q=80&w=1080"}
                     alt={post.title}
+                    loading="lazy"
+                    width={960}
+                    height={540}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-103"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-end p-6">
