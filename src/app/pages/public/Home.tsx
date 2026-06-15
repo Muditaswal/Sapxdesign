@@ -106,7 +106,7 @@ export default function Home() {
         "@type": "LocalBusiness",
         "name": "Space and Product Studio"
       },
-      "description": "Professional services across Architecture Design Studio, Interior Design Consultancy, Product Design Studio, UX Design Agency, UI UX Design Services, and Experience Design."
+      "description": "Professional services across Architecture Design Studio, Interior Design Consultancy, Product Design Studio, UX Design Agency, UI UX Design Services, and Immersive Design."
     };
   } else if (activeSection === "about") {
     seoTitle = "About Space and Product Studio | Human Centered Design & Innovation Consulting";

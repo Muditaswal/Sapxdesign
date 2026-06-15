@@ -32,7 +32,7 @@ export default function Portfolios() {
       case "brand-design":
       case "brand": return "Brand Design";
       case "experience-design":
-      case "experience": return "Experience Design";
+      case "experience": return "Immersive Design";
       case "architecture": return "Architecture";
       case "interior": return "Interior Design";
       case "research": return "Research";
@@ -49,7 +49,7 @@ export default function Portfolios() {
       case "brand-design":
       case "brand": return "Brand Design Portfolio";
       case "experience-design":
-      case "experience": return "Experience Design Portfolio";
+      case "experience": return "Immersive Design Portfolio";
       case "architecture": return "Architecture Portfolio";
       case "interior": return "Interior Design Portfolio";
       case "research": return "Research & Speculative Portfolio";

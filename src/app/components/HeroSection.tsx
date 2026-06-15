@@ -26,7 +26,7 @@ const WORKS_DEFAULT = [
   { 
     id: "experience", 
     src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1920&auto=format&fit=crop", 
-    title: "EXPERIENCE DESIGN", 
+    title: "IMMERSIVE DESIGN", 
     category: "Interaction & Experience" 
   },
 ];
@@ -61,8 +61,8 @@ const AUDIENCES_DEFAULT = [
   },
   {
     id: "experience",
-    title: "EXPERIENCE DESIGN",
-    heading: "EXPERIENCE\nDESIGN",
+    title: "IMMERSIVE DESIGN",
+    heading: "IMMERSIVE\nDESIGN",
     desc: "We design interactions between brands and people.",
     color: "#FFFFFF", // White
     textColor: "#0A0A0B",
@@ -166,7 +166,7 @@ function WorksSlideshow({ services }: ServiceProp) {
                   {activeSlide.category}
                 </span>
                 <h2 
-                  className="text-[clamp(32px,7vw,48px)] md:text-[clamp(48px,6.5vw,72px)] lg:text-[clamp(60px,8vw,100px)] leading-[0.9] tracking-[-0.03em] text-white font-black uppercase whitespace-pre-line break-words" 
+                  className="text-[clamp(32px,7vw,48px)] md:text-[clamp(48px,6.5vw,72px)] lg:text-[clamp(60px,8vw,100px)] leading-[0.9] tracking-[-0.03em] text-white font-black uppercase whitespace-pre-line break-normal" 
                   style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
                 >
                   {activeSlide.title}
@@ -337,7 +337,7 @@ function AudienceMatrix({ services }: ServiceProp) {
               {/* Bottom */}
               <div className="flex flex-col justify-end h-full">
                 <h3
-                  className={`leading-[0.9] tracking-[-0.02em] whitespace-pre-line break-words transition-all duration-500 uppercase ${
+                  className={`leading-[0.9] tracking-[-0.02em] whitespace-pre-line break-normal transition-all duration-500 uppercase ${
                     isMuted 
                       ? "text-[11px] md:text-[12px] lg:text-[14px]" 
                       : isActive 

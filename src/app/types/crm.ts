@@ -48,7 +48,7 @@ export interface Project {
   client_id?: string;
   name: string;
   slug: string;
-  project_type: 'Space Design' | 'Product Design' | 'Brand Design' | 'Experience Design' | 'Architecture' | 'Interior Design' | 'Branding' | 'Research' | 'UI/UX Design';
+  project_type: 'Space Design' | 'Product Design' | 'Brand Design' | 'Immersive Design' | 'Architecture' | 'Interior Design' | 'Branding' | 'Research' | 'UI/UX Design';
   description?: string;
   status: 'Inquiry' | 'Proposal' | 'Design' | 'Execution' | 'Completed';
   budget?: string;

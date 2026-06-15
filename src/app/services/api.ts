@@ -91,7 +91,7 @@ const seedMockDB = () => {
     { 
       id: "experience", 
       number: "04", 
-      title: "Experience Design", 
+      title: "Immersive Design", 
       short_desc: "We design interactions between brands and people.", 
       full_desc: "We design interactions between brands and people — activations, launches, installations, service journeys, and immersive AI-powered experiences that transform attention into participation.", 
       capabilities: [

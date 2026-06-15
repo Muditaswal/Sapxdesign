@@ -52,7 +52,7 @@ export function ImageStrip() {
         >
           {/* The bold statement */}
           <h2
-            className="text-[clamp(48px,13vw,200px)] leading-[0.85] tracking-[-0.05em] text-white"
+            className="text-[clamp(44px,10vw,150px)] leading-[0.9] tracking-[-0.05em] text-white"
             style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 800 }}
           >
             From Spaces

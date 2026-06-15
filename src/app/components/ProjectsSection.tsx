@@ -125,7 +125,7 @@ function ProjectCardSlideshow({
   );
 }
 
-const categories = ["All", "Space Design", "Product Design", "Brand Design", "Experience Design"];
+const categories = ["All", "Space Design", "Product Design", "Brand Design", "Immersive Design"];
 
 export function ProjectsSection() {
   const [dbProjects, setDbProjects] = useState<Project[]>([]);

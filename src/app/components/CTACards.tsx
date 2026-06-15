@@ -5,7 +5,7 @@ import { ScrollReveal } from "./ScrollReveal";
 export function CTACards() {
   return (
     <ScrollReveal delay={0.35}>
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div className="mt-8 flex flex-col gap-4 max-w-[480px]">
         <motion.a
           href="/Resume.pdf"
           download

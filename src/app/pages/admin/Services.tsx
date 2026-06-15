@@ -38,7 +38,7 @@ const STANDARD_CAPABILITIES = [
   "Campaign Design",
   "Motion Graphics",
   "Content Design",
-  // Experience Design
+  // Immersive Design
   "Brand Activations",
   "Experiential Marketing",
   "Event Design",

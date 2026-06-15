@@ -151,7 +151,7 @@ export function Footer() {
                   className="text-[15px] text-white/50 text-center lg:text-left"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  📍 New Delhi , INDIA
+                  New Delhi , INDIA
                 </p>
                 <div className="flex justify-center lg:justify-start">
                   <motion.a

@@ -82,7 +82,7 @@ const fallbackServices: Service[] = [
   {
     id: "experience",
     number: "04",
-    title: "Experience Design",
+    title: "Immersive Design",
     shortDesc: "Designing interactions between brands and people.",
     fullDesc:
       "We design interactions between brands and people — activations, launches, installations, service journeys, and immersive AI-powered experiences that transform attention into participation.",

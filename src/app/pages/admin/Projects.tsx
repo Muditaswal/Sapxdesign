@@ -817,7 +817,7 @@ export default function Projects() {
                     <option value="Space Design">Space Design</option>
                     <option value="Product Design">Product Design</option>
                     <option value="Brand Design">Brand Design</option>
-                    <option value="Experience Design">Experience Design</option>
+                    <option value="Immersive Design">Immersive Design</option>
                     <option value="Architecture">Architecture</option>
                     <option value="Interior Design">Interior Design</option>
                     <option value="Branding">Branding</option>
@@ -914,7 +914,7 @@ export default function Projects() {
                     <option value="Space Design">Space Design</option>
                     <option value="Product Design">Product Design</option>
                     <option value="Brand Design">Brand Design</option>
-                    <option value="Experience Design">Experience Design</option>
+                    <option value="Immersive Design">Immersive Design</option>
                     <option value="Architecture">Architecture</option>
                     <option value="Interior Design">Interior Design</option>
                     <option value="Branding">Branding</option>

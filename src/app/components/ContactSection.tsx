@@ -73,31 +73,75 @@ export function ContactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
           {/* Left column (Yellow Card) */}
           <div className="lg:col-span-5 lg:pr-0 pb-10 lg:pb-0">
-            <div className="bg-[#FFFF00] p-10 md:p-16 h-full rounded-[40px] flex flex-col justify-center items-center text-center text-[#0A0A0B] space-y-16">
-              <ScrollReveal>
-                <div className="flex flex-col items-center">
-                  <span className="text-[40px] md:text-[48px] mb-3 select-none" role="img" aria-label="Location">📍</span>
-                  <p
-                    className="text-[18px] md:text-[21px] tracking-[0.05em] text-[#0A0A0B] font-semibold"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
-                  >
-                    New Delhi, India
-                  </p>
-                </div>
-              </ScrollReveal>
+            <div className="bg-[#FFFF00] p-10 md:p-14 h-full rounded-[40px] flex flex-col justify-between text-[#0A0A0B]">
+              <div>
+                {/* Header */}
+                <ScrollReveal>
+                  <div className="flex items-center gap-3 mb-10">
+                    <div className="w-8 h-[3px] bg-[#0A0A0B]" />
+                    <p
+                      className="uppercase tracking-[0.3em] text-[#0A0A0B]/50 text-[12px]"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                    >
+                      Get in Touch
+                    </p>
+                  </div>
+                </ScrollReveal>
 
-              <ScrollReveal delay={0.2}>
-                <div className="flex flex-col items-center">
-                  <span className="text-[40px] md:text-[48px] mb-3 select-none" role="img" aria-label="Email">✉️</span>
-                  <a
-                    href="mailto:hello@spaceandproductstudio.com"
-                    aria-label="Email"
-                    title="Send Email"
-                    className="text-[15px] md:text-[18px] text-[#0A0A0B] hover:text-[#EC0606] transition-colors duration-300 font-bold underline decoration-1 underline-offset-4 break-all"
+                {/* Main Heading */}
+                <ScrollReveal delay={0.1}>
+                  <h2
+                    className="text-[clamp(36px,4.5vw,56px)] leading-[1.1] tracking-[-0.02em] mb-6 text-[#0A0A0B] uppercase font-bold"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
-                    hello@spaceandproductstudio.com
-                  </a>
+                    TELL US WHAT
+                    <br />
+                    <span className="italic" style={{ fontWeight: 300 }}>YOU'RE BUILDING.</span>
+                  </h2>
+                </ScrollReveal>
+
+                {/* Quote */}
+                <ScrollReveal delay={0.15}>
+                  <p
+                    className="text-[18px] md:text-[22px] text-[#0A0A0B]/70 italic mb-6 leading-relaxed"
+                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 300 }}
+                  >
+                    Every transformation begins with a conversation.
+                  </p>
+                </ScrollReveal>
+
+                {/* Body Copy */}
+                <ScrollReveal delay={0.2}>
+                  <p
+                    className="text-[14px] md:text-[15px] leading-[1.7] text-[#0A0A0B]/70 max-w-[450px] mb-12 font-medium"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    Whether you're launching a product, redefining a brand, designing a space, or reimagining an experience, we'd love to hear what you're building.
+                  </p>
+                </ScrollReveal>
+              </div>
+
+              {/* Contact Information & Location */}
+              <ScrollReveal delay={0.3}>
+                <div className="space-y-4 pt-6 border-t border-[#0A0A0B]/10">
+                  <div className="flex flex-col gap-3">
+                    <a
+                      href="mailto:spaceandproductstudio@gmail.com"
+                      aria-label="Email"
+                      title="Send Email"
+                      className="text-[14px] md:text-[15px] text-[#0A0A0B] hover:text-[#EC0606] transition-colors duration-300 font-bold break-all"
+                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    >
+                      spaceandproductstudio@gmail.com
+                    </a>
+
+                    <div
+                      className="text-[14px] md:text-[15px] text-[#0A0A0B]/55 font-medium"
+                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    >
+                      New Delhi, India
+                    </div>
+                  </div>
                 </div>
               </ScrollReveal>
             </div>
