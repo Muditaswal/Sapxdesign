@@ -2,6 +2,7 @@ import { Hono } from "npm:hono";
 import { cors } from "npm:hono/cors";
 import { logger } from "npm:hono/logger";
 import { createClient } from "npm:@supabase/supabase-js";
+import { get as kvGet, set as kvSet } from "./kv_store.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SERVICE_KEY  = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -245,6 +246,12 @@ CREATE TABLE IF NOT EXISTS testimonials (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 19. Create KV Store table
+CREATE TABLE IF NOT EXISTS kv_store_f1100bc4 (
+  key TEXT NOT NULL PRIMARY KEY,
+  value JSONB NOT NULL
+);
+
 -- Enable Row Level Security (RLS)
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
@@ -263,8 +270,12 @@ ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE post_tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE kv_store_f1100bc4 ENABLE ROW LEVEL SECURITY;
 
 -- Allow public reads
+DROP POLICY IF EXISTS "Allow public read to kv_store" ON kv_store_f1100bc4;
+CREATE POLICY "Allow public read to kv_store" ON kv_store_f1100bc4 FOR SELECT USING (true);
+
 DROP POLICY IF EXISTS "Allow public read projects" ON projects;
 CREATE POLICY "Allow public read projects" ON projects FOR SELECT USING (published = true);
 
@@ -642,6 +653,22 @@ app.get(`${P}/tags`, async (c) => {
   return c.json(data ?? []);
 });
 
+// ─── SETTINGS (PUBLIC) ────────────────────────────────────────────────────────
+app.get(`${P}/settings/social`, async (c) => {
+  try {
+    const socialLinks = await kvGet("social_links") || {
+      instagram: "",
+      linkedin: "",
+      facebook: "",
+      pinterest: ""
+    };
+    return c.json(socialLinks);
+  } catch (err) {
+    console.error("Failed to read social settings:", err);
+    return c.json({ instagram: "", linkedin: "", facebook: "", pinterest: "" });
+  }
+});
+
 // ─── CONTACT FORM SUBMISSIONS ────────────────────────────────────────────────
 app.post(`${P}/messages`, async (c) => {
   try {
@@ -661,6 +688,38 @@ app.post(`${P}/messages`, async (c) => {
 
 // ─── PROTECTED ADMIN ENDPOINTS ────────────────────────────────────────────────
 app.use(`${P}/admin/*`, adminAuth);
+
+// ─── ADMIN SOCIAL LINKS SETTINGS ─────────────────────────────────────────────
+app.get(`${P}/admin/settings/social`, async (c) => {
+  try {
+    const socialLinks = await kvGet("social_links") || {
+      instagram: "",
+      linkedin: "",
+      facebook: "",
+      pinterest: ""
+    };
+    return c.json(socialLinks);
+  } catch (err) {
+    return c.json({ error: err.message }, 500);
+  }
+});
+
+app.post(`${P}/admin/settings/social`, async (c) => {
+  try {
+    const body = await c.req.json();
+    const { instagram, linkedin, facebook, pinterest } = body;
+    const links = {
+      instagram: instagram || "",
+      linkedin: linkedin || "",
+      facebook: facebook || "",
+      pinterest: pinterest || ""
+    };
+    await kvSet("social_links", links);
+    return c.json({ success: true, socialLinks: links });
+  } catch (err) {
+    return c.json({ error: err.message }, 500);
+  }
+});
 
 // ─── ANALYTICS ───────────────────────────────────────────────────────────────
 app.get(`${P}/admin/dashboard-stats`, async (c) => {

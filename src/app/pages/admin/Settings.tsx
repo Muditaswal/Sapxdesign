@@ -1,10 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings as SettingsIcon, Database, ShieldAlert, Sparkles, RefreshCw } from "lucide-react";
 import { api } from "../../services/api";
 
 export default function Settings() {
   const [initLoading, setInitLoading] = useState(false);
   const [seedLoading, setSeedLoading] = useState(false);
+
+  const [socials, setSocials] = useState({
+    instagram: "",
+    linkedin: "",
+    facebook: "",
+    pinterest: "",
+  });
+  const [socialLoading, setSocialLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  useEffect(() => {
+    setSocialLoading(true);
+    api.get<any>("/admin/settings/social")
+      .then((data) => {
+        if (data) {
+          setSocials({
+            instagram: data.instagram || "",
+            linkedin: data.linkedin || "",
+            facebook: data.facebook || "",
+            pinterest: data.pinterest || "",
+          });
+        }
+        setSocialLoading(false);
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch social links:", err);
+        setSocialLoading(false);
+      });
+  }, []);
+
+  const handleSaveSocials = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaveLoading(true);
+    api.post<any>("/admin/settings/social", socials)
+      .then((res) => {
+        setSaveLoading(false);
+        alert("Social media links updated successfully!");
+      })
+      .catch((err) => {
+        setSaveLoading(false);
+        alert(`Failed to save social links: ${err.message || err}`);
+      });
+  };
 
   const handleInitDB = () => {
     if (!confirm("Re-run database initialization schema? This will attempt to create all required tables, RLS policies, and indexes if they do not exist.")) return;
@@ -44,6 +87,86 @@ export default function Settings() {
         <p className="text-white/40 text-sm mt-1">Configure platform options, initialize schemas, and seed demo records.</p>
       </div>
 
+      {/* Social Media Links CMS Section */}
+      <div className="bg-[#141416] p-8 rounded-[30px] border border-white/5 space-y-6">
+        <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2" style={{ fontFamily: "'Syne', sans-serif" }}>
+          <SettingsIcon className="w-4 h-4 text-[#FFFF00]" /> Social Media links (CMS)
+        </h3>
+        <p className="text-xs text-white/50 leading-relaxed max-w-[600px]">
+          Configure social media URLs displayed in the public footer. Leave empty to automatically hide the respective icon.
+        </p>
+
+        {socialLoading ? (
+          <div className="flex py-10 justify-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#FFFF00] border-t-transparent"></div>
+          </div>
+        ) : (
+          <form onSubmit={handleSaveSocials} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Instagram URL</label>
+                <input
+                  type="url"
+                  placeholder="https://instagram.com/yourprofile"
+                  value={socials.instagram}
+                  onChange={(e) => setSocials({ ...socials, instagram: e.target.value })}
+                  className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-[#FFFF00] focus:outline-none"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">LinkedIn URL</label>
+                <input
+                  type="url"
+                  placeholder="https://linkedin.com/company/yourprofile"
+                  value={socials.linkedin}
+                  onChange={(e) => setSocials({ ...socials, linkedin: e.target.value })}
+                  className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-[#FFFF00] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Facebook URL</label>
+                <input
+                  type="url"
+                  placeholder="https://facebook.com/yourprofile"
+                  value={socials.facebook}
+                  onChange={(e) => setSocials({ ...socials, facebook: e.target.value })}
+                  className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-[#FFFF00] focus:outline-none"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Pinterest URL</label>
+                <input
+                  type="url"
+                  placeholder="https://pinterest.com/yourprofile"
+                  value={socials.pinterest}
+                  onChange={(e) => setSocials({ ...socials, pinterest: e.target.value })}
+                  className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-[#FFFF00] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={saveLoading}
+                className="px-5 py-2.5 bg-[#FFFF00] text-[#0A0A0B] font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-white transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 animate-all duration-300"
+              >
+                {saveLoading ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  "Save Social Links"
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+
       {/* Database utilities card */}
       <div className="bg-[#141416] p-8 rounded-[30px] border border-white/5 space-y-6">
         <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2" style={{ fontFamily: "'Syne', sans-serif" }}>
@@ -58,7 +181,7 @@ export default function Settings() {
           <div className="bg-[#0A0A0B]/40 p-5 rounded-2xl border border-white/5 space-y-4 flex flex-col justify-between">
             <div className="space-y-1.5">
               <h4 className="font-bold text-sm text-white/95 flex items-center gap-1.5"><ShieldAlert className="w-4 h-4 text-[#EC0606]" /> Run Init DDL</h4>
-              <p className="text-[10px] text-white/40 leading-relaxed">Creates user_roles, leads, clients, projects, meetings, payments, messages, documents, and blog posts tables.</p>
+              <p className="text-[10px] text-white/40 leading-relaxed">Creates user_roles, leads, clients, projects, meetings, payments, messages, documents, kv_store, and blog posts tables.</p>
             </div>
             <button
               onClick={handleInitDB}

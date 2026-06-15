@@ -309,3 +309,17 @@ CREATE POLICY "Admin write to services" ON services FOR ALL USING (
 CREATE POLICY "Admin write to testimonials" ON testimonials FOR ALL USING (
   EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
 );
+
+-- 19. Create KV Store table
+CREATE TABLE IF NOT EXISTS kv_store_f1100bc4 (
+  key TEXT NOT NULL PRIMARY KEY,
+  value JSONB NOT NULL
+);
+ALTER TABLE kv_store_f1100bc4 ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read to kv_store" ON kv_store_f1100bc4;
+CREATE POLICY "Allow public read to kv_store" ON kv_store_f1100bc4 FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Admin write to kv_store" ON kv_store_f1100bc4;
+CREATE POLICY "Admin write to kv_store" ON kv_store_f1100bc4 FOR ALL USING (
+  EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
+
