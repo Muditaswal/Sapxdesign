@@ -181,7 +181,7 @@ export default function ProjectDetail() {
 
       {/* Hero Gallery Section */}
       <div 
-        className="relative w-full h-[60vh] md:h-[75vh] overflow-hidden rounded-b-[40px] bg-black select-none"
+        className="relative w-full h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[70vh] xl:h-[75vh] overflow-hidden rounded-b-[40px] bg-black select-none"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -250,7 +250,7 @@ export default function ProjectDetail() {
           <span className="inline-block px-3 py-1 bg-[#FFFF00] text-[#0A0A0B] uppercase tracking-widest font-extrabold text-[10px] mb-3">
             {project.project_type}
           </span>
-          <h1 className="text-[36px] md:text-[64px] font-extrabold uppercase leading-none tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
+          <h1 className="text-[28px] sm:text-[40px] md:text-[48px] lg:text-[64px] font-extrabold uppercase leading-none tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
             {project.name}
           </h1>
           {displayImages[galleryIndex]?.caption && (
@@ -313,7 +313,7 @@ export default function ProjectDetail() {
               {displayImages.length > 1 && (
                 <button
                   onClick={handlePrev}
-                  className="absolute left-2 md:left-6 p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors cursor-pointer z-10"
+                  className="absolute left-2 md:left-6 p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors cursor-pointer z-10 hidden md:block"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
@@ -330,7 +330,7 @@ export default function ProjectDetail() {
               {displayImages.length > 1 && (
                 <button
                   onClick={handleNext}
-                  className="absolute right-2 md:right-6 p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors cursor-pointer z-10"
+                  className="absolute right-2 md:right-6 p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors cursor-pointer z-10 hidden md:block"
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
@@ -347,7 +347,7 @@ export default function ProjectDetail() {
 
       {/* Meta Specifications Bar */}
       <div className="border-b border-white/10 bg-[#141416]/30 py-6 px-6 md:px-12">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm">
           {project.location && (
             <div className="flex items-center gap-3">
               <MapPin className="w-5 h-5 text-[#EC0606]" />
@@ -461,7 +461,7 @@ export default function ProjectDetail() {
             <h3 className="text-xs uppercase tracking-[0.3em] text-[#EC0606] mb-10 font-bold text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Project Media Gallery
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
               {galleryImages.map((img) => (
                 <div key={img.id} className="relative overflow-hidden rounded-3xl aspect-[4/3] group border border-white/5">
                   <img

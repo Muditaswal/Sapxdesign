@@ -266,7 +266,7 @@ export default function Clients() {
               </div>
 
               {/* Contact specs */}
-              <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
                   <p className="text-white/30 uppercase tracking-wider">Email Address</p>
                   <p className="font-semibold text-white/80 mt-0.5">{selectedClient.email}</p>
@@ -275,7 +275,7 @@ export default function Clients() {
                   <p className="text-white/30 uppercase tracking-wider">Phone</p>
                   <p className="font-semibold text-white/80 mt-0.5">{selectedClient.phone || "N/A"}</p>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 sm:col-span-2">
                   <p className="text-white/30 uppercase tracking-wider">Office / Billing Address</p>
                   <p className="font-semibold text-white/80 mt-0.5">{selectedClient.address || "N/A"}</p>
                 </div>
@@ -344,7 +344,7 @@ export default function Clients() {
           <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-lg p-8 space-y-6 relative">
             <h3 className="text-xl font-bold uppercase tracking-wide" style={{ fontFamily: "'Syne', sans-serif" }}>Register Client</h3>
             <form onSubmit={handleCreate} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Client Name</label>
                   <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
@@ -354,7 +354,7 @@ export default function Clients() {
                   <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Phone</label>
                   <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
@@ -387,7 +387,7 @@ export default function Clients() {
           <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-lg p-8 space-y-6 relative">
             <h3 className="text-xl font-bold uppercase tracking-wide" style={{ fontFamily: "'Syne', sans-serif" }}>Modify Client Info</h3>
             <form onSubmit={handleEditSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Client Name</label>
                   <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
@@ -397,7 +397,7 @@ export default function Clients() {
                   <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Phone</label>
                   <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />

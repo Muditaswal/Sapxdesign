@@ -299,6 +299,10 @@ CREATE POLICY "Allow public create messages" ON messages FOR INSERT WITH CHECK (
 ALTER TABLE project_images ADD COLUMN IF NOT EXISTS image_order INTEGER DEFAULT 0;
 ALTER TABLE project_images ADD COLUMN IF NOT EXISTS is_cover BOOLEAN DEFAULT FALSE;
 ALTER TABLE project_images ADD COLUMN IF NOT EXISTS is_featured_homepage BOOLEAN DEFAULT FALSE;
+
+-- Upgrade migrations for existing services tables
+ALTER TABLE services ADD COLUMN IF NOT EXISTS show_in_slideshow BOOLEAN DEFAULT TRUE;
+ALTER TABLE services ADD COLUMN IF NOT EXISTS show_in_matrix BOOLEAN DEFAULT TRUE;
 `.trim();
 
 const app = new Hono();
@@ -367,6 +371,9 @@ app.get(`${P}/init`, async (c) => {
       idle_timeout: 20,
       connect_timeout: 15,
     });
+
+    // Drop all existing tables to refresh constraints and schemas
+    await sql.unsafe("DROP TABLE IF EXISTS services, testimonials, categories, tags, posts, post_tags, leads, clients, projects, project_sections, project_images, client_notes, project_notes, meetings, messages, documents, payments, user_roles CASCADE;");
 
     // Run SCHEMA_SQL commands
     // Split on double newlines or table boundary blocks to execute chunks
@@ -487,7 +494,8 @@ app.post(`${P}/seed`, async (c) => {
       }
     ];
     for (const service of defaultServices) {
-      await supabase.from("services").upsert(service, { onConflict: "id" });
+      const { error } = await supabase.from("services").upsert(service, { onConflict: "id" });
+      if (error) throw new Error(`Services seed failed: ${error.message}`);
     }
 
     // 2. Seed default testimonials
@@ -496,7 +504,8 @@ app.post(`${P}/seed`, async (c) => {
       { quote: "Their ability to translate brand identity into physical and digital space is unmatched. The showroom they designed for us became our most powerful sales tool.", author: "Marcus Chen", role: "CEO", org: "Lumina Furniture Co." },
       { quote: "Working with SAP × Design felt like a true collaboration. They challenged our assumptions, listened deeply, and delivered something far beyond what we imagined.", author: "Amira Okafor", role: "Founder", org: "Noire Studio" }
     ];
-    await supabase.from("testimonials").upsert(defaultTestimonials);
+    const { error: testimonialErr } = await supabase.from("testimonials").upsert(defaultTestimonials);
+    if (testimonialErr) throw new Error(`Testimonials seed failed: ${testimonialErr.message}`);
 
     // 3. Seed blog categories & tags
     const cats = [
@@ -505,7 +514,8 @@ app.post(`${P}/seed`, async (c) => {
       { name: "Product Design", slug: "product-design" },
       { name: "Research & Development", slug: "research-and-development" }
     ];
-    await supabase.from("categories").upsert(cats, { onConflict: "slug" });
+    const { error: catErr } = await supabase.from("categories").upsert(cats, { onConflict: "slug" });
+    if (catErr) throw new Error(`Categories seed failed: ${catErr.message}`);
 
     const tags = [
       { name: "Minimalism", slug: "minimalism" },
@@ -513,7 +523,8 @@ app.post(`${P}/seed`, async (c) => {
       { name: "Premium Materials", slug: "premium-materials" },
       { name: "Studio Life", slug: "studio-life" }
     ];
-    await supabase.from("tags").upsert(tags, { onConflict: "slug" });
+    const { error: tagErr } = await supabase.from("tags").upsert(tags, { onConflict: "slug" });
+    if (tagErr) throw new Error(`Tags seed failed: ${tagErr.message}`);
 
     // 4. Seed default project
     const defaultProject = {
@@ -529,19 +540,28 @@ app.post(`${P}/seed`, async (c) => {
       published: true,
       year: 2024
     };
-    const { data: proj } = await supabase.from("projects").upsert(defaultProject, { onConflict: "slug" }).select().single();
+    const { data: proj, error: projErr } = await supabase.from("projects").upsert(defaultProject, { onConflict: "slug" }).select().single();
+    if (projErr) throw new Error(`Projects seed failed: ${projErr.message}`);
+    
     if (proj) {
-      await supabase.from("project_sections").delete().eq("project_id", proj.id);
-      await supabase.from("project_sections").insert([
+      const { error: delSecErr } = await supabase.from("project_sections").delete().eq("project_id", proj.id);
+      if (delSecErr) throw new Error(`Sections delete failed: ${delSecErr.message}`);
+      
+      const { error: insSecErr } = await supabase.from("project_sections").insert([
         { project_id: proj.id, section_type: "hero", title: "Overview", content: "A lakeside residence that merges concrete minimalism with the natural landscape. The building emerges from the terrain as if carved by water and wind, creating a dialogue between built form and environment.", display_order: 0 },
         { project_id: proj.id, section_type: "role", title: "Our Role", content: "Architecture, Landscape Integration, Interior Concept", display_order: 1 },
         { project_id: proj.id, section_type: "process", title: "Process", content: "Beginning with extensive site analysis, we mapped seasonal light patterns and water levels over 18 months. The resulting form responds to these natural rhythms, with living spaces oriented toward winter sun and bedrooms sheltered from summer heat.", display_order: 2 },
         { project_id: proj.id, section_type: "outcome", title: "Outcome", content: "A 320m² residence that achieved passive house certification while maintaining an uncompromising architectural vision. Featured in Dezeen and nominated for the EU Mies Award.", display_order: 3 }
       ]);
-      await supabase.from("project_images").delete().eq("project_id", proj.id);
-      await supabase.from("project_images").insert([
+      if (insSecErr) throw new Error(`Sections insert failed: ${insSecErr.message}`);
+      
+      const { error: delImgErr } = await supabase.from("project_images").delete().eq("project_id", proj.id);
+      if (delImgErr) throw new Error(`Images delete failed: ${delImgErr.message}`);
+      
+      const { error: insImgErr } = await supabase.from("project_images").insert([
         { project_id: proj.id, image_url: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", image_type: "hero", sort_order: 0 }
       ]);
+      if (insImgErr) throw new Error(`Images insert failed: ${insImgErr.message}`);
     }
 
     return c.json({ success: true, message: "Default services, testimonials, categories, tags, and projects seeded successfully." });
@@ -1500,4 +1520,23 @@ app.delete(`${P}/admin/testimonials/:id`, async (c) => {
   return c.json({ success: true });
 });
 
-Deno.serve(app.fetch);
+Deno.serve((req) => {
+  const url = new URL(req.url);
+  let path = url.pathname;
+
+  // 1. Strip the Supabase Edge Function path prefix if present
+  if (path.startsWith("/functions/v1/server")) {
+    path = path.slice("/functions/v1/server".length);
+  } else if (path.startsWith("/server")) {
+    path = path.slice("/server".length);
+  }
+
+  // 2. Ensure it starts with the Hono routing token prefix `/make-server-f1100bc4`
+  const token = "/make-server-f1100bc4";
+  if (!path.startsWith(token)) {
+    path = token + (path.startsWith("/") ? path : "/" + path);
+  }
+
+  url.pathname = path;
+  return app.fetch(new Request(url.toString(), req));
+});

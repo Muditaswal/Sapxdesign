@@ -199,7 +199,7 @@ export default function Meetings() {
           <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-lg p-8 space-y-6 relative max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold uppercase tracking-wide" style={{ fontFamily: "'Syne', sans-serif" }}>Schedule Consultation</h3>
             <form onSubmit={handleCreate} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Select Client</label>
                   <select required value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">

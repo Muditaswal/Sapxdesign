@@ -84,7 +84,7 @@ export function TestimonialsSection() {
 
         <div className="max-w-[900px] mx-auto text-center relative">
           {/* Testimonial content */}
-          <div className="relative min-h-[220px] md:min-h-[160px] flex items-center justify-center">
+          <div className="relative min-h-[300px] sm:min-h-[200px] md:min-h-[160px] flex items-center justify-center">
             <AnimatePresence mode="wait">
               {current && (
                 <motion.div

@@ -205,7 +205,7 @@ export default function Payments() {
                   {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Transaction Type</label>
                   <select value={paymentType} onChange={(e) => setPaymentType(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">

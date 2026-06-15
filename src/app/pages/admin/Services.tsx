@@ -277,7 +277,7 @@ export default function Services() {
             </h3>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Unique ID Slug</label>
                   <input type="text" required disabled={!!selectedService} value={id} onChange={(e) => setId(e.target.value)} placeholder="e.g. space-design" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white disabled:opacity-50" />
@@ -362,7 +362,7 @@ export default function Services() {
               </div>
 
               {/* Visibility Settings */}
-              <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-white/5 pt-4">
                 <label className="flex items-center gap-2.5 text-xs text-white/70 hover:text-white cursor-pointer select-none">
                   <input
                     type="checkbox"

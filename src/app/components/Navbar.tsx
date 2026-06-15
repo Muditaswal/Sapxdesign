@@ -121,7 +121,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
         }}
         transition={{ duration: 0.8, delay: 0.2 }}
         style={{ pointerEvents: showSplash ? "none" : "auto" }}
-        className="hidden md:flex flex-row items-center justify-between fixed top-6 left-1/2 -translate-x-1/2 w-[90vw] max-w-[1200px] h-[72px] rounded-[36px] z-[101] px-8 border"
+        className="hidden lg:flex flex-row items-center justify-between fixed top-6 left-1/2 -translate-x-1/2 w-[90vw] max-w-[1200px] h-[72px] rounded-[36px] z-[101] px-8 border"
       >
         
         {/* Left: Logo */}
@@ -223,7 +223,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
         }}
         transition={{ duration: 0.8, delay: 0.2 }}
         style={{ pointerEvents: showSplash ? "none" : "auto" }}
-        className="md:hidden fixed top-4 left-4 right-4 h-[60px] rounded-[24px] z-[101] flex items-center justify-between px-5 border"
+        className="lg:hidden fixed top-4 left-4 right-4 h-[60px] rounded-[24px] z-[101] flex items-center justify-between px-5 border"
       >
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

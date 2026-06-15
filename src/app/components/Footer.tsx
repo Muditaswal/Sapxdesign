@@ -18,9 +18,9 @@ export function Footer() {
         <div className="h-[2px] bg-[#EC0606]" />
       </div>
       <div className="max-w-[1400px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-12">
           {/* Brand */}
-          <div className="md:col-span-4">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-4">
             <ScrollReveal>
               <div className="flex items-center gap-4 mb-6">
                 <img
@@ -76,7 +76,7 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="md:col-span-3 md:col-start-6">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 lg:col-start-6">
             <ScrollReveal delay={0.1}>
               <p
                 className="text-[13px] uppercase tracking-[0.2em] text-white/30 mb-5"
@@ -117,7 +117,7 @@ export function Footer() {
           </div>
 
           {/* Social */}
-          <div className="md:col-span-3 md:col-start-10">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 lg:col-start-10">
             <ScrollReveal delay={0.2}>
               <p
                 className="text-[13px] uppercase tracking-[0.2em] text-white/30 mb-5"

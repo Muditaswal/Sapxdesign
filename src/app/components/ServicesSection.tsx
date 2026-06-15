@@ -184,7 +184,7 @@ export function ServicesSection() {
               </button>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-12 md:gap-24">
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
               <div className="flex-1">
                 <ScrollReveal delay={0.1}>
                   <h3
@@ -229,7 +229,7 @@ export function ServicesSection() {
                 </ScrollReveal>
               </div>
 
-              <div className="w-full md:w-[500px] shrink-0">
+              <div className="w-full lg:w-[500px] shrink-0">
                 <ScrollReveal delay={0.2}>
                   <div className="aspect-[4/3] w-full bg-[#0A0A0B] overflow-hidden border border-white/5 rounded-3xl">
                     <img 

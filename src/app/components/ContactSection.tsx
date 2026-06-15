@@ -70,9 +70,9 @@ export function ContactSection() {
   return (
     <section id="contact" className="py-20 md:py-28 px-6 md:px-12 relative overflow-hidden bg-[#0A0A0B]">
       <div className="max-w-[1400px] mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
           {/* Left column (Yellow Card) */}
-          <div className="md:col-span-5 md:pr-0 pb-10 md:pb-0">
+          <div className="lg:col-span-5 lg:pr-0 pb-10 lg:pb-0">
             <div className="bg-[#FFFF00] p-10 md:p-14 h-full rounded-[40px]">
               <ScrollReveal>
                 <div className="flex items-center gap-3 mb-10">
@@ -159,7 +159,7 @@ export function ContactSection() {
           </div>
 
           {/* Right column — form (Black Background Side) */}
-          <div className="md:col-span-6 md:col-start-7 md:pl-8">
+          <div className="lg:col-span-6 lg:col-start-7 lg:pl-8">
             <ScrollReveal delay={0.2}>
               <AnimatePresence mode="wait">
                 {submitted ? (

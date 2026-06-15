@@ -18,9 +18,9 @@ export function AboutSection() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Left column — large statement with typographic tension */}
-          <div className="md:col-span-7">
+          <div className="lg:col-span-7">
             <ScrollReveal delay={0.1}>
               <p
                 className="text-[clamp(18px,2.2vw,26px)] tracking-[-0.01em] text-[#0A0A0B]/60 mb-4"
@@ -57,7 +57,7 @@ export function AboutSection() {
           </div>
 
           {/* Right column — body text */}
-          <div className="md:col-span-4 md:col-start-9">
+          <div className="lg:col-span-4 lg:col-start-9">
             <ScrollReveal delay={0.25}>
               <p
                 className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-8"

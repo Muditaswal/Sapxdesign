@@ -114,7 +114,7 @@ function WorksSlideshow({ services }: ServiceProp) {
   if (!activeSlide) return null;
 
   return (
-    <section className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-screen bg-[#0A0A0B] overflow-hidden group border-b border-white/10">
+    <section className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-[550px] lg:min-h-screen bg-[#0A0A0B] overflow-hidden group border-b border-white/10">
       {/* Background Images with Crossfade */}
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.div
@@ -252,7 +252,7 @@ function AudienceMatrix({ services }: ServiceProp) {
   };
 
   return (
-    <section id="services" className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-screen flex flex-col md:flex-row bg-[#0A0A0B] overflow-hidden gap-2 p-2">
+    <section id="services" className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-[600px] lg:min-h-screen flex flex-col lg:flex-row bg-[#0A0A0B] overflow-hidden gap-2 p-2">
       {audiencesList.map((aud) => {
         const isActive = activeId === aud.id;
         const isMuted = activeId !== null && activeId !== aud.id;
@@ -269,7 +269,7 @@ function AudienceMatrix({ services }: ServiceProp) {
               flex: flexValue,
             }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex flex-col justify-between min-h-[180px] md:min-h-0 p-6 md:p-6 lg:p-8 xl:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
+            className="relative flex flex-col justify-between min-h-[150px] lg:min-h-0 p-6 lg:p-8 xl:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
             style={{
               backgroundColor: isActive ? aud.color : "#0A0A0B",
               color: isActive ? aud.textColor : "#FFFFFF",

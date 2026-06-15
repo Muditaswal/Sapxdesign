@@ -224,7 +224,7 @@ export function ProjectsSection() {
                     project.span === "tall"
                       ? "aspect-[3/3.5]"
                       : project.span === "wide"
-                      ? "aspect-[16/7]"
+                      ? "aspect-[4/3] md:aspect-[16/7]"
                       : "aspect-[4/3]"
                   }`}
                 >
