@@ -73,85 +73,30 @@ export function ContactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
           {/* Left column (Yellow Card) */}
           <div className="lg:col-span-5 lg:pr-0 pb-10 lg:pb-0">
-            <div className="bg-[#FFFF00] p-10 md:p-14 h-full rounded-[40px]">
+            <div className="bg-[#FFFF00] p-10 md:p-16 h-full rounded-[40px] flex flex-col justify-center items-center text-center text-[#0A0A0B] space-y-16">
               <ScrollReveal>
-                <div className="flex items-center gap-3 mb-10">
-                  <div className="w-8 h-[3px] bg-[#0A0A0B]" />
+                <div className="flex flex-col items-center">
+                  <span className="text-[40px] md:text-[48px] mb-3 select-none" role="img" aria-label="Location">📍</span>
                   <p
-                    className="uppercase tracking-[0.3em] text-[#0A0A0B]/50 text-[12px]"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
+                    className="text-[18px] md:text-[21px] tracking-[0.05em] text-[#0A0A0B] font-semibold"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
-                    Get in Touch
+                    New Delhi, India
                   </p>
                 </div>
               </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <h2
-                  className="text-[clamp(36px,4.5vw,56px)] leading-[1.1] tracking-[-0.02em] mb-2 text-[#0A0A0B]"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
-                >
-                  Tell us what
-                  <br />
-                  <span className="italic" style={{ fontWeight: 300 }}>you're building.</span>
-                </h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.13}>
-                <p
-                  className="text-[15px] md:text-[17px] text-[#0A0A0B]/50 italic mb-10"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
-                >
-                  Every transformation begins with a conversation.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={0.15}>
-                <p
-                  className="text-[11px] uppercase tracking-[0.2em] text-[#0A0A0B]/40 mb-10"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
-                >
-                  Limited collaborations each quarter.
-                </p>
-              </ScrollReveal>
+
               <ScrollReveal delay={0.2}>
-                <p
-                  className="text-[16px] leading-[1.8] text-[#0A0A0B]/60 max-w-[400px] mb-12"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
-                >
-                  Whether you're launching a product, redefining a brand, designing a space, or reimagining an experience, we'd love to hear what you're building.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={0.3}>
-                <div className="space-y-4">
+                <div className="flex flex-col items-center">
+                  <span className="text-[40px] md:text-[48px] mb-3 select-none" role="img" aria-label="Email">✉️</span>
                   <a
-                    href="mailto:spaceandproductstudio@gmail.com"
-                    className="inline-flex items-center gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
+                    href="mailto:hello@spaceandproductstudio.com"
+                    aria-label="Email"
+                    title="Send Email"
+                    className="text-[15px] md:text-[18px] text-[#0A0A0B] hover:text-[#EC0606] transition-colors duration-300 font-bold underline decoration-1 underline-offset-4 break-all"
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
-                    <div className="w-4 h-[2px] bg-[#0A0A0B]/40" />
-                    spaceandproductstudio@gmail.com
-                  </a>
-                  <a
-                    href="tel:+918368544334"
-                    className="flex items-center gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
-                  >
-                    <div className="w-4 h-[2px] bg-[#0A0A0B]/40" />
-                    +91 8368544334
-                  </a>
-                  <a
-                    href="https://www.google.com/maps/place/Space+and+Product+Studio/@28.5265384,77.1953846,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce100221fc28d:0x38c5b13bc5648fbb!8m2!3d28.5265384!4d77.1953846!16s%2Fg%2F11y2skgw6m"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-start gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words leading-relaxed"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
-                  >
-                    <div className="w-4 h-[2px] bg-[#0A0A0B]/40 mt-2 flex-shrink-0" />
-                    <span>
-                      Space and Product Studio,
-                      <br />
-                      149 DDA Flat, Lado Sarai,
-                      <br />
-                      New Delhi 110030, INDIA
-                    </span>
+                    hello@spaceandproductstudio.com
                   </a>
                 </div>
               </ScrollReveal>

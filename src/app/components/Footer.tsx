@@ -33,6 +33,13 @@ const PinterestIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const MailIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
 export function Footer() {
   const [socials, setSocials] = useState({
     instagram: "https://www.instagram.com/sapxdesign",
@@ -134,39 +141,30 @@ export function Footer() {
           <div className="col-span-1 sm:col-span-1 lg:col-span-3 lg:col-start-6">
             <ScrollReveal delay={0.1}>
               <p
-                className="text-[13px] uppercase tracking-[0.2em] text-white/30 mb-5"
+                className="text-[13px] uppercase tracking-[0.2em] text-white/30 mb-5 text-center lg:text-left"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
               >
-                Contact
+                Get in Touch
               </p>
-              <div className="space-y-3">
-                <a
-                  href="mailto:spaceandproductstudio@gmail.com"
-                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words"
+              <div className="space-y-4">
+                <p
+                  className="text-[15px] text-white/50 text-center lg:text-left"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  spaceandproductstudio@gmail.com
-                </a>
-                <a
-                  href="tel:+918368544334"
-                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
-                >
-                  +91 8368544334
-                </a>
-                <a
-                  href="https://www.google.com/maps/place/Space+and+Product+Studio/@28.5265384,77.1953846,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce100221fc28d:0x38c5b13bc5648fbb!8m2!3d28.5265384!4d77.1953846!16s%2Fg%2F11y2skgw6m"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 break-words leading-relaxed"
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
-                >
-                  Space and Product Studio,
-                  <br />
-                  149 DDA Flat, Lado Sarai,
-                  <br />
-                  New Delhi 110030, INDIA
-                </a>
+                  📍 New Delhi , INDIA
+                </p>
+                <div className="flex justify-center lg:justify-start">
+                  <motion.a
+                    href="mailto:spaceandproductstudio@gmail.com"
+                    aria-label="Email"
+                    title="Send Email"
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-11 h-11 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/50 transition-all duration-300 hover:text-[#FFFF00] hover:border-white/20 hover:bg-white/10 cursor-pointer"
+                  >
+                    <MailIcon className="w-5 h-5" />
+                  </motion.a>
+                </div>
               </div>
             </ScrollReveal>
           </div>
