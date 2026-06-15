@@ -147,12 +147,15 @@ export function Footer() {
                 Get in Touch
               </p>
               <div className="space-y-4">
-                <p
-                  className="text-[15px] text-white/50 text-center lg:text-left"
+                <a
+                  href="https://maps.app.goo.gl/GQHQUFPVTsveSnYA7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 text-center lg:text-left leading-relaxed max-w-[280px] mx-auto lg:mx-0"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
                 >
-                  New Delhi , INDIA
-                </p>
+                  149 DDA Flat, Lado Sarai, New Delhi 110030, INDIA
+                </a>
                 <div className="flex justify-center lg:justify-start">
                   <motion.a
                     href="mailto:spaceandproductstudio@gmail.com"
