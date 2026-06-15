@@ -130,13 +130,28 @@ export function ContactSection() {
                     spaceandproductstudio@gmail.com
                   </a>
                   <a
+                    href="tel:+918368544334"
+                    className="flex items-center gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words"
+                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
+                  >
+                    <div className="w-4 h-[2px] bg-[#0A0A0B]/40" />
+                    +91 8368544334
+                  </a>
+                  <a
                     href="https://www.google.com/maps/place/Space+and+Product+Studio/@28.5265384,77.1953846,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce100221fc28d:0x38c5b13bc5648fbb!8m2!3d28.5265384!4d77.1953846!16s%2Fg%2F11y2skgw6m"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words pl-4"
+                    className="flex items-start gap-2 text-[15px] text-[#0A0A0B]/80 hover:text-[#EC0606] transition-colors duration-300 break-words leading-relaxed"
                     style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700 }}
                   >
-                    Space and Product Studio, New Delhi, India
+                    <div className="w-4 h-[2px] bg-[#0A0A0B]/40 mt-2 flex-shrink-0" />
+                    <span>
+                      Space and Product Studio,
+                      <br />
+                      149 DDA Flat, Lado Sarai,
+                      <br />
+                      New Delhi 110030, INDIA
+                    </span>
                   </a>
                 </div>
               </ScrollReveal>

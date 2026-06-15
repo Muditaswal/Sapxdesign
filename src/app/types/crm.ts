@@ -90,6 +90,9 @@ export interface ProjectImage {
   caption?: string;
   image_type: 'hero' | 'gallery' | 'process';
   sort_order: number;
+  image_order?: number;
+  is_cover?: boolean;
+  is_featured_homepage?: boolean;
   created_at?: string;
 }
 

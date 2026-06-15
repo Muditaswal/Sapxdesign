@@ -77,7 +77,7 @@ export function AboutSection() {
                   className="text-[12px] uppercase tracking-[0.3em] text-[#0A0A0B]/50"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
                 >
-                  for organizations & business
+                  for organizations & businesses
                 </p>
               </div>
             </ScrollReveal>
@@ -86,7 +86,7 @@ export function AboutSection() {
                 className="text-[15px] leading-[1.8] text-[#0A0A0B]/60 mb-12"
                 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
               >
-                Business today operate across physical and digital touchpoints. We partner with organizations to create cohesive systems that strengthen customer experiences, elevate brands, improve products, and shape environments that support growth.
+                Businesses today operate across physical and digital touchpoints. We partner with organizations to create cohesive systems that strengthen customer experiences, elevate brands, improve products, and shape environments that support growth.
                 <br></br>
                 From emerging ventures to established enterprises, we help turn complexity into clarity through thoughtful, scalable, and future-ready design solutions.
               </p>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { motion } from "motion/react";
-import { ArrowLeft, MapPin, Calendar, Briefcase } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { ArrowLeft, MapPin, Calendar, Briefcase, ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import { api } from "../../services/api";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
@@ -15,9 +15,14 @@ interface ProjectSection {
 
 interface ProjectImage {
   id: string;
+  project_id?: string;
   image_url: string;
   caption?: string;
   image_type: string;
+  sort_order?: number;
+  image_order?: number;
+  is_cover?: boolean;
+  is_featured_homepage?: boolean;
 }
 
 interface ProjectData {
@@ -38,6 +43,10 @@ export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<ProjectData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -46,6 +55,9 @@ export default function ProjectDetail() {
     api.get<ProjectData>(`/projects/${slug}`)
       .then((data) => {
         setProject(data);
+        if (data && data.name) {
+          document.title = `${data.name} | Space and Product Studio`;
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -77,21 +89,75 @@ export default function ProjectDetail() {
   const roleSection = project.sections?.find(s => s.section_type === "role");
   const processSection = project.sections?.find(s => s.section_type === "process");
   const outcomeSection = project.sections?.find(s => s.section_type === "outcome");
-  const galleryImages = project.images?.filter(img => img.image_type === "gallery" || img.image_type === "process") || [];
+  const allImages = project.images || [];
+  const displayImages = allImages.length > 0 
+    ? [...allImages].sort((a, b) => (a.image_order ?? a.sort_order ?? 0) - (b.image_order ?? b.sort_order ?? 0))
+    : [{ id: 'cover', image_url: project.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", caption: "Cover Image" }];
+  const galleryImages = displayImages.filter(img => img.image_type === "gallery" || img.image_type === "process");
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setGalleryIndex((prev) => (prev + 1) % displayImages.length);
+    } else if (isRightSwipe) {
+      setGalleryIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length);
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  const handlePrev = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setGalleryIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length);
+  };
+
+  const handleNext = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setGalleryIndex((prev) => (prev + 1) % displayImages.length);
+  };
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col">
       <Navbar showSplash={false} />
 
-      {/* Hero Banner Section */}
-      <div className="relative w-full h-[60vh] md:h-[75vh] overflow-hidden rounded-b-[40px]">
-        <img
-          src={project.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080"}
-          alt={project.name}
-          className="w-full h-full object-cover"
-        />
+      {/* Hero Gallery Section */}
+      <div 
+        className="relative w-full h-[60vh] md:h-[75vh] overflow-hidden rounded-b-[40px] bg-black select-none"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={galleryIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 w-full h-full"
+          >
+            <img
+              src={displayImages[galleryIndex].image_url}
+              alt={displayImages[galleryIndex].caption || project.name}
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
+        
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-[#EC0606]" />
+        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-[#EC0606] z-10" />
 
         {/* Back Link Overlay */}
         <div className="absolute top-32 left-6 md:left-12 z-10">
@@ -103,16 +169,122 @@ export default function ProjectDetail() {
           </Link>
         </div>
 
+        {/* Next/Prev Controls */}
+        {displayImages.length > 1 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/45 border border-white/10 hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors z-20 text-white cursor-pointer"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/45 border border-white/10 hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors z-20 text-white cursor-pointer"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </>
+        )}
+
+        {/* Fullscreen Maximize button */}
+        <button
+          onClick={() => setIsFullscreen(true)}
+          className="absolute right-4 top-32 p-3 bg-black/45 border border-white/10 hover:bg-[#FFFF00] hover:text-[#0A0A0B] rounded-full z-20 text-white transition-colors cursor-pointer"
+        >
+          <Maximize2 className="w-4 h-4" />
+        </button>
+
         {/* Project Type Badge */}
-        <div className="absolute bottom-8 left-6 md:left-12 max-w-[1400px]">
+        <div className="absolute bottom-8 left-6 md:left-12 max-w-[1400px] z-10">
           <span className="inline-block px-3 py-1 bg-[#FFFF00] text-[#0A0A0B] uppercase tracking-widest font-extrabold text-[10px] mb-3">
             {project.project_type}
           </span>
           <h1 className="text-[36px] md:text-[64px] font-extrabold uppercase leading-none tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
             {project.name}
           </h1>
+          {displayImages[galleryIndex]?.caption && (
+            <p className="text-white/60 text-xs mt-2 italic tracking-wide">
+              {displayImages[galleryIndex].caption}
+            </p>
+          )}
         </div>
       </div>
+
+      {/* Thumbnail Navigation */}
+      {displayImages.length > 1 && (
+        <div className="bg-[#0A0A0B] py-4 px-6 md:px-12 border-b border-white/10 overflow-x-auto flex justify-center gap-3 select-none">
+          {displayImages.map((img, idx) => (
+            <button
+              key={img.id}
+              onClick={() => setGalleryIndex(idx)}
+              className={`relative h-12 w-20 md:h-16 md:w-28 rounded-lg overflow-hidden flex-shrink-0 transition-all duration-300 border-2 cursor-pointer ${
+                idx === galleryIndex ? "border-[#FFFF00] scale-105" : "border-white/10 opacity-40 hover:opacity-100"
+              }`}
+            >
+              <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Fullscreen Viewer Modal */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex flex-col justify-between p-6 select-none"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Top controls bar */}
+            <div className="flex justify-between items-center w-full text-white/60 text-xs tracking-widest font-semibold uppercase">
+              <span>{project.name} ({galleryIndex + 1} / {displayImages.length})</span>
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="p-2 hover:text-white rounded-full bg-white/5 border border-white/10 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Main Image View */}
+            <div className="flex-grow flex items-center justify-center relative w-full h-full max-h-[80vh]">
+              {displayImages.length > 1 && (
+                <button
+                  onClick={handlePrev}
+                  className="absolute left-2 md:left-6 p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors cursor-pointer z-10"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              )}
+
+              <img
+                src={displayImages[galleryIndex].image_url}
+                alt=""
+                className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
+              />
+
+              {displayImages.length > 1 && (
+                <button
+                  onClick={handleNext}
+                  className="absolute right-2 md:right-6 p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-[#FFFF00] hover:text-[#0A0A0B] transition-colors cursor-pointer z-10"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              )}
+            </div>
+
+            {/* Caption bar */}
+            <div className="text-center text-white/50 text-xs italic mb-4">
+              {displayImages[galleryIndex]?.caption || "Design Presentation Layout"}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Meta Specifications Bar */}
       <div className="border-b border-white/10 bg-[#141416]/30 py-6 px-6 md:px-12">

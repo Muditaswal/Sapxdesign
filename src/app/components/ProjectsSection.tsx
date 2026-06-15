@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { ScrollReveal } from "./ScrollReveal";
 import { ArrowUpRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -12,6 +12,7 @@ interface Project {
   category: string;
   year: string;
   image: string;
+  images?: any[];
   description: string;
   span: "normal" | "tall" | "wide";
   slug: string;
@@ -50,6 +51,78 @@ const fallbackProjects: Project[] = [
   }
 ];
 
+function ProjectCardSlideshow({
+  images,
+  defaultImage,
+  title
+}: {
+  images: any[];
+  defaultImage: string;
+  title: string;
+}) {
+  const slideshowImages = images && images.length > 0
+    ? images.filter(img => img.is_featured_homepage === true || img.image_type === 'hero')
+    : [];
+
+  const finalImages = slideshowImages.length > 0 
+    ? slideshowImages 
+    : (images && images.length > 0 ? images : [{ id: 'default', image_url: defaultImage }]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (finalImages.length <= 1 || isHovered) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % finalImages.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [finalImages.length, isHovered]);
+
+  const activeImage = finalImages[currentIndex] || finalImages[0];
+
+  return (
+    <div 
+      className="relative w-full h-full overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 w-full h-full"
+        >
+          <img
+            src={activeImage.image_url || activeImage.image || defaultImage}
+            alt={title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {finalImages.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10 pointer-events-none">
+          {finalImages.map((_, idx) => (
+            <div
+              key={idx}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                idx === currentIndex ? "bg-[#FFFF00] scale-125" : "bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const categories = ["All", "Space Design", "Product Design", "Brand Design", "Experience Design"];
 
 export function ProjectsSection() {
@@ -67,6 +140,7 @@ export function ProjectsSection() {
             category: item.project_type || item.category || "Architecture",
             year: item.year ? String(item.year) : String(new Date(item.created_at).getFullYear()),
             image: item.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080",
+            images: item.images || [],
             description: item.description || "",
             span: spans[index % spans.length],
             slug: item.slug
@@ -152,10 +226,10 @@ export function ProjectsSection() {
                       : "aspect-[4/3]"
                   }`}
                 >
-                  <ImageWithFallback
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  <ProjectCardSlideshow
+                    images={project.images || []}
+                    defaultImage={project.image}
+                    title={project.title}
                   />
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-end p-6 md:p-8 rounded-3xl">

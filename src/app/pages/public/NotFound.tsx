@@ -1,9 +1,14 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
 
 export default function NotFound() {
+  useEffect(() => {
+    document.title = "Page Not Found | Space and Product Studio";
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col justify-between">
       <Navbar showSplash={false} />

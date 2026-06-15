@@ -19,6 +19,7 @@ export default function Home() {
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
+    document.title = "Space and Product Studio | SAP × Design Portfolio";
     const timer = setTimeout(() => setShowSplash(false), 4000);
     return () => {
       document.documentElement.style.scrollBehavior = "auto";
@@ -88,6 +89,7 @@ export default function Home() {
       
       <div className="w-full">
         <main className="relative">
+          <h1 className="sr-only">Space and Product Studio | SAP × Design</h1>
           <HeroSection />
           <ServicesSection />
 

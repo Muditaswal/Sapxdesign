@@ -41,6 +41,7 @@ export default function Projects() {
   
   const [docFile, setDocFile] = useState<File | null>(null);
   const [docName, setDocName] = useState("");
+  const [draggedImgId, setDraggedImgId] = useState<string | null>(null);
 
   const fetchProjects = () => {
     setLoading(true);
@@ -162,6 +163,89 @@ export default function Projects() {
         loadProjectDetails(selectedProject.id);
       })
       .catch((err) => console.error("Failed to upload image:", err));
+  };
+
+  const handleDeleteImage = (imageId: string) => {
+    if (!selectedProject) return;
+    if (!confirm("Are you sure you want to delete this image?")) return;
+
+    api.delete<any>(`/projects/${selectedProject.id}/images/${imageId}`)
+      .then(() => {
+        loadProjectDetails(selectedProject.id);
+      })
+      .catch((err) => console.error("Failed to delete image:", err));
+  };
+
+  const handleUpdateImage = (imageId: string, updates: any) => {
+    if (!selectedProject) return;
+
+    api.put<any>(`/projects/${selectedProject.id}/images/${imageId}`, updates)
+      .then(() => {
+        loadProjectDetails(selectedProject.id);
+      })
+      .catch((err) => console.error("Failed to update image:", err));
+  };
+
+  const handleSetCoverImage = (img: ProjectImage) => {
+    if (!selectedProject) return;
+
+    api.put<any>(`/projects/${selectedProject.id}/images/${img.id}`, { 
+      is_cover: true, 
+      image_type: 'hero' 
+    })
+      .then(() => {
+        return api.put<any>(`/admin/projects/${selectedProject.id}`, {
+          cover_image: img.image_url
+        });
+      })
+      .then(() => {
+        loadProjectDetails(selectedProject.id);
+      })
+      .catch((err) => console.error("Failed to set cover image:", err));
+  };
+
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    e.dataTransfer.setData("text/plain", id);
+    setDraggedImgId(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    const sourceId = e.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === targetId) return;
+
+    const imagesCopy = [...selectedProject.images].sort(
+      (a, b) => (a.image_order || a.sort_order || 0) - (b.image_order || b.sort_order || 0)
+    );
+    const sourceIndex = imagesCopy.findIndex(img => img.id === sourceId);
+    const targetIndex = imagesCopy.findIndex(img => img.id === targetId);
+    if (sourceIndex === -1 || targetIndex === -1) return;
+
+    const [movedImg] = imagesCopy.splice(sourceIndex, 1);
+    imagesCopy.splice(targetIndex, 0, movedImg);
+
+    const updates = imagesCopy.map((img, index) => ({
+      id: img.id,
+      image_order: index,
+      sort_order: index
+    }));
+
+    Promise.all(
+      updates.map(u => api.put<any>(`/projects/${selectedProject.id}/images/${u.id}`, { 
+        image_order: u.image_order,
+        sort_order: u.sort_order
+      }))
+    )
+      .then(() => {
+        loadProjectDetails(selectedProject.id);
+      })
+      .catch(err => console.error("Error reordering images:", err));
+
+    setDraggedImgId(null);
   };
 
   const handleUploadDoc = (e: React.FormEvent) => {
@@ -461,16 +545,83 @@ export default function Projects() {
                 </form>
 
                 {/* Gallery Grid */}
-                <div className="grid grid-cols-3 gap-3 mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                   {selectedProject.images.length === 0 ? (
                     <p className="text-white/30 text-xs italic col-span-3">No design layouts uploaded.</p>
                   ) : (
-                    selectedProject.images.map((img) => (
-                      <div key={img.id} className="relative aspect-video rounded-xl overflow-hidden border border-white/5 group">
-                        <img src={img.image_url} alt="" className="w-full h-full object-cover" />
-                        <span className="absolute top-2 left-2 px-1.5 py-0.5 bg-black/60 rounded text-[8px] font-bold uppercase tracking-wider">{img.image_type}</span>
-                      </div>
-                    ))
+                    [...selectedProject.images]
+                      .sort((a, b) => (a.image_order ?? a.sort_order ?? 0) - (b.image_order ?? b.sort_order ?? 0))
+                      .map((img) => {
+                        const isCover = img.is_cover || img.image_type === "hero";
+                        const isFeatured = img.is_featured_homepage;
+                        return (
+                          <div 
+                            key={img.id} 
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, img.id)}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, img.id)}
+                            className={`relative rounded-xl overflow-hidden border-2 bg-[#141416] p-2 flex flex-col justify-between group cursor-grab active:cursor-grabbing ${
+                              draggedImgId === img.id ? "opacity-40" : ""
+                            } ${
+                              isCover ? "border-[#FFFF00]" : "border-white/5"
+                            }`}
+                          >
+                            <div className="relative aspect-video rounded-lg overflow-hidden">
+                              <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                              <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                                {isCover && (
+                                  <span className="px-1.5 py-0.5 bg-[#FFFF00] text-[#0A0A0B] rounded text-[8px] font-extrabold uppercase tracking-wider">Cover</span>
+                                )}
+                                {isFeatured && (
+                                  <span className="px-1.5 py-0.5 bg-[#EC0606] text-white rounded text-[8px] font-bold uppercase tracking-wider">Slideshow</span>
+                                )}
+                                <span className="px-1.5 py-0.5 bg-black/60 rounded text-[8px] font-bold uppercase tracking-wider">{img.image_type}</span>
+                              </div>
+                              
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteImage(img.id)}
+                                className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-[#EC0606] hover:text-white rounded-lg text-white/70 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            
+                            <div className="mt-2.5 space-y-1.5 text-[11px]">
+                              {img.caption && (
+                                <p className="text-white/60 italic px-1 truncate">{img.caption}</p>
+                              )}
+                              <div className="flex flex-col gap-1 pt-1 border-t border-white/5">
+                                <button
+                                  type="button"
+                                  disabled={isCover}
+                                  onClick={() => handleSetCoverImage(img)}
+                                  className={`w-full py-1 text-center font-bold uppercase tracking-wider rounded-lg text-[9px] cursor-pointer transition-colors ${
+                                    isCover 
+                                      ? "bg-white/5 text-white/30 cursor-default" 
+                                      : "bg-white/10 hover:bg-[#FFFF00] hover:text-[#0A0A0B] text-white"
+                                  }`}
+                                >
+                                  Set Cover
+                                </button>
+                                
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateImage(img.id, { is_featured_homepage: !isFeatured })}
+                                  className={`w-full py-1 text-center font-bold uppercase tracking-wider rounded-lg text-[9px] cursor-pointer transition-colors ${
+                                    isFeatured
+                                      ? "bg-[#EC0606] text-white hover:bg-red-700"
+                                      : "bg-white/10 hover:bg-white hover:text-[#0A0A0B] text-white"
+                                  }`}
+                                >
+                                  {isFeatured ? "Remove Slideshow" : "Add Slideshow"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
                   )}
                 </div>
               </div>

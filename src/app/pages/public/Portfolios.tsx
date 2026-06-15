@@ -60,6 +60,8 @@ export default function Portfolios() {
     window.scrollTo({ top: 0 });
     setLoading(true);
     const dbCat = getDBCategory(category || "");
+    const titleText = getTitle(category || "");
+    document.title = `${titleText} | Space and Product Studio`;
 
     api.get<Project[]>(`/projects?category=${dbCat}`)
       .then((data) => {

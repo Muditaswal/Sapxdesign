@@ -23,6 +23,7 @@ export default function BlogList() {
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
+    document.title = "Blog & Insights | Space and Product Studio";
     api.get<BlogPost[]>("/posts")
       .then((data) => {
         setPosts(data || []);

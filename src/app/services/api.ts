@@ -353,10 +353,14 @@ export const api = {
     }
     if (path.startsWith("/projects")) {
       const projs = getStorageItem<any[]>("projects", []);
+      const allImages = getStorageItem<any[]>("project_images", []);
       const featured = path.includes("featured=true");
       let filtered = projs.filter(p => p.published);
       if (featured) filtered = filtered.filter(p => p.featured);
-      return filtered as any;
+      return filtered.map(p => ({
+        ...p,
+        images: allImages.filter(img => img.project_id === p.id)
+      })) as any;
     }
     if (path === "/posts") {
       const posts = getStorageItem<any[]>("posts", []);
@@ -647,6 +651,30 @@ export const api = {
   },
 
   mockPut<T>(path: string, body: any): T {
+    if (path.includes("/images/")) {
+      const parts = path.split("/");
+      const id = parts[parts.length - 1];
+      // URL format is /projects/:id/images/:imageId
+      const projectId = parts[2];
+      const images = getStorageItem<any[]>("project_images", []);
+      
+      if (body.is_cover === true || body.image_type === 'hero') {
+        images.forEach(img => {
+          if (img.project_id === projectId && img.id !== id) {
+            img.is_cover = false;
+            img.image_type = 'gallery';
+          }
+        });
+      }
+      
+      const idx = images.findIndex(x => x.id === id);
+      if (idx !== -1) {
+        images[idx] = { ...images[idx], ...body };
+        setStorageItem("project_images", images);
+        return images[idx] as any;
+      }
+    }
+
     if (path.startsWith("/admin/leads/")) {
       const id = path.split("/")[3];
       const leads = getStorageItem<any[]>("leads", []);
@@ -739,6 +767,12 @@ export const api = {
   mockDelete(path: string): { success: boolean } {
     const parts = path.split("/");
     const id = parts[parts.length - 1];
+
+    if (path.includes("/images/")) {
+      const images = getStorageItem<any[]>("project_images", []);
+      setStorageItem("project_images", images.filter(img => img.id !== id));
+      return { success: true };
+    }
 
     if (path.startsWith("/admin/leads/")) {
       const leads = getStorageItem<any[]>("leads", []);

@@ -105,9 +105,9 @@ export function Footer() {
                 >
                   Space and Product Studio,
                   <br />
-                  IGNOU Road, Neb Sarai, Sainik Farm,
+                  149 DDA Flat, Lado Sarai,
                   <br />
-                  New Delhi 110068, INDIA
+                  New Delhi 110030, INDIA
                 </a>
               </div>
             </ScrollReveal>

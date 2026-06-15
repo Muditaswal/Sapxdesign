@@ -114,6 +114,9 @@ CREATE TABLE IF NOT EXISTS project_images (
   caption TEXT,
   image_type TEXT DEFAULT 'gallery' CHECK (image_type IN ('hero','gallery','process')),
   sort_order INTEGER DEFAULT 0,
+  image_order INTEGER DEFAULT 0,
+  is_cover BOOLEAN DEFAULT FALSE,
+  is_featured_homepage BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -291,6 +294,11 @@ CREATE POLICY "Allow public read testimonials" ON testimonials FOR SELECT USING 
 
 DROP POLICY IF EXISTS "Allow public create messages" ON messages;
 CREATE POLICY "Allow public create messages" ON messages FOR INSERT WITH CHECK (true);
+
+-- Upgrade migrations for existing project_images tables
+ALTER TABLE project_images ADD COLUMN IF NOT EXISTS image_order INTEGER DEFAULT 0;
+ALTER TABLE project_images ADD COLUMN IF NOT EXISTS is_cover BOOLEAN DEFAULT FALSE;
+ALTER TABLE project_images ADD COLUMN IF NOT EXISTS is_featured_homepage BOOLEAN DEFAULT FALSE;
 `.trim();
 
 const app = new Hono();
@@ -559,7 +567,7 @@ app.get(`${P}/testimonials`, async (c) => {
 app.get(`${P}/projects`, async (c) => {
   const featured = c.req.query("featured");
   const category = c.req.query("category");
-  let query = supabase.from("projects").select("*").eq("published", true).order("featured", { ascending: false }).order("created_at", { ascending: false });
+  let query = supabase.from("projects").select("*, images:project_images(*)").eq("published", true).order("featured", { ascending: false }).order("created_at", { ascending: false });
   if (featured === "true") query = query.eq("featured", true);
   if (category && category !== "All") query = query.eq("category", category);
   const { data, error } = await query;
@@ -932,6 +940,34 @@ app.post(`${P}/projects/:id/images`, async (c) => {
   } catch (err) {
     return c.json({ error: err.message }, 500);
   }
+});
+
+app.delete(`${P}/projects/:id/images/:imageId`, async (c) => {
+  const imageId = c.req.param("imageId");
+  const { error } = await supabase.from("project_images").delete().eq("id", imageId);
+  if (error) return c.json({ error: error.message }, 500);
+  return c.json({ success: true });
+});
+
+app.put(`${P}/projects/:id/images/:imageId`, async (c) => {
+  const imageId = c.req.param("imageId");
+  const projectId = c.req.param("id");
+  const body = await c.req.json();
+
+  if (body.is_cover === true || body.image_type === 'hero') {
+    await supabase.from("project_images")
+      .update({ is_cover: false, image_type: 'gallery' })
+      .eq("project_id", projectId)
+      .neq("id", imageId);
+  }
+
+  const { data, error } = await supabase.from("project_images")
+    .update(body)
+    .eq("id", imageId)
+    .select()
+    .single();
+  if (error) return c.json({ error: error.message }, 500);
+  return c.json(data);
 });
 
 // ─── MEETINGS CRUD ───────────────────────────────────────────────────────────
