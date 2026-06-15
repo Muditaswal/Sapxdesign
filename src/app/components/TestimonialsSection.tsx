@@ -130,6 +130,7 @@ export function TestimonialsSection() {
                 <button
                   key={t.id}
                   onClick={() => setActiveIndex(i)}
+                  aria-label={`Go to testimonial ${i + 1}`}
                   className="cursor-pointer p-1"
                 >
                   <motion.div
