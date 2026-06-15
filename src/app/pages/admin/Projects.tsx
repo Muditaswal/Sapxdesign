@@ -43,6 +43,90 @@ export default function Projects() {
   const [docName, setDocName] = useState("");
   const [draggedImgId, setDraggedImgId] = useState<string | null>(null);
 
+  const [createHeroImages, setCreateHeroImages] = useState<{ id: string, file: File, previewUrl: string }[]>([]);
+  const [editHeroImages, setEditHeroImages] = useState<{ id: string, file?: File, previewUrl: string, isNew: boolean }[]>([]);
+  const [deletedHeroIds, setDeletedHeroIds] = useState<string[]>([]);
+  const [draggedHeroId, setDraggedHeroId] = useState<string | null>(null);
+
+  const handleCreateHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      const newImgs = files.map(file => ({
+        id: `new-${Date.now()}-${Math.random()}`,
+        file,
+        previewUrl: URL.createObjectURL(file)
+      }));
+      setCreateHeroImages(prev => [...prev, ...newImgs]);
+    }
+  };
+
+  const handleEditHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      const newImgs = files.map(file => ({
+        id: `new-${Date.now()}-${Math.random()}`,
+        file,
+        previewUrl: URL.createObjectURL(file),
+        isNew: true
+      }));
+      setEditHeroImages(prev => [...prev, ...newImgs]);
+    }
+  };
+
+  const handleCreateHeroDragStart = (e: React.DragEvent, id: string) => {
+    e.dataTransfer.setData("text/plain", id);
+    setDraggedHeroId(id);
+  };
+
+  const handleCreateHeroDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    const sourceId = e.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === targetId) return;
+
+    const copy = [...createHeroImages];
+    const sourceIdx = copy.findIndex(x => x.id === sourceId);
+    const targetIdx = copy.findIndex(x => x.id === targetId);
+    if (sourceIdx === -1 || targetIdx === -1) return;
+
+    const [moved] = copy.splice(sourceIdx, 1);
+    copy.splice(targetIdx, 0, moved);
+    setCreateHeroImages(copy);
+    setDraggedHeroId(null);
+  };
+
+  const handleEditHeroDragStart = (e: React.DragEvent, id: string) => {
+    e.dataTransfer.setData("text/plain", id);
+    setDraggedHeroId(id);
+  };
+
+  const handleEditHeroDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    const sourceId = e.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === targetId) return;
+
+    const copy = [...editHeroImages];
+    const sourceIdx = copy.findIndex(x => x.id === sourceId);
+    const targetIdx = copy.findIndex(x => x.id === targetId);
+    if (sourceIdx === -1 || targetIdx === -1) return;
+
+    const [moved] = copy.splice(sourceIdx, 1);
+    copy.splice(targetIdx, 0, moved);
+    setEditHeroImages(copy);
+    setDraggedHeroId(null);
+  };
+
+  const handleCreateHeroDelete = (id: string) => {
+    setCreateHeroImages(prev => prev.filter(x => x.id !== id));
+  };
+
+  const handleEditHeroDelete = (id: string) => {
+    const img = editHeroImages.find(x => x.id === id);
+    if (img && !img.isNew) {
+      setDeletedHeroIds(prev => [...prev, id]);
+    }
+    setEditHeroImages(prev => prev.filter(x => x.id !== id));
+  };
+
   const fetchProjects = () => {
     setLoading(true);
     api.get<Project[]>("/admin/projects")
@@ -69,9 +153,9 @@ export default function Projects() {
 
   const loadProjectDetails = (id: string) => {
     setDetailsLoading(true);
-    api.get<DetailedProject>(`/admin/projects/${id}`)
+    api.get<any>(`/admin/projects/${id}`)
       .then((data) => {
-        setSelectedProject(data);
+        setSelectedProject(data.project);
         setDetailsLoading(false);
       })
       .catch((err) => {
@@ -82,17 +166,22 @@ export default function Projects() {
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
-    api.post<Project>("/admin/projects", {
-      name,
-      client_id: clientId || undefined,
-      project_type: projectType,
-      description,
-      budget,
-      start_date: startDate || undefined,
-      end_date: endDate || undefined,
-      published,
-      featured
-    })
+    const formData = new FormData();
+    formData.append("name", name);
+    if (clientId) formData.append("client_id", clientId);
+    formData.append("project_type", projectType);
+    formData.append("description", description);
+    formData.append("budget", budget);
+    if (startDate) formData.append("start_date", startDate);
+    if (endDate) formData.append("end_date", endDate);
+    formData.append("published", String(published));
+    formData.append("featured", String(featured));
+
+    createHeroImages.forEach((img) => {
+      formData.append("hero_images", img.file);
+    });
+
+    api.post<any>("/admin/projects", formData)
       .then(() => {
         setIsCreateOpen(false);
         resetForm();
@@ -104,23 +193,45 @@ export default function Projects() {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingProject) return;
-    api.put<Project>(`/admin/projects/${editingProject.id}`, {
-      name,
-      client_id: clientId || null,
-      project_type: projectType,
-      description,
-      budget,
-      start_date: startDate || null,
-      end_date: endDate || null,
-      published,
-      featured
-    })
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("client_id", clientId || "null");
+    formData.append("project_type", projectType);
+    formData.append("description", description);
+    formData.append("budget", budget);
+    formData.append("start_date", startDate || "null");
+    formData.append("end_date", endDate || "null");
+    formData.append("published", String(published));
+    formData.append("featured", String(featured));
+
+    formData.append("deleted_image_ids", JSON.stringify(deletedHeroIds));
+
+    let fileIdx = 0;
+    const finalOrder = editHeroImages.map((img) => {
+      if (img.isNew) {
+        const placeholder = `new-${fileIdx}`;
+        fileIdx++;
+        return placeholder;
+      }
+      return img.id;
+    });
+    formData.append("final_order", JSON.stringify(finalOrder));
+
+    editHeroImages.forEach((img) => {
+      if (img.isNew && img.file) {
+        formData.append("hero_images", img.file);
+      }
+    });
+
+    api.put<any>(`/admin/projects/${editingProject.id}`, formData)
       .then((updated) => {
         setIsEditOpen(false);
         resetForm();
         fetchProjects();
-        if (selectedProject?.id === updated.id) {
-          loadProjectDetails(updated.id);
+        const updatedProjId = updated.project?.id || updated.id;
+        if (selectedProject?.id === updatedProjId) {
+          loadProjectDetails(updatedProjId);
         }
       })
       .catch((err) => console.error("Error updating project:", err));
@@ -293,6 +404,21 @@ export default function Projects() {
     setEndDate(proj.end_date || "");
     setPublished(proj.published);
     setFeatured(proj.featured);
+
+    setEditHeroImages([]);
+    setDeletedHeroIds([]);
+    api.get<any>(`/admin/projects/${proj.id}`)
+      .then((data) => {
+        if (data && data.heroImages) {
+          setEditHeroImages(data.heroImages.map((img: any) => ({
+            id: img.id,
+            previewUrl: img.image_url,
+            isNew: false
+          })));
+        }
+      })
+      .catch((err) => console.error("Error loading project details for editing:", err));
+
     setIsEditOpen(true);
   };
 
@@ -307,6 +433,9 @@ export default function Projects() {
     setPublished(false);
     setFeatured(false);
     setEditingProject(null);
+    setCreateHeroImages([]);
+    setEditHeroImages([]);
+    setDeletedHeroIds([]);
   };
 
   return (
@@ -711,6 +840,47 @@ export default function Projects() {
                 <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Brief Description</label>
                 <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
               </div>
+              <div className="space-y-3 border-t border-white/5 pt-4">
+                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Hero Gallery Images</label>
+                <div className="flex flex-col gap-3">
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept="image/*" 
+                    onChange={handleCreateHeroFileChange} 
+                    className="bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60 focus:outline-none focus:border-[#FFFF00] file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-white/10 file:text-white hover:file:bg-[#FFFF00] hover:file:text-[#0A0A0B] file:cursor-pointer"
+                  />
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-2">
+                    {createHeroImages.map((img, idx) => (
+                      <div 
+                        key={img.id}
+                        draggable
+                        onDragStart={(e) => handleCreateHeroDragStart(e, img.id)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleCreateHeroDrop(e, img.id)}
+                        className={`relative rounded-xl overflow-hidden aspect-video border bg-[#0A0A0B] group cursor-grab active:cursor-grabbing ${
+                          draggedHeroId === img.id ? "border-[#FFFF00] opacity-40" : "border-white/10"
+                        }`}
+                      >
+                        <img src={img.previewUrl} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute top-1 left-1 bg-black/60 px-1 rounded text-[8px] font-bold text-white/70">
+                          #{idx + 1}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCreateHeroDelete(img.id)}
+                          className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-[#EC0606] text-white/80 hover:text-white rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    {createHeroImages.length === 0 && (
+                      <p className="text-[11px] text-white/30 italic col-span-4 py-2">No hero gallery images selected. Cover image fallback will be used.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div className="flex gap-3 pt-4 justify-end">
                 <button type="button" onClick={() => setIsCreateOpen(false)} className="px-4 py-2 bg-transparent text-white/60 border border-white/10 text-xs rounded-xl hover:bg-white/5">Cancel</button>
                 <button type="submit" className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] uppercase font-bold tracking-widest text-[10px] rounded-xl">Save Project</button>
@@ -766,6 +936,47 @@ export default function Projects() {
               <div className="space-y-1">
                 <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Description</label>
                 <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+              </div>
+              <div className="space-y-3 border-t border-white/5 pt-4">
+                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Hero Gallery Images</label>
+                <div className="flex flex-col gap-3">
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept="image/*" 
+                    onChange={handleEditHeroFileChange} 
+                    className="bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60 focus:outline-none focus:border-[#FFFF00] file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-white/10 file:text-white hover:file:bg-[#FFFF00] hover:file:text-[#0A0A0B] file:cursor-pointer"
+                  />
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-2">
+                    {editHeroImages.map((img, idx) => (
+                      <div 
+                        key={img.id}
+                        draggable
+                        onDragStart={(e) => handleEditHeroDragStart(e, img.id)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleEditHeroDrop(e, img.id)}
+                        className={`relative rounded-xl overflow-hidden aspect-video border bg-[#0A0A0B] group cursor-grab active:cursor-grabbing ${
+                          draggedHeroId === img.id ? "border-[#FFFF00] opacity-40" : "border-white/10"
+                        }`}
+                      >
+                        <img src={img.previewUrl} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute top-1 left-1 bg-black/60 px-1 rounded text-[8px] font-bold text-white/70">
+                          #{idx + 1}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleEditHeroDelete(img.id)}
+                          className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-[#EC0606] text-white/80 hover:text-white rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    {editHeroImages.length === 0 && (
+                      <p className="text-[11px] text-white/30 italic col-span-4 py-2">No hero gallery images. Cover image fallback will be used.</p>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="flex gap-3 pt-4 justify-end">
                 <button type="button" onClick={() => setIsEditOpen(false)} className="px-4 py-2 bg-transparent text-white/60 border border-white/10 text-xs rounded-xl hover:bg-white/5">Cancel</button>

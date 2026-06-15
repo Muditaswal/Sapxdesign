@@ -847,39 +847,270 @@ app.get(`${P}/admin/projects/:id`, async (c) => {
     supabase.from("payments").select("*").eq("project_id", projectId).order("payment_date", { ascending: false })
   ]);
 
-  return c.json({
+  const projectData = {
     ...proj,
     sections: sections.data ?? [],
     images: images.data ?? [],
     notes: notes.data ?? [],
     documents: documents.data ?? [],
     payments: payments.data ?? []
+  };
+
+  const heroImages = (images.data ?? [])
+    .filter((img: any) => img.image_type === "hero")
+    .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+  return c.json({
+    project: projectData,
+    heroImages: heroImages
   });
 });
 
 app.post(`${P}/admin/projects`, async (c) => {
   try {
-    const body = await c.req.json();
-    const { name, client_id, project_type, budget, start_date, end_date, description, published = false, featured = false } = body;
+    let name: string = "";
+    let client_id: string | undefined = undefined;
+    let project_type: string = "";
+    let budget: string | undefined = undefined;
+    let start_date: string | undefined = undefined;
+    let end_date: string | undefined = undefined;
+    let description: string | undefined = undefined;
+    let published: boolean = false;
+    let featured: boolean = false;
+    let heroFiles: File[] = [];
+
+    const contentType = c.req.header("content-type") || "";
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await c.req.formData();
+      name = formData.get("name") as string;
+      client_id = (formData.get("client_id") as string) || undefined;
+      project_type = formData.get("project_type") as string;
+      budget = (formData.get("budget") as string) || undefined;
+      start_date = (formData.get("start_date") as string) || undefined;
+      end_date = (formData.get("end_date") as string) || undefined;
+      description = (formData.get("description") as string) || undefined;
+      published = formData.get("published") === "true";
+      featured = formData.get("featured") === "true";
+
+      const files = formData.getAll("hero_images");
+      heroFiles = files.filter((f) => f instanceof File) as File[];
+    } else {
+      const body = await c.req.json();
+      name = body.name;
+      client_id = body.client_id;
+      project_type = body.project_type;
+      budget = body.budget;
+      start_date = body.start_date;
+      end_date = body.end_date;
+      description = body.description;
+      published = body.published === true;
+      featured = body.featured === true;
+    }
+
     const slug = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString().slice(-4)}`;
-    
-    const { data, error } = await supabase.from("projects").insert({
+
+    const { data: project, error } = await supabase.from("projects").insert({
       name, client_id, project_type, budget, start_date, end_date, description, slug, category: project_type, year: new Date().getFullYear(), published, featured
     }).select().single();
-    
+
     if (error) return c.json({ error: error.message }, 500);
-    return c.json(data, 201);
+
+    const uploadedImages = [];
+    if (heroFiles.length > 0) {
+      for (let i = 0; i < heroFiles.length; i++) {
+        const file = heroFiles[i];
+        const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+        const filename = `projects/${project.id}/hero/${Date.now()}-${i}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const bytes = await file.arrayBuffer();
+
+        const { error: uploadErr } = await supabase.storage
+          .from(BUCKET)
+          .upload(filename, bytes, { contentType: file.type, upsert: false });
+
+        if (!uploadErr) {
+          const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(filename);
+          const { data: imgData, error: imgErr } = await supabase.from("project_images").insert({
+            project_id: project.id,
+            image_url: publicUrl,
+            image_type: "hero",
+            sort_order: i,
+            image_order: i
+          }).select().single();
+
+          if (!imgErr && imgData) {
+            uploadedImages.push(imgData);
+            if (i === 0) {
+              await supabase.from("projects").update({ cover_image: publicUrl }).eq("id", project.id);
+            }
+          }
+        }
+      }
+    }
+
+    return c.json({
+      ...project,
+      project,
+      heroImages: uploadedImages
+    }, 201);
   } catch (err) {
     return c.json({ error: err.message }, 500);
   }
 });
 
 app.put(`${P}/admin/projects/:id`, async (c) => {
-  const body = await c.req.json();
-  const { id: _id, created_at, client, sections, images, notes, documents, payments, ...rest } = body;
-  const { data, error } = await supabase.from("projects").update(rest).eq("id", c.req.param("id")).select().single();
-  if (error) return c.json({ error: error.message }, 500);
-  return c.json(data);
+  try {
+    const projectId = c.req.param("id");
+    let name: string | undefined;
+    let client_id: string | null | undefined;
+    let project_type: string | undefined;
+    let budget: string | undefined;
+    let start_date: string | null | undefined;
+    let end_date: string | null | undefined;
+    let description: string | undefined;
+    let published: boolean | undefined;
+    let featured: boolean | undefined;
+    let deletedImageIds: string[] = [];
+    let finalOrder: string[] = [];
+    let heroFiles: File[] = [];
+
+    const contentType = c.req.header("content-type") || "";
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await c.req.formData();
+      name = formData.get("name") as string || undefined;
+      client_id = formData.get("client_id") === "null" ? null : (formData.get("client_id") as string || undefined);
+      project_type = formData.get("project_type") as string || undefined;
+      budget = formData.get("budget") as string || undefined;
+      start_date = formData.get("start_date") === "null" ? null : (formData.get("start_date") as string || undefined);
+      end_date = formData.get("end_date") === "null" ? null : (formData.get("end_date") as string || undefined);
+      description = formData.get("description") as string || undefined;
+      published = formData.get("published") === "true" ? true : (formData.get("published") === "false" ? false : undefined);
+      featured = formData.get("featured") === "true" ? true : (formData.get("featured") === "false" ? false : undefined);
+
+      const deletedStr = formData.get("deleted_image_ids") as string;
+      if (deletedStr) deletedImageIds = JSON.parse(deletedStr);
+
+      const orderStr = formData.get("final_order") as string;
+      if (orderStr) finalOrder = JSON.parse(orderStr);
+
+      const files = formData.getAll("hero_images");
+      heroFiles = files.filter((f) => f instanceof File) as File[];
+    } else {
+      const body = await c.req.json();
+      name = body.name;
+      client_id = body.client_id;
+      project_type = body.project_type;
+      budget = body.budget;
+      start_date = body.start_date;
+      end_date = body.end_date;
+      description = body.description;
+      published = body.published;
+      featured = body.featured;
+      deletedImageIds = body.deleted_image_ids || [];
+      finalOrder = body.final_order || [];
+    }
+
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (client_id !== undefined) updateData.client_id = client_id;
+    if (project_type !== undefined) updateData.project_type = project_type;
+    if (budget !== undefined) updateData.budget = budget;
+    if (start_date !== undefined) updateData.start_date = start_date;
+    if (end_date !== undefined) updateData.end_date = end_date;
+    if (description !== undefined) updateData.description = description;
+    if (published !== undefined) updateData.published = published;
+    if (featured !== undefined) updateData.featured = featured;
+
+    let project: any = null;
+    if (Object.keys(updateData).length > 0) {
+      const { data, error } = await supabase.from("projects").update(updateData).eq("id", projectId).select().single();
+      if (error) return c.json({ error: error.message }, 500);
+      project = data;
+    } else {
+      const { data } = await supabase.from("projects").select("*").eq("id", projectId).single();
+      project = data;
+    }
+
+    if (deletedImageIds.length > 0) {
+      const { error: delErr } = await supabase.from("project_images").delete().in("id", deletedImageIds).eq("project_id", projectId);
+      if (delErr) console.warn("Failed to delete project images:", delErr.message);
+    }
+
+    const newImageIds: string[] = [];
+    if (heroFiles.length > 0) {
+      for (let i = 0; i < heroFiles.length; i++) {
+        const file = heroFiles[i];
+        const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+        const filename = `projects/${projectId}/hero/${Date.now()}-${i}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const bytes = await file.arrayBuffer();
+
+        const { error: uploadErr } = await supabase.storage
+          .from(BUCKET)
+          .upload(filename, bytes, { contentType: file.type, upsert: false });
+
+        if (!uploadErr) {
+          const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(filename);
+          const { data: imgData, error: imgErr } = await supabase.from("project_images").insert({
+            project_id: projectId,
+            image_url: publicUrl,
+            image_type: "hero",
+            sort_order: 999 + i,
+            image_order: 999 + i
+          }).select().single();
+
+          if (!imgErr && imgData) {
+            newImageIds.push(imgData.id);
+          }
+        }
+      }
+    }
+
+    if (finalOrder.length > 0) {
+      let fileIdx = 0;
+      const resolvedOrderIds: string[] = [];
+
+      for (const item of finalOrder) {
+        if (item.startsWith("new-")) {
+          if (fileIdx < newImageIds.length) {
+            resolvedOrderIds.push(newImageIds[fileIdx]);
+            fileIdx++;
+          }
+        } else {
+          if (!deletedImageIds.includes(item)) {
+            resolvedOrderIds.push(item);
+          }
+        }
+      }
+
+      for (let i = 0; i < resolvedOrderIds.length; i++) {
+        const id = resolvedOrderIds[i];
+        await supabase.from("project_images")
+          .update({ sort_order: i, image_order: i })
+          .eq("id", id)
+          .eq("project_id", projectId);
+      }
+
+      if (resolvedOrderIds.length > 0) {
+        const { data: firstImg } = await supabase.from("project_images").select("image_url").eq("id", resolvedOrderIds[0]).single();
+        if (firstImg) {
+          await supabase.from("projects").update({ cover_image: firstImg.image_url }).eq("id", projectId);
+        }
+      }
+    }
+
+    const { data: finalHeroImages } = await supabase.from("project_images")
+      .select("*")
+      .eq("project_id", projectId)
+      .eq("image_type", "hero")
+      .order("sort_order");
+
+    return c.json({
+      ...project,
+      project,
+      heroImages: finalHeroImages ?? []
+    });
+  } catch (err) {
+    return c.json({ error: err.message }, 500);
+  }
 });
 
 app.delete(`${P}/admin/projects/:id`, async (c) => {

@@ -222,10 +222,14 @@ export const api = {
       return this.mockPost<T>(path, body);
     }
     const headers = await getAuthHeaders();
+    const isFormData = body instanceof FormData;
+    if (isFormData) {
+      delete (headers as any)["Content-Type"];
+    }
     const response = await fetch(`${BASE_URL}${path}`, {
       method: "POST",
       headers,
-      body: JSON.stringify(body),
+      body: isFormData ? body : JSON.stringify(body),
     });
     if (!response.ok) {
       const errorMsg = await response.text();
@@ -239,10 +243,14 @@ export const api = {
       return this.mockPut<T>(path, body);
     }
     const headers = await getAuthHeaders();
+    const isFormData = body instanceof FormData;
+    if (isFormData) {
+      delete (headers as any)["Content-Type"];
+    }
     const response = await fetch(`${BASE_URL}${path}`, {
       method: "PUT",
       headers,
-      body: JSON.stringify(body),
+      body: isFormData ? body : JSON.stringify(body),
     });
     if (!response.ok) {
       const errorMsg = await response.text();
@@ -453,7 +461,13 @@ export const api = {
       const documents = getStorageItem<any[]>("documents", []).filter(d => d.project_id === id);
       const payments = getStorageItem<any[]>("payments", []).filter(pay => pay.project_id === id);
 
-      return { ...p, client, sections, images, notes, documents, payments } as any;
+      const projectData = { ...p, client, sections, images, notes, documents, payments };
+      const heroImages = images.filter(img => img.image_type === "hero").sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+      return {
+        project: projectData,
+        heroImages: heroImages
+      } as any;
     }
     if (path === "/admin/meetings") {
       const meets = getStorageItem<any[]>("meetings", []);
@@ -564,17 +578,92 @@ export const api = {
       return newN as any;
     }
     if (path === "/admin/projects") {
+      let name: string = "";
+      let client_id: string | null = null;
+      let project_type: string = "";
+      let budget: string = "";
+      let start_date: string = "";
+      let end_date: string = "";
+      let description: string = "";
+      let published: boolean = false;
+      let featured: boolean = false;
+      let heroFiles: any[] = [];
+
+      if (body instanceof FormData) {
+        name = body.get("name") as string || "";
+        client_id = body.get("client_id") as string || null;
+        project_type = body.get("project_type") as string || "";
+        budget = body.get("budget") as string || "";
+        start_date = body.get("start_date") as string || "";
+        end_date = body.get("end_date") as string || "";
+        description = body.get("description") as string || "";
+        published = body.get("published") === "true";
+        featured = body.get("featured") === "true";
+        heroFiles = body.getAll("hero_images");
+      } else {
+        name = body.name || "";
+        client_id = body.client_id || null;
+        project_type = body.project_type || "";
+        budget = body.budget || "";
+        start_date = body.start_date || "";
+        end_date = body.end_date || "";
+        description = body.description || "";
+        published = body.published === true;
+        featured = body.featured === true;
+      }
+
       const projs = getStorageItem<any[]>("projects", []);
       const newP = {
-        ...body,
         id: `proj-${Date.now()}`,
-        slug: `${body.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now().toString().slice(-4)}`,
+        name,
+        client_id,
+        project_type,
+        budget,
+        start_date,
+        end_date,
+        description,
+        published,
+        featured,
+        slug: `${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now().toString().slice(-4)}`,
+        cover_image: "",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+
+      const uploadedImages: any[] = [];
+      if (heroFiles && heroFiles.length > 0) {
+        const images = getStorageItem<any[]>("project_images", []);
+        heroFiles.forEach((file, index) => {
+          const mockUrl = file instanceof File ? URL.createObjectURL(file) : "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080";
+          const newImg = {
+            id: `img-${Date.now()}-${index}`,
+            project_id: newP.id,
+            image_url: mockUrl,
+            image_type: "hero",
+            sort_order: index,
+            image_order: index,
+            caption: ""
+          };
+          images.push(newImg);
+          uploadedImages.push(newImg);
+
+          if (index === 0) {
+            newP.cover_image = mockUrl;
+          }
+        });
+        setStorageItem("project_images", images);
+      } else {
+        newP.cover_image = "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080";
+      }
+
       projs.push(newP);
       setStorageItem("projects", projs);
-      return newP as any;
+
+      return {
+        ...newP,
+        project: newP,
+        heroImages: uploadedImages
+      } as any;
     }
     if (path.startsWith("/admin/projects/") && path.endsWith("/notes")) {
       const project_id = path.split("/")[3];
@@ -699,11 +788,130 @@ export const api = {
       const id = path.split("/")[3];
       const projs = getStorageItem<any[]>("projects", []);
       const idx = projs.findIndex(x => x.id === id);
-      if (idx !== -1) {
-        projs[idx] = { ...projs[idx], ...body, updated_at: new Date().toISOString() };
-        setStorageItem("projects", projs);
-        return projs[idx] as any;
+      if (idx === -1) throw new Error("Project not found");
+
+      let name: string | undefined;
+      let client_id: string | null | undefined;
+      let project_type: string | undefined;
+      let budget: string | undefined;
+      let start_date: string | null | undefined;
+      let end_date: string | null | undefined;
+      let description: string | undefined;
+      let published: boolean | undefined;
+      let featured: boolean | undefined;
+      let deletedImageIds: string[] = [];
+      let finalOrder: string[] = [];
+      let heroFiles: any[] = [];
+
+      if (body instanceof FormData) {
+        name = body.get("name") as string || undefined;
+        client_id = body.get("client_id") === "null" ? null : (body.get("client_id") as string || undefined);
+        project_type = body.get("project_type") as string || undefined;
+        budget = body.get("budget") as string || undefined;
+        start_date = body.get("start_date") === "null" ? null : (body.get("start_date") as string || undefined);
+        end_date = body.get("end_date") === "null" ? null : (body.get("end_date") as string || undefined);
+        description = body.get("description") as string || undefined;
+        published = body.get("published") === "true" ? true : (body.get("published") === "false" ? false : undefined);
+        featured = body.get("featured") === "true" ? true : (body.get("featured") === "false" ? false : undefined);
+
+        const delStr = body.get("deleted_image_ids") as string;
+        if (delStr) deletedImageIds = JSON.parse(delStr);
+
+        const orderStr = body.get("final_order") as string;
+        if (orderStr) finalOrder = JSON.parse(orderStr);
+
+        heroFiles = body.getAll("hero_images");
+      } else {
+        name = body.name;
+        client_id = body.client_id;
+        project_type = body.project_type;
+        budget = body.budget;
+        start_date = body.start_date;
+        end_date = body.end_date;
+        description = body.description;
+        published = body.published;
+        featured = body.featured;
+        deletedImageIds = body.deleted_image_ids || [];
+        finalOrder = body.final_order || [];
       }
+
+      const p = projs[idx];
+      if (name !== undefined) p.name = name;
+      if (client_id !== undefined) p.client_id = client_id;
+      if (project_type !== undefined) p.project_type = project_type;
+      if (budget !== undefined) p.budget = budget;
+      if (start_date !== undefined) p.start_date = start_date;
+      if (end_date !== undefined) p.end_date = end_date;
+      if (description !== undefined) p.description = description;
+      if (published !== undefined) p.published = published;
+      if (featured !== undefined) p.featured = featured;
+      p.updated_at = new Date().toISOString();
+
+      let images = getStorageItem<any[]>("project_images", []);
+      if (deletedImageIds.length > 0) {
+        images = images.filter(img => !deletedImageIds.includes(img.id));
+      }
+
+      const newImageIds: string[] = [];
+      if (heroFiles.length > 0) {
+        heroFiles.forEach((file, index) => {
+          const mockUrl = file instanceof File ? URL.createObjectURL(file) : "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080";
+          const newImg = {
+            id: `img-${Date.now()}-${index}`,
+            project_id: id,
+            image_url: mockUrl,
+            image_type: "hero",
+            sort_order: 999 + index,
+            image_order: 999 + index,
+            caption: ""
+          };
+          images.push(newImg);
+          newImageIds.push(newImg.id);
+        });
+      }
+
+      if (finalOrder.length > 0) {
+        let fileIdx = 0;
+        const resolvedOrderIds: string[] = [];
+        for (const item of finalOrder) {
+          if (item.startsWith("new-")) {
+            if (fileIdx < newImageIds.length) {
+              resolvedOrderIds.push(newImageIds[fileIdx]);
+              fileIdx++;
+            }
+          } else {
+            if (!deletedImageIds.includes(item)) {
+              resolvedOrderIds.push(item);
+            }
+          }
+        }
+
+        resolvedOrderIds.forEach((imgId, sIdx) => {
+          const img = images.find(x => x.id === imgId);
+          if (img) {
+            img.sort_order = sIdx;
+            img.image_order = sIdx;
+          }
+        });
+
+        if (resolvedOrderIds.length > 0) {
+          const firstImg = images.find(x => x.id === resolvedOrderIds[0]);
+          if (firstImg) {
+            p.cover_image = firstImg.image_url;
+          }
+        }
+      }
+
+      setStorageItem("project_images", images);
+      setStorageItem("projects", projs);
+
+      const finalHeroImages = images.filter(img => img.project_id === id && img.image_type === "hero").sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+      return {
+        ...p,
+        project: p,
+        heroImages: finalHeroImages
+      } as any;
     }
     if (path.startsWith("/admin/meetings/")) {
       const id = path.split("/")[3];

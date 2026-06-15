@@ -90,10 +90,13 @@ export default function ProjectDetail() {
   const processSection = project.sections?.find(s => s.section_type === "process");
   const outcomeSection = project.sections?.find(s => s.section_type === "outcome");
   const allImages = project.images || [];
-  const displayImages = allImages.length > 0 
-    ? [...allImages].sort((a, b) => (a.image_order ?? a.sort_order ?? 0) - (b.image_order ?? b.sort_order ?? 0))
-    : [{ id: 'cover', image_url: project.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", caption: "Cover Image" }];
-  const galleryImages = displayImages.filter(img => img.image_type === "gallery" || img.image_type === "process");
+  const heroImages = allImages.filter(img => img.image_type === "hero")
+    .sort((a, b) => (a.sort_order ?? a.image_order ?? 0) - (b.sort_order ?? b.image_order ?? 0));
+  const displayImages = heroImages.length > 0 
+    ? heroImages 
+    : [{ id: 'cover', image_url: project.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", caption: "Cover Image", image_type: "hero" }];
+  const galleryImages = allImages.filter(img => img.image_type === "gallery" || img.image_type === "process")
+    .sort((a, b) => (a.image_order ?? a.sort_order ?? 0) - (b.image_order ?? b.sort_order ?? 0));
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
