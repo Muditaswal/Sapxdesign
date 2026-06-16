@@ -161,6 +161,40 @@ export default function ProjectDetail() {
       });
   }, [slug]);
 
+  const [relatedProjects, setRelatedProjects] = useState<ProjectData[]>([]);
+
+  useEffect(() => {
+    if (!project) return;
+    
+    api.get<ProjectData[]>("/projects")
+      .then((allProjects) => {
+        const publishedProjects = Array.isArray(allProjects)
+          ? allProjects.filter(p => p.published !== false)
+          : [];
+        const currentCategory = project.category || project.project_type;
+        
+        let filtered = publishedProjects.filter(
+          p => p.id !== project.id && (p.category === currentCategory || p.project_type === currentCategory)
+        );
+        
+        filtered = filtered.sort(() => 0.5 - Math.random());
+        
+        if (filtered.length < 4) {
+          const fillCount = 4 - filtered.length;
+          const otherProjects = publishedProjects.filter(
+            p => p.id !== project.id && !filtered.some(f => f.id === p.id)
+          );
+          const sortedOthers = otherProjects.sort((a, b) => (b.year || 0) - (a.year || 0));
+          filtered = [...filtered, ...sortedOthers.slice(0, fillCount)];
+        }
+        
+        setRelatedProjects(filtered.slice(0, 4));
+      })
+      .catch((err) => {
+        console.error("Failed to fetch related projects:", err);
+      });
+  }, [project]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0A0A0B] text-white">
@@ -261,39 +295,6 @@ export default function ProjectDetail() {
     ];
   }
 
-  const [relatedProjects, setRelatedProjects] = useState<ProjectData[]>([]);
-
-  useEffect(() => {
-    if (!project) return;
-    
-    api.get<ProjectData[]>("/projects")
-      .then((allProjects) => {
-        const publishedProjects = Array.isArray(allProjects)
-          ? allProjects.filter(p => p.published !== false)
-          : [];
-        const currentCategory = project.category || project.project_type;
-        
-        let filtered = publishedProjects.filter(
-          p => p.id !== project.id && (p.category === currentCategory || p.project_type === currentCategory)
-        );
-        
-        filtered = filtered.sort(() => 0.5 - Math.random());
-        
-        if (filtered.length < 4) {
-          const fillCount = 4 - filtered.length;
-          const otherProjects = publishedProjects.filter(
-            p => p.id !== project.id && !filtered.some(f => f.id === p.id)
-          );
-          const sortedOthers = otherProjects.sort((a, b) => (b.year || 0) - (a.year || 0));
-          filtered = [...filtered, ...sortedOthers.slice(0, fillCount)];
-        }
-        
-        setRelatedProjects(filtered.slice(0, 4));
-      })
-      .catch((err) => {
-        console.error("Failed to fetch related projects:", err);
-      });
-  }, [project]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
