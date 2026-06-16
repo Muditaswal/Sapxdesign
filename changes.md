@@ -28,7 +28,7 @@ This document outlines all changes, refactorings, and feature additions applied 
 - **"Add Custom" capabilities**: Programmed a capability tag appender which persists checked additions directly to state.
 - **Details Modal (`src/app/components/ServicesSection.tsx`)**: Re-designed and styled the premium full-screen details overlay showing lowercase deliverables, syne fonts, and images.
 - **Services Navbar link**: Inserted a **Services** link before About, Works, and Contact in all navbar and side drawers.
-- **Selected Works Filters**: Aligned filtering tags (`All`, `Space Design`, `Product Design`, `Brand Design`, `Experience Design`) with DB schemas.
+- **Selected Works Filters**: Aligned filtering tags (`All`, `Space Design`, `Product Design`, `Brand Design`, `Immersive Design`) with DB schemas.
 
 ## 5. Contact Pipeline Updates
 - **Phone Field Integration (`src/app/components/ContactSection.tsx`)**: Added a phone number input to forms, configured database persistence (`phone` column in messages), and verified mailto triggers.

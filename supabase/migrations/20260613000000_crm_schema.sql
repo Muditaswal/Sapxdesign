@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS projects (
   client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-  project_type TEXT NOT NULL CHECK (project_type IN ('Space Design', 'Product Design', 'Brand Design', 'Experience Design', 'Architecture', 'Interior Design', 'Branding', 'Research', 'UI/UX Design')),
+  project_type TEXT NOT NULL CHECK (project_type IN ('Space Design', 'Product Design', 'Brand Design', 'Immersive Design', 'Experience Design', 'Architecture', 'Interior Design', 'Branding', 'Research', 'UI/UX Design')),
   description TEXT,
   status TEXT NOT NULL DEFAULT 'Inquiry' CHECK (status IN ('Inquiry', 'Proposal', 'Design', 'Execution', 'Completed')),
   budget TEXT,

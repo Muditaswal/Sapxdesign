@@ -1016,7 +1016,7 @@ export default function Projects() {
                         <option value="">Use Discipline Name</option>
                         <option value="Space Design">Space Design</option>
                         <option value="Product Design">Product Design</option>
-                        <option value="Experience Design">Experience Design</option>
+                        <option value="Immersive Design">Immersive Design</option>
                         <option value="Brand Design">Brand Design</option>
                       </select>
                     </div>
@@ -1397,7 +1397,7 @@ export default function Projects() {
                         <option value="">Use Discipline Name</option>
                         <option value="Space Design">Space Design</option>
                         <option value="Product Design">Product Design</option>
-                        <option value="Experience Design">Experience Design</option>
+                        <option value="Immersive Design">Immersive Design</option>
                         <option value="Brand Design">Brand Design</option>
                       </select>
                     </div>

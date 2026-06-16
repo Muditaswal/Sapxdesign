@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS projects (
   client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-  project_type TEXT NOT NULL CHECK (project_type IN ('Space Design', 'Product Design', 'Brand Design', 'Experience Design', 'Architecture', 'Interior Design', 'Branding', 'Research', 'UI/UX Design')),
+  project_type TEXT NOT NULL CHECK (project_type IN ('Space Design', 'Product Design', 'Brand Design', 'Immersive Design', 'Experience Design', 'Architecture', 'Interior Design', 'Branding', 'Research', 'UI/UX Design')),
   description TEXT,
   status TEXT NOT NULL DEFAULT 'Inquiry' CHECK (status IN ('Inquiry', 'Proposal', 'Design', 'Execution', 'Completed')),
   budget TEXT,
@@ -490,7 +490,7 @@ app.post(`${P}/seed`, async (c) => {
       { 
         id: "experience", 
         number: "04", 
-        title: "Experience Design", 
+        title: "Immersive Design", 
         short_desc: "We design interactions between brands and people.", 
         full_desc: "We design interactions between brands and people — activations, launches, installations, service journeys, and immersive AI-powered experiences that transform attention into participation.", 
         capabilities: [
