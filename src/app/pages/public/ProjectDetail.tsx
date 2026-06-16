@@ -179,15 +179,6 @@ export default function ProjectDetail() {
         
         filtered = filtered.sort(() => 0.5 - Math.random());
         
-        if (filtered.length < 4) {
-          const fillCount = 4 - filtered.length;
-          const otherProjects = publishedProjects.filter(
-            p => p.id !== project.id && !filtered.some(f => f.id === p.id)
-          );
-          const sortedOthers = otherProjects.sort((a, b) => (b.year || 0) - (a.year || 0));
-          filtered = [...filtered, ...sortedOthers.slice(0, fillCount)];
-        }
-        
         setRelatedProjects(filtered.slice(0, 4));
       })
       .catch((err) => {
