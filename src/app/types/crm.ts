@@ -60,6 +60,14 @@ export interface Project {
   cover_image?: string;
   featured: boolean;
   published: boolean;
+  hero_video?: string;
+  hero_caption?: string;
+  meta_title?: string;
+  meta_description?: string;
+  meta_keywords?: string;
+  meta_og_image?: string;
+  studio_roles?: string;
+  core_deliverables?: string;
   created_at: string;
   updated_at: string;
   

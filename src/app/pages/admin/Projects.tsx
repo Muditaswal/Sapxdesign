@@ -33,6 +33,35 @@ export default function Projects() {
   const [published, setPublished] = useState(false);
   const [featured, setFeatured] = useState(false);
 
+  // New Detailed Fields
+  const [slug, setSlug] = useState("");
+  const [category, setCategory] = useState("");
+  const [year, setYear] = useState<number | "">("");
+  const [location, setLocation] = useState("");
+  const [status, setStatus] = useState<Project["status"]>("Inquiry");
+  const [heroVideo, setHeroVideo] = useState("");
+  const [heroCaption, setHeroCaption] = useState("");
+
+  const [overviewTitle, setOverviewTitle] = useState("Overview");
+  const [overviewContent, setOverviewContent] = useState("");
+  const [processTitle, setProcessTitle] = useState("Process");
+  const [processContent, setProcessContent] = useState("");
+  const [outcomeTitle, setOutcomeTitle] = useState("Outcome");
+  const [outcomeContent, setOutcomeContent] = useState("");
+
+  const [studioRoles, setStudioRoles] = useState<string[]>([]);
+  const [newRole, setNewRole] = useState("");
+  const [coreDeliverables, setCoreDeliverables] = useState<string[]>([]);
+  const [newDeliverable, setNewDeliverable] = useState("");
+
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
+  const [metaOgImage, setMetaOgImage] = useState("");
+
+  const [activeTab, setActiveTab] = useState<'basic' | 'hero' | 'content' | 'roles' | 'seo'>('basic');
+  const [createActiveTab, setCreateActiveTab] = useState<'basic' | 'hero' | 'content' | 'roles' | 'seo'>('basic');
+
   // Operations fields
   const [newNote, setNewNote] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -177,6 +206,28 @@ export default function Projects() {
     formData.append("published", String(published));
     formData.append("featured", String(featured));
 
+    // Append new creation fields
+    formData.append("slug", slug || `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString().slice(-4)}`);
+    formData.append("category", category || projectType);
+    formData.append("year", String(year || new Date().getFullYear()));
+    formData.append("location", location);
+    formData.append("status", status);
+    formData.append("hero_video", heroVideo);
+    formData.append("hero_caption", heroCaption);
+    formData.append("meta_title", metaTitle);
+    formData.append("meta_description", metaDescription);
+    formData.append("meta_keywords", metaKeywords);
+    formData.append("meta_og_image", metaOgImage);
+    formData.append("studio_roles", JSON.stringify(studioRoles));
+    formData.append("core_deliverables", JSON.stringify(coreDeliverables));
+
+    formData.append("overview_title", overviewTitle);
+    formData.append("overview_content", overviewContent);
+    formData.append("process_title", processTitle);
+    formData.append("process_content", processContent);
+    formData.append("outcome_title", outcomeTitle);
+    formData.append("outcome_content", outcomeContent);
+
     createHeroImages.forEach((img) => {
       formData.append("hero_images", img.file);
     });
@@ -204,6 +255,28 @@ export default function Projects() {
     formData.append("end_date", endDate || "null");
     formData.append("published", String(published));
     formData.append("featured", String(featured));
+
+    // Append new edit fields
+    formData.append("slug", slug);
+    formData.append("category", category || projectType);
+    formData.append("year", String(year));
+    formData.append("location", location);
+    formData.append("status", status);
+    formData.append("hero_video", heroVideo);
+    formData.append("hero_caption", heroCaption);
+    formData.append("meta_title", metaTitle);
+    formData.append("meta_description", metaDescription);
+    formData.append("meta_keywords", metaKeywords);
+    formData.append("meta_og_image", metaOgImage);
+    formData.append("studio_roles", JSON.stringify(studioRoles));
+    formData.append("core_deliverables", JSON.stringify(coreDeliverables));
+
+    formData.append("overview_title", overviewTitle);
+    formData.append("overview_content", overviewContent);
+    formData.append("process_title", processTitle);
+    formData.append("process_content", processContent);
+    formData.append("outcome_title", outcomeTitle);
+    formData.append("outcome_content", outcomeContent);
 
     formData.append("deleted_image_ids", JSON.stringify(deletedHeroIds));
 
@@ -280,7 +353,7 @@ export default function Projects() {
     if (!selectedProject) return;
     if (!confirm("Are you sure you want to delete this image?")) return;
 
-    api.delete<any>(`/projects/${selectedProject.id}/images/${imageId}`)
+    api.delete(`/projects/${selectedProject.id}/images/${imageId}`)
       .then(() => {
         loadProjectDetails(selectedProject.id);
       })
@@ -326,6 +399,7 @@ export default function Projects() {
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
+    if (!selectedProject || !selectedProject.images) return;
     const sourceId = e.dataTransfer.getData("text/plain");
     if (!sourceId || sourceId === targetId) return;
 
@@ -405,8 +479,44 @@ export default function Projects() {
     setPublished(proj.published);
     setFeatured(proj.featured);
 
+    setSlug(proj.slug || "");
+    setCategory(proj.category || "");
+    setYear(proj.year || "");
+    setLocation(proj.location || "");
+    setStatus(proj.status || "Inquiry");
+    setHeroVideo((proj as any).hero_video || "");
+    setHeroCaption((proj as any).hero_caption || "");
+    setMetaTitle((proj as any).meta_title || "");
+    setMetaDescription((proj as any).meta_description || "");
+    setMetaKeywords((proj as any).meta_keywords || "");
+    setMetaOgImage((proj as any).meta_og_image || "");
+
+    try {
+      const rolesVal = (proj as any).studio_roles;
+      setStudioRoles(rolesVal ? JSON.parse(rolesVal) : []);
+    } catch {
+      const rolesVal = (proj as any).studio_roles;
+      setStudioRoles(rolesVal ? rolesVal.split(",").map((s: string) => s.trim()) : []);
+    }
+
+    try {
+      const delivVal = (proj as any).core_deliverables;
+      setCoreDeliverables(delivVal ? JSON.parse(delivVal) : []);
+    } catch {
+      const delivVal = (proj as any).core_deliverables;
+      setCoreDeliverables(delivVal ? delivVal.split(",").map((s: string) => s.trim()) : []);
+    }
+
     setEditHeroImages([]);
     setDeletedHeroIds([]);
+    setOverviewTitle("Overview");
+    setOverviewContent("");
+    setProcessTitle("Process");
+    setProcessContent("");
+    setOutcomeTitle("Outcome");
+    setOutcomeContent("");
+    setActiveTab("basic");
+
     api.get<any>(`/admin/projects/${proj.id}`)
       .then((data) => {
         if (data && data.heroImages) {
@@ -415,6 +525,19 @@ export default function Projects() {
             previewUrl: img.image_url,
             isNew: false
           })));
+        }
+        if (data && data.project) {
+          const sections = data.project.sections || [];
+          const overview = sections.find((s: any) => s.section_type === "hero");
+          const process = sections.find((s: any) => s.section_type === "process");
+          const outcome = sections.find((s: any) => s.section_type === "outcome");
+
+          setOverviewTitle(overview?.title || "Overview");
+          setOverviewContent(overview?.content || "");
+          setProcessTitle(process?.title || "Process");
+          setProcessContent(process?.content || "");
+          setOutcomeTitle(outcome?.title || "Outcome");
+          setOutcomeContent(outcome?.content || "");
         }
       })
       .catch((err) => console.error("Error loading project details for editing:", err));
@@ -436,6 +559,30 @@ export default function Projects() {
     setCreateHeroImages([]);
     setEditHeroImages([]);
     setDeletedHeroIds([]);
+
+    setSlug("");
+    setCategory("");
+    setYear("");
+    setLocation("");
+    setStatus("Inquiry");
+    setHeroVideo("");
+    setHeroCaption("");
+    setOverviewTitle("Overview");
+    setOverviewContent("");
+    setProcessTitle("Process");
+    setProcessContent("");
+    setOutcomeTitle("Outcome");
+    setOutcomeContent("");
+    setStudioRoles([]);
+    setNewRole("");
+    setCoreDeliverables([]);
+    setNewDeliverable("");
+    setMetaTitle("");
+    setMetaDescription("");
+    setMetaKeywords("");
+    setMetaOgImage("");
+    setActiveTab("basic");
+    setCreateActiveTab("basic");
   };
 
   return (
@@ -796,94 +943,378 @@ export default function Projects() {
       {/* CREATE MODAL */}
       {isCreateOpen && (
         <div className="fixed inset-0 z-50 bg-[#0A0A0B]/80 backdrop-blur-md flex items-center justify-center p-6">
-          <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-lg p-8 space-y-6 relative max-h-[95vh] overflow-y-auto">
+          <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-2xl p-8 space-y-6 relative max-h-[95vh] overflow-y-auto">
             <h3 className="text-xl font-bold uppercase tracking-wide" style={{ fontFamily: "'Syne', sans-serif" }}>Initialize Studio Project</h3>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Name</label>
-                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Owner (Client)</label>
-                  <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
-                    <option value="">No Client (Inquiry)</option>
-                    {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Discipline (Type)</label>
-                  <select value={projectType} onChange={(e) => setProjectType(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
-                    <option value="Space Design">Space Design</option>
-                    <option value="Product Design">Product Design</option>
-                    <option value="Brand Design">Brand Design</option>
-                    <option value="Immersive Design">Immersive Design</option>
-                    <option value="Architecture">Architecture</option>
-                    <option value="Interior Design">Interior Design</option>
-                    <option value="Branding">Branding</option>
-                    <option value="Research">Research</option>
-                    <option value="UI/UX Design">UI/UX Design</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Value (Budget)</label>
-                  <input type="text" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="e.g. $2.5M" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Start Date</label>
-                  <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Brief Description</label>
-                <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
-              </div>
-              <div className="space-y-3 border-t border-white/5 pt-4">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Hero Gallery Images</label>
-                <div className="flex flex-col gap-3">
-                  <input 
-                    type="file" 
-                    multiple 
-                    accept="image/*" 
-                    onChange={handleCreateHeroFileChange} 
-                    className="bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60 focus:outline-none focus:border-[#FFFF00] file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-white/10 file:text-white hover:file:bg-[#FFFF00] hover:file:text-[#0A0A0B] file:cursor-pointer"
-                  />
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-2">
-                    {createHeroImages.map((img, idx) => (
-                      <div 
-                        key={img.id}
-                        draggable
-                        onDragStart={(e) => handleCreateHeroDragStart(e, img.id)}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleCreateHeroDrop(e, img.id)}
-                        className={`relative rounded-xl overflow-hidden aspect-video border bg-[#0A0A0B] group cursor-grab active:cursor-grabbing ${
-                          draggedHeroId === img.id ? "border-[#FFFF00] opacity-40" : "border-white/10"
-                        }`}
-                      >
-                        <img src={img.previewUrl} alt="" className="w-full h-full object-cover" />
-                        <div className="absolute top-1 left-1 bg-black/60 px-1 rounded text-[8px] font-bold text-white/70">
-                          #{idx + 1}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleCreateHeroDelete(img.id)}
-                          className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-[#EC0606] text-white/80 hover:text-white rounded-lg transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                    {createHeroImages.length === 0 && (
-                      <p className="text-[11px] text-white/30 italic col-span-4 py-2">No hero gallery images selected. Cover image fallback will be used.</p>
-                    )}
+            
+            {/* Tabs Navigation */}
+            <div className="flex border-b border-white/10 mb-6 overflow-x-auto gap-2 scrollbar-none pb-1">
+              {[
+                { id: 'basic', label: 'Basic Info' },
+                { id: 'hero', label: 'Hero & Media' },
+                { id: 'content', label: 'Project Content' },
+                { id: 'roles', label: 'Roles & Deliverables' },
+                { id: 'seo', label: 'SEO Section' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setCreateActiveTab(tab.id as any)}
+                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wider whitespace-nowrap rounded-t-xl transition-all border-b-2 cursor-pointer ${
+                    createActiveTab === tab.id
+                      ? "border-[#FFFF00] text-[#FFFF00]"
+                      : "border-transparent text-white/40 hover:text-white/80"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <form onSubmit={handleCreate} className="space-y-6">
+              {/* TAB 1: BASIC INFO */}
+              {createActiveTab === 'basic' && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Name</label>
+                      <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Slug (URL Path)</label>
+                      <input type="text" placeholder="e.g. project-slug" value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Owner (Client)</label>
+                      <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="">No Client (Inquiry)</option>
+                        {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Discipline (Type)</label>
+                      <select value={projectType} onChange={(e) => setProjectType(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="Space Design">Space Design</option>
+                        <option value="Product Design">Product Design</option>
+                        <option value="Brand Design">Brand Design</option>
+                        <option value="Immersive Design">Immersive Design</option>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Interior Design">Interior Design</option>
+                        <option value="Branding">Branding</option>
+                        <option value="Research">Research</option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Related Category (Portfolio Filter)</label>
+                      <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="">Use Discipline Name</option>
+                        <option value="Space Design">Space Design</option>
+                        <option value="Product Design">Product Design</option>
+                        <option value="Experience Design">Experience Design</option>
+                        <option value="Brand Design">Brand Design</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Lifecycle Status</label>
+                      <select value={status} onChange={(e) => setStatus(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="Inquiry">Inquiry</option>
+                        <option value="Proposal">Proposal</option>
+                        <option value="Design">Design</option>
+                        <option value="Execution">Execution</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Location</label>
+                      <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New Delhi" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Year Completed</label>
+                      <input type="number" value={year} onChange={(e) => setYear(e.target.value === "" ? "" : parseInt(e.target.value, 10))} placeholder="e.g. 2024" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Value (Budget)</label>
+                      <input type="text" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="e.g. $1.5M" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Start Date</label>
+                      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">End Date</label>
+                      <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Brief Description</label>
+                    <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+
+                  <div className="space-y-2 border-t border-white/5 pt-4">
+                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Publish State & Visibility</p>
+                    <div className="flex gap-6 items-center">
+                      <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                        <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="rounded bg-[#0A0A0B] border border-white/10 text-[#FFFF00]" />
+                        Published
+                      </label>
+                      <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                        <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="rounded bg-[#0A0A0B] border border-white/10 text-[#FFFF00]" />
+                        Featured on Home Slideshow
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex gap-3 pt-4 justify-end">
-                <button type="button" onClick={() => setIsCreateOpen(false)} className="px-4 py-2 bg-transparent text-white/60 border border-white/10 text-xs rounded-xl hover:bg-white/5">Cancel</button>
-                <button type="submit" className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] uppercase font-bold tracking-widest text-[10px] rounded-xl">Save Project</button>
+              )}
+
+              {/* TAB 2: HERO & MEDIA */}
+              {createActiveTab === 'hero' && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Hero Video URL (Optional)</label>
+                      <input type="text" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} placeholder="e.g. https://domain.com/video.mp4" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Hero Image Caption</label>
+                      <input type="text" value={heroCaption} onChange={(e) => setHeroCaption(e.target.value)} placeholder="e.g. Aerial render of south wing" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Hero Gallery Images (Reorderable / Drag & Drop)</label>
+                    <div className="flex flex-col gap-3">
+                      <input 
+                        type="file" 
+                        multiple 
+                        accept="image/*" 
+                        onChange={handleCreateHeroFileChange} 
+                        className="bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60 focus:outline-none focus:border-[#FFFF00] file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-white/10 file:text-white hover:file:bg-[#FFFF00] hover:file:text-[#0A0A0B] file:cursor-pointer"
+                      />
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-2">
+                        {createHeroImages.map((img, idx) => (
+                          <div 
+                            key={img.id}
+                            draggable
+                            onDragStart={(e) => handleCreateHeroDragStart(e, img.id)}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleCreateHeroDrop(e, img.id)}
+                            className={`relative rounded-xl overflow-hidden aspect-video border bg-[#0A0A0B] group cursor-grab active:cursor-grabbing ${
+                              draggedHeroId === img.id ? "border-[#FFFF00] opacity-40" : "border-white/10"
+                            }`}
+                          >
+                            <img src={img.previewUrl} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute top-1 left-1 bg-black/60 px-1 rounded text-[8px] font-bold text-white/70">
+                              #{idx + 1}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleCreateHeroDelete(img.id)}
+                              className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-[#EC0606] text-white/80 hover:text-white rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                        {createHeroImages.length === 0 && (
+                          <p className="text-[11px] text-white/30 italic col-span-4 py-2">No hero images. Cover image fallback will be used.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: PROJECT CONTENT */}
+              {createActiveTab === 'content' && (
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Overview Section Title</label>
+                    <input type="text" value={overviewTitle} onChange={(e) => setOverviewTitle(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Overview Description</label>
+                    <textarea rows={4} value={overviewContent} onChange={(e) => setOverviewContent(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+
+                  <div className="space-y-1 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Process Section Title</label>
+                    <input type="text" value={processTitle} onChange={(e) => setProcessTitle(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Process Description</label>
+                    <textarea rows={4} value={processContent} onChange={(e) => setProcessContent(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+
+                  <div className="space-y-1 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Outcome Section Title</label>
+                    <input type="text" value={outcomeTitle} onChange={(e) => setOutcomeTitle(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Outcome Description</label>
+                    <textarea rows={4} value={outcomeContent} onChange={(e) => setOutcomeContent(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: ROLES & DELIVERABLES */}
+              {createActiveTab === 'roles' && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Studio Roles</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Architecture" 
+                        value={newRole}
+                        onChange={(e) => setNewRole(e.target.value)}
+                        className="flex-grow bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          if (newRole.trim()) {
+                            setStudioRoles([...studioRoles, newRole.trim()]);
+                            setNewRole("");
+                          }
+                        }}
+                        className="px-4 py-2.5 bg-white text-[#0A0A0B] font-bold text-xs uppercase rounded-xl hover:bg-[#FFFF00] transition-colors cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {studioRoles.map((r, idx) => (
+                        <div key={idx} className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/80">
+                          <span>{r}</span>
+                          <button 
+                            type="button" 
+                            onClick={() => setStudioRoles(studioRoles.filter((_, i) => i !== idx))}
+                            className="text-white/40 hover:text-[#EC0606] transition-colors font-bold cursor-pointer"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
+                      {studioRoles.length === 0 && (
+                        <p className="text-[11px] text-white/30 italic">No studio roles specified.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Core Deliverables (Reorderable)</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Spatial Design System" 
+                        value={newDeliverable}
+                        onChange={(e) => setNewDeliverable(e.target.value)}
+                        className="flex-grow bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          if (newDeliverable.trim()) {
+                            setCoreDeliverables([...coreDeliverables, newDeliverable.trim()]);
+                            setNewDeliverable("");
+                          }
+                        }}
+                        className="px-4 py-2.5 bg-white text-[#0A0A0B] font-bold text-xs uppercase rounded-xl hover:bg-[#FFFF00] transition-colors cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="space-y-2 mt-2">
+                      {coreDeliverables.map((d, idx) => (
+                        <div key={idx} className="flex justify-between items-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs">
+                          <span className="text-white/80">{d}</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => {
+                                const copy = [...coreDeliverables];
+                                const temp = copy[idx];
+                                copy[idx] = copy[idx - 1];
+                                copy[idx - 1] = temp;
+                                setCoreDeliverables(copy);
+                              }}
+                              className="text-white/40 hover:text-white disabled:opacity-20 text-[10px] font-bold cursor-pointer px-1"
+                            >
+                              ▲
+                            </button>
+                            <button
+                              type="button"
+                              disabled={idx === coreDeliverables.length - 1}
+                              onClick={() => {
+                                const copy = [...coreDeliverables];
+                                const temp = copy[idx];
+                                copy[idx] = copy[idx + 1];
+                                copy[idx + 1] = temp;
+                                setCoreDeliverables(copy);
+                              }}
+                              className="text-white/40 hover:text-white disabled:opacity-20 text-[10px] font-bold cursor-pointer px-1"
+                            >
+                              ▼
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setCoreDeliverables(coreDeliverables.filter((_, i) => i !== idx))}
+                              className="text-white/40 hover:text-[#EC0606] transition-colors ml-2 font-bold cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {coreDeliverables.length === 0 && (
+                        <p className="text-[11px] text-white/30 italic">No core deliverables specified.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 5: SEO SECTION */}
+              {createActiveTab === 'seo' && (
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Meta Title</label>
+                    <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} placeholder="e.g. Haus am See | Lake Side Residence" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Meta Description</label>
+                    <textarea rows={3} value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} placeholder="e.g. Explore a Lakeside residence in Bavaria..." className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Meta Keywords</label>
+                      <input type="text" value={metaKeywords} onChange={(e) => setMetaKeywords(e.target.value)} placeholder="e.g. minimalism, architecture" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Open Graph Image (URL)</label>
+                      <input type="text" value={metaOgImage} onChange={(e) => setMetaOgImage(e.target.value)} placeholder="e.g. https://domain.com/og-image.jpg" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-4 justify-end border-t border-white/5">
+                <button type="button" onClick={() => setIsCreateOpen(false)} className="px-4 py-2 bg-transparent text-white/60 border border-white/10 text-xs rounded-xl hover:bg-white/5 cursor-pointer">Cancel</button>
+                <button type="submit" className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] uppercase font-bold tracking-widest text-[10px] rounded-xl cursor-pointer">Save Project</button>
               </div>
             </form>
           </div>
@@ -893,94 +1324,378 @@ export default function Projects() {
       {/* EDIT MODAL */}
       {isEditOpen && (
         <div className="fixed inset-0 z-50 bg-[#0A0A0B]/80 backdrop-blur-md flex items-center justify-center p-6">
-          <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-lg p-8 space-y-6 relative max-h-[95vh] overflow-y-auto">
+          <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-2xl p-8 space-y-6 relative max-h-[95vh] overflow-y-auto">
             <h3 className="text-xl font-bold uppercase tracking-wide" style={{ fontFamily: "'Syne', sans-serif" }}>Modify Project Specs</h3>
-            <form onSubmit={handleEditSubmit} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Name</label>
-                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Client</label>
-                  <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
-                    <option value="">No Client (Inquiry)</option>
-                    {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Discipline</label>
-                  <select value={projectType} onChange={(e) => setProjectType(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
-                    <option value="Space Design">Space Design</option>
-                    <option value="Product Design">Product Design</option>
-                    <option value="Brand Design">Brand Design</option>
-                    <option value="Immersive Design">Immersive Design</option>
-                    <option value="Architecture">Architecture</option>
-                    <option value="Interior Design">Interior Design</option>
-                    <option value="Branding">Branding</option>
-                    <option value="Research">Research</option>
-                    <option value="UI/UX Design">UI/UX Design</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Budget</label>
-                  <input type="text" value={budget} onChange={(e) => setBudget(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Start Date</label>
-                  <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Description</label>
-                <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
-              </div>
-              <div className="space-y-3 border-t border-white/5 pt-4">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Hero Gallery Images</label>
-                <div className="flex flex-col gap-3">
-                  <input 
-                    type="file" 
-                    multiple 
-                    accept="image/*" 
-                    onChange={handleEditHeroFileChange} 
-                    className="bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60 focus:outline-none focus:border-[#FFFF00] file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-white/10 file:text-white hover:file:bg-[#FFFF00] hover:file:text-[#0A0A0B] file:cursor-pointer"
-                  />
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-2">
-                    {editHeroImages.map((img, idx) => (
-                      <div 
-                        key={img.id}
-                        draggable
-                        onDragStart={(e) => handleEditHeroDragStart(e, img.id)}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleEditHeroDrop(e, img.id)}
-                        className={`relative rounded-xl overflow-hidden aspect-video border bg-[#0A0A0B] group cursor-grab active:cursor-grabbing ${
-                          draggedHeroId === img.id ? "border-[#FFFF00] opacity-40" : "border-white/10"
-                        }`}
-                      >
-                        <img src={img.previewUrl} alt="" className="w-full h-full object-cover" />
-                        <div className="absolute top-1 left-1 bg-black/60 px-1 rounded text-[8px] font-bold text-white/70">
-                          #{idx + 1}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleEditHeroDelete(img.id)}
-                          className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-[#EC0606] text-white/80 hover:text-white rounded-lg transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                    {editHeroImages.length === 0 && (
-                      <p className="text-[11px] text-white/30 italic col-span-4 py-2">No hero gallery images. Cover image fallback will be used.</p>
-                    )}
+            
+            {/* Tabs Navigation */}
+            <div className="flex border-b border-white/10 mb-6 overflow-x-auto gap-2 scrollbar-none pb-1">
+              {[
+                { id: 'basic', label: 'Basic Info' },
+                { id: 'hero', label: 'Hero & Media' },
+                { id: 'content', label: 'Project Content' },
+                { id: 'roles', label: 'Roles & Deliverables' },
+                { id: 'seo', label: 'SEO Section' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wider whitespace-nowrap rounded-t-xl transition-all border-b-2 cursor-pointer ${
+                    activeTab === tab.id
+                      ? "border-[#FFFF00] text-[#FFFF00]"
+                      : "border-transparent text-white/40 hover:text-white/80"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="space-y-6">
+              {/* TAB 1: BASIC INFO */}
+              {activeTab === 'basic' && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Name</label>
+                      <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Slug (URL Path)</label>
+                      <input type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Client</label>
+                      <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="">No Client (Inquiry)</option>
+                        {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Discipline (Type)</label>
+                      <select value={projectType} onChange={(e) => setProjectType(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="Space Design">Space Design</option>
+                        <option value="Product Design">Product Design</option>
+                        <option value="Brand Design">Brand Design</option>
+                        <option value="Immersive Design">Immersive Design</option>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Interior Design">Interior Design</option>
+                        <option value="Branding">Branding</option>
+                        <option value="Research">Research</option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Related Category (Portfolio Filter)</label>
+                      <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="">Use Discipline Name</option>
+                        <option value="Space Design">Space Design</option>
+                        <option value="Product Design">Product Design</option>
+                        <option value="Experience Design">Experience Design</option>
+                        <option value="Brand Design">Brand Design</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Lifecycle Status</label>
+                      <select value={status} onChange={(e) => setStatus(e.target.value as any)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white">
+                        <option value="Inquiry">Inquiry</option>
+                        <option value="Proposal">Proposal</option>
+                        <option value="Design">Design</option>
+                        <option value="Execution">Execution</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Location</label>
+                      <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New Delhi" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Year Completed</label>
+                      <input type="number" value={year} onChange={(e) => setYear(e.target.value === "" ? "" : parseInt(e.target.value, 10))} placeholder="e.g. 2024" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Project Value (Budget)</label>
+                      <input type="text" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="e.g. $1.5M" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Start Date</label>
+                      <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">End Date</label>
+                      <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Brief Description</label>
+                    <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+
+                  <div className="space-y-2 border-t border-white/5 pt-4">
+                    <p className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Publish State & Visibility</p>
+                    <div className="flex gap-6 items-center">
+                      <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                        <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="rounded bg-[#0A0A0B] border border-white/10 text-[#FFFF00]" />
+                        Published
+                      </label>
+                      <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                        <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="rounded bg-[#0A0A0B] border border-white/10 text-[#FFFF00]" />
+                        Featured on Home Slideshow
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex gap-3 pt-4 justify-end">
-                <button type="button" onClick={() => setIsEditOpen(false)} className="px-4 py-2 bg-transparent text-white/60 border border-white/10 text-xs rounded-xl hover:bg-white/5">Cancel</button>
-                <button type="submit" className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] uppercase font-bold tracking-widest text-[10px] rounded-xl">Save Changes</button>
+              )}
+
+              {/* TAB 2: HERO & MEDIA */}
+              {activeTab === 'hero' && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Hero Video URL (Optional)</label>
+                      <input type="text" value={heroVideo} onChange={(e) => setHeroVideo(e.target.value)} placeholder="e.g. https://domain.com/video.mp4" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Hero Image Caption</label>
+                      <input type="text" value={heroCaption} onChange={(e) => setHeroCaption(e.target.value)} placeholder="e.g. Aerial render of south wing" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Hero Gallery Images (Reorderable / Drag & Drop)</label>
+                    <div className="flex flex-col gap-3">
+                      <input 
+                        type="file" 
+                        multiple 
+                        accept="image/*" 
+                        onChange={handleEditHeroFileChange} 
+                        className="bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2 text-xs text-white/60 focus:outline-none focus:border-[#FFFF00] file:mr-4 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-[10px] file:font-extrabold file:uppercase file:bg-white/10 file:text-white hover:file:bg-[#FFFF00] hover:file:text-[#0A0A0B] file:cursor-pointer"
+                      />
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-2">
+                        {editHeroImages.map((img, idx) => (
+                          <div 
+                            key={img.id}
+                            draggable
+                            onDragStart={(e) => handleEditHeroDragStart(e, img.id)}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleEditHeroDrop(e, img.id)}
+                            className={`relative rounded-xl overflow-hidden aspect-video border bg-[#0A0A0B] group cursor-grab active:cursor-grabbing ${
+                              draggedHeroId === img.id ? "border-[#FFFF00] opacity-40" : "border-white/10"
+                            }`}
+                          >
+                            <img src={img.previewUrl} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute top-1 left-1 bg-black/60 px-1 rounded text-[8px] font-bold text-white/70">
+                              #{idx + 1}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleEditHeroDelete(img.id)}
+                              className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-[#EC0606] text-white/80 hover:text-white rounded-lg transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                        {editHeroImages.length === 0 && (
+                          <p className="text-[11px] text-white/30 italic col-span-4 py-2">No hero images. Cover image fallback will be used.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: PROJECT CONTENT */}
+              {activeTab === 'content' && (
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Overview Section Title</label>
+                    <input type="text" value={overviewTitle} onChange={(e) => setOverviewTitle(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Overview Description</label>
+                    <textarea rows={4} value={overviewContent} onChange={(e) => setOverviewContent(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+
+                  <div className="space-y-1 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Process Section Title</label>
+                    <input type="text" value={processTitle} onChange={(e) => setProcessTitle(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Process Description</label>
+                    <textarea rows={4} value={processContent} onChange={(e) => setProcessContent(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+
+                  <div className="space-y-1 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Outcome Section Title</label>
+                    <input type="text" value={outcomeTitle} onChange={(e) => setOutcomeTitle(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Outcome Description</label>
+                    <textarea rows={4} value={outcomeContent} onChange={(e) => setOutcomeContent(e.target.value)} className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 4: ROLES & DELIVERABLES */}
+              {activeTab === 'roles' && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Studio Roles</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Architecture" 
+                        value={newRole}
+                        onChange={(e) => setNewRole(e.target.value)}
+                        className="flex-grow bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          if (newRole.trim()) {
+                            setStudioRoles([...studioRoles, newRole.trim()]);
+                            setNewRole("");
+                          }
+                        }}
+                        className="px-4 py-2.5 bg-white text-[#0A0A0B] font-bold text-xs uppercase rounded-xl hover:bg-[#FFFF00] transition-colors cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {studioRoles.map((r, idx) => (
+                        <div key={idx} className="flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/80">
+                          <span>{r}</span>
+                          <button 
+                            type="button" 
+                            onClick={() => setStudioRoles(studioRoles.filter((_, i) => i !== idx))}
+                            className="text-white/40 hover:text-[#EC0606] transition-colors font-bold cursor-pointer"
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      ))}
+                      {studioRoles.length === 0 && (
+                        <p className="text-[11px] text-white/30 italic">No studio roles specified.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 border-t border-white/5 pt-4">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Core Deliverables (Reorderable)</label>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Spatial Design System" 
+                        value={newDeliverable}
+                        onChange={(e) => setNewDeliverable(e.target.value)}
+                        className="flex-grow bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          if (newDeliverable.trim()) {
+                            setCoreDeliverables([...coreDeliverables, newDeliverable.trim()]);
+                            setNewDeliverable("");
+                          }
+                        }}
+                        className="px-4 py-2.5 bg-white text-[#0A0A0B] font-bold text-xs uppercase rounded-xl hover:bg-[#FFFF00] transition-colors cursor-pointer"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <div className="space-y-2 mt-2">
+                      {coreDeliverables.map((d, idx) => (
+                        <div key={idx} className="flex justify-between items-center bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs">
+                          <span className="text-white/80">{d}</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => {
+                                const copy = [...coreDeliverables];
+                                const temp = copy[idx];
+                                copy[idx] = copy[idx - 1];
+                                copy[idx - 1] = temp;
+                                setCoreDeliverables(copy);
+                              }}
+                              className="text-white/40 hover:text-white disabled:opacity-20 text-[10px] font-bold cursor-pointer px-1"
+                            >
+                              ▲
+                            </button>
+                            <button
+                              type="button"
+                              disabled={idx === coreDeliverables.length - 1}
+                              onClick={() => {
+                                const copy = [...coreDeliverables];
+                                const temp = copy[idx];
+                                copy[idx] = copy[idx + 1];
+                                copy[idx + 1] = temp;
+                                setCoreDeliverables(copy);
+                              }}
+                              className="text-white/40 hover:text-white disabled:opacity-20 text-[10px] font-bold cursor-pointer px-1"
+                            >
+                              ▼
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setCoreDeliverables(coreDeliverables.filter((_, i) => i !== idx))}
+                              className="text-white/40 hover:text-[#EC0606] transition-colors ml-2 font-bold cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {coreDeliverables.length === 0 && (
+                        <p className="text-[11px] text-white/30 italic">No core deliverables specified.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 5: SEO SECTION */}
+              {activeTab === 'seo' && (
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Meta Title</label>
+                    <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} placeholder="e.g. Haus am See | Lake Side Residence" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold block">Meta Description</label>
+                    <textarea rows={3} value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} placeholder="e.g. Explore a Lakeside residence in Bavaria..." className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white resize-none" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Meta Keywords</label>
+                      <input type="text" value={metaKeywords} onChange={(e) => setMetaKeywords(e.target.value)} placeholder="e.g. minimalism, architecture" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Open Graph Image (URL)</label>
+                      <input type="text" value={metaOgImage} onChange={(e) => setMetaOgImage(e.target.value)} placeholder="e.g. https://domain.com/og-image.jpg" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-4 justify-end border-t border-white/5">
+                <button type="button" onClick={() => setIsEditOpen(false)} className="px-4 py-2 bg-transparent text-white/60 border border-white/10 text-xs rounded-xl hover:bg-white/5 cursor-pointer">Cancel</button>
+                <button type="submit" className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] uppercase font-bold tracking-widest text-[10px] rounded-xl cursor-pointer">Save Changes</button>
               </div>
             </form>
           </div>

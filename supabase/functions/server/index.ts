@@ -91,6 +91,14 @@ CREATE TABLE IF NOT EXISTS projects (
   cover_image TEXT,
   featured BOOLEAN DEFAULT FALSE,
   published BOOLEAN DEFAULT FALSE,
+  hero_video TEXT,
+  hero_caption TEXT,
+  meta_title TEXT,
+  meta_description TEXT,
+  meta_keywords TEXT,
+  meta_og_image TEXT,
+  studio_roles TEXT,
+  core_deliverables TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -511,9 +519,54 @@ app.post(`${P}/seed`, async (c) => {
 
     // 2. Seed default testimonials
     const defaultTestimonials = [
-      { quote: "SAP × Design doesn't just design spaces — they design the feeling of being in them. Our cultural centre has become a landmark not because of how it looks, but because of how it makes people feel.", author: "Dr. Elisa Wenger", role: "Director", org: "Kulturhaus München" },
-      { quote: "Their ability to translate brand identity into physical and digital space is unmatched. The showroom they designed for us became our most powerful sales tool.", author: "Marcus Chen", role: "CEO", org: "Lumina Furniture Co." },
-      { quote: "Working with SAP × Design felt like a true collaboration. They challenged our assumptions, listened deeply, and delivered something far beyond what we imagined.", author: "Amira Okafor", role: "Founder", org: "Noire Studio" }
+      {
+        quote: "Space & Product Studio translated our vision into a physical experience that feels timeless, intentional, and deeply human.",
+        author: "Aurelia Durand",
+        role: "Head of Brand Experience",
+        org: "Luxury Retail Group"
+      },
+      {
+        quote: "They brought strategic thinking and design excellence together in a way that transformed both our space and customer journey.",
+        author: "Dr. Vikram Mehta",
+        role: "Innovation Director",
+        org: "Eris Lifesciences"
+      },
+      {
+        quote: "The team understood not only what we wanted to build, but why it mattered. The result exceeded expectations.",
+        author: "Ananya Roy",
+        role: "Founder",
+        org: "Issa Foundation"
+      },
+      {
+        quote: "From concept to execution, every detail reflected clarity, craftsmanship, and a strong point of view.",
+        author: "Lucas Thorne",
+        role: "Director",
+        org: "Contemporary Lifestyle Brand"
+      },
+      {
+        quote: "The studio approached the project as a complete system rather than a collection of deliverables. That perspective made all the difference.",
+        author: "Clara von Preussen",
+        role: "Managing Partner",
+        org: "Design-Led Enterprise"
+      },
+      {
+        quote: "The outcome feels effortless, but behind it is an exceptional depth of research, strategy, and design thinking.",
+        author: "Elodie Mercer",
+        role: "Brand Lead",
+        org: "Premium Consumer Brand"
+      },
+      {
+        quote: "In reinterpreting our heritage for a global audience, they honored our roots while creating a bold, contemporary vernacular.",
+        author: "Rajeev Gulati",
+        role: "Trustee",
+        org: "Heritage Food & Spice Legacy"
+      },
+      {
+        quote: "They designed an ecosystem that is as rigorous in its function as it is poetic in its form, bridging the physical and digital seamlessly.",
+        author: "Siddharth Sen",
+        role: "Chief Product Officer",
+        org: "Healthcare & Digital Therapeutics"
+      }
     ];
     const { error: testimonialErr } = await supabase.from("testimonials").upsert(defaultTestimonials);
     if (testimonialErr) throw new Error(`Testimonials seed failed: ${testimonialErr.message}`);
@@ -958,6 +1011,29 @@ app.post(`${P}/admin/projects`, async (c) => {
     let featured: boolean = false;
     let heroFiles: File[] = [];
 
+    // new fields
+    let slug: string | undefined = undefined;
+    let category: string | undefined = undefined;
+    let year: number | undefined = undefined;
+    let location: string | undefined = undefined;
+    let status: string | undefined = undefined;
+    let hero_video: string | undefined = undefined;
+    let hero_caption: string | undefined = undefined;
+    let meta_title: string | undefined = undefined;
+    let meta_description: string | undefined = undefined;
+    let meta_keywords: string | undefined = undefined;
+    let meta_og_image: string | undefined = undefined;
+    let studio_roles: string | undefined = undefined;
+    let core_deliverables: string | undefined = undefined;
+
+    // sections
+    let overview_title: string | undefined = undefined;
+    let overview_content: string | undefined = undefined;
+    let process_title: string | undefined = undefined;
+    let process_content: string | undefined = undefined;
+    let outcome_title: string | undefined = undefined;
+    let outcome_content: string | undefined = undefined;
+
     const contentType = c.req.header("content-type") || "";
     if (contentType.includes("multipart/form-data")) {
       const formData = await c.req.formData();
@@ -970,6 +1046,28 @@ app.post(`${P}/admin/projects`, async (c) => {
       description = (formData.get("description") as string) || undefined;
       published = formData.get("published") === "true";
       featured = formData.get("featured") === "true";
+
+      slug = (formData.get("slug") as string) || undefined;
+      category = (formData.get("category") as string) || undefined;
+      const yrVal = formData.get("year");
+      if (yrVal) year = parseInt(yrVal as string, 10);
+      location = (formData.get("location") as string) || undefined;
+      status = (formData.get("status") as string) || undefined;
+      hero_video = (formData.get("hero_video") as string) || undefined;
+      hero_caption = (formData.get("hero_caption") as string) || undefined;
+      meta_title = (formData.get("meta_title") as string) || undefined;
+      meta_description = (formData.get("meta_description") as string) || undefined;
+      meta_keywords = (formData.get("meta_keywords") as string) || undefined;
+      meta_og_image = (formData.get("meta_og_image") as string) || undefined;
+      studio_roles = (formData.get("studio_roles") as string) || undefined;
+      core_deliverables = (formData.get("core_deliverables") as string) || undefined;
+
+      overview_title = (formData.get("overview_title") as string) || undefined;
+      overview_content = (formData.get("overview_content") as string) || undefined;
+      process_title = (formData.get("process_title") as string) || undefined;
+      process_content = (formData.get("process_content") as string) || undefined;
+      outcome_title = (formData.get("outcome_title") as string) || undefined;
+      outcome_content = (formData.get("outcome_content") as string) || undefined;
 
       const files = formData.getAll("hero_images");
       heroFiles = files.filter((f) => f instanceof File) as File[];
@@ -984,15 +1082,72 @@ app.post(`${P}/admin/projects`, async (c) => {
       description = body.description;
       published = body.published === true;
       featured = body.featured === true;
+
+      slug = body.slug;
+      category = body.category;
+      year = body.year;
+      location = body.location;
+      status = body.status;
+      hero_video = body.hero_video;
+      hero_caption = body.hero_caption;
+      meta_title = body.meta_title;
+      meta_description = body.meta_description;
+      meta_keywords = body.meta_keywords;
+      meta_og_image = body.meta_og_image;
+      studio_roles = body.studio_roles;
+      core_deliverables = body.core_deliverables;
+
+      overview_title = body.overview_title;
+      overview_content = body.overview_content;
+      process_title = body.process_title;
+      process_content = body.process_content;
+      outcome_title = body.outcome_title;
+      outcome_content = body.outcome_content;
     }
 
-    const slug = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString().slice(-4)}`;
+    const finalSlug = slug || `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString().slice(-4)}`;
 
     const { data: project, error } = await supabase.from("projects").insert({
-      name, client_id, project_type, budget, start_date, end_date, description, slug, category: project_type, year: new Date().getFullYear(), published, featured
+      name,
+      client_id: client_id || null,
+      project_type,
+      budget,
+      start_date: start_date || null,
+      end_date: end_date || null,
+      description,
+      slug: finalSlug,
+      category: category || project_type,
+      year: year || new Date().getFullYear(),
+      location,
+      status: status || 'Inquiry',
+      published,
+      featured,
+      hero_video,
+      hero_caption,
+      meta_title,
+      meta_description,
+      meta_keywords,
+      meta_og_image,
+      studio_roles,
+      core_deliverables
     }).select().single();
 
     if (error) return c.json({ error: error.message }, 500);
+
+    // Insert sections if provided
+    const sectionsToInsert = [];
+    if (overview_content) {
+      sectionsToInsert.push({ project_id: project.id, section_type: 'hero', title: overview_title || 'Overview', content: overview_content });
+    }
+    if (process_content) {
+      sectionsToInsert.push({ project_id: project.id, section_type: 'process', title: process_title || 'Process', content: process_content });
+    }
+    if (outcome_content) {
+      sectionsToInsert.push({ project_id: project.id, section_type: 'outcome', title: outcome_title || 'Outcome', content: outcome_content });
+    }
+    if (sectionsToInsert.length > 0) {
+      await supabase.from("project_sections").insert(sectionsToInsert);
+    }
 
     const uploadedImages = [];
     if (heroFiles.length > 0) {
@@ -1052,6 +1207,29 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
     let finalOrder: string[] = [];
     let heroFiles: File[] = [];
 
+    // new fields
+    let slug: string | undefined;
+    let category: string | undefined;
+    let year: number | undefined;
+    let location: string | undefined;
+    let status: string | undefined;
+    let hero_video: string | undefined;
+    let hero_caption: string | undefined;
+    let meta_title: string | undefined;
+    let meta_description: string | undefined;
+    let meta_keywords: string | undefined;
+    let meta_og_image: string | undefined;
+    let studio_roles: string | undefined;
+    let core_deliverables: string | undefined;
+
+    // sections
+    let overview_title: string | undefined;
+    let overview_content: string | undefined;
+    let process_title: string | undefined;
+    let process_content: string | undefined;
+    let outcome_title: string | undefined;
+    let outcome_content: string | undefined;
+
     const contentType = c.req.header("content-type") || "";
     if (contentType.includes("multipart/form-data")) {
       const formData = await c.req.formData();
@@ -1064,6 +1242,28 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
       description = formData.get("description") as string || undefined;
       published = formData.get("published") === "true" ? true : (formData.get("published") === "false" ? false : undefined);
       featured = formData.get("featured") === "true" ? true : (formData.get("featured") === "false" ? false : undefined);
+
+      slug = (formData.get("slug") as string) || undefined;
+      category = (formData.get("category") as string) || undefined;
+      const yrVal = formData.get("year");
+      if (yrVal) year = parseInt(yrVal as string, 10);
+      location = (formData.get("location") as string) || undefined;
+      status = (formData.get("status") as string) || undefined;
+      hero_video = (formData.get("hero_video") as string) || undefined;
+      hero_caption = (formData.get("hero_caption") as string) || undefined;
+      meta_title = (formData.get("meta_title") as string) || undefined;
+      meta_description = (formData.get("meta_description") as string) || undefined;
+      meta_keywords = (formData.get("meta_keywords") as string) || undefined;
+      meta_og_image = (formData.get("meta_og_image") as string) || undefined;
+      studio_roles = (formData.get("studio_roles") as string) || undefined;
+      core_deliverables = (formData.get("core_deliverables") as string) || undefined;
+
+      overview_title = (formData.get("overview_title") as string) || undefined;
+      overview_content = (formData.get("overview_content") as string) || undefined;
+      process_title = (formData.get("process_title") as string) || undefined;
+      process_content = (formData.get("process_content") as string) || undefined;
+      outcome_title = (formData.get("outcome_title") as string) || undefined;
+      outcome_content = (formData.get("outcome_content") as string) || undefined;
 
       const deletedStr = formData.get("deleted_image_ids") as string;
       if (deletedStr) deletedImageIds = JSON.parse(deletedStr);
@@ -1086,10 +1286,32 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
       featured = body.featured;
       deletedImageIds = body.deleted_image_ids || [];
       finalOrder = body.final_order || [];
+
+      slug = body.slug;
+      category = body.category;
+      year = body.year;
+      location = body.location;
+      status = body.status;
+      hero_video = body.hero_video;
+      hero_caption = body.hero_caption;
+      meta_title = body.meta_title;
+      meta_description = body.meta_description;
+      meta_keywords = body.meta_keywords;
+      meta_og_image = body.meta_og_image;
+      studio_roles = body.studio_roles;
+      core_deliverables = body.core_deliverables;
+
+      overview_title = body.overview_title;
+      overview_content = body.overview_content;
+      process_title = body.process_title;
+      process_content = body.process_content;
+      outcome_title = body.outcome_title;
+      outcome_content = body.outcome_content;
     }
 
     const updateData: any = {};
     if (name !== undefined) updateData.name = name;
+    if (slug !== undefined) updateData.slug = slug;
     if (client_id !== undefined) updateData.client_id = client_id;
     if (project_type !== undefined) updateData.project_type = project_type;
     if (budget !== undefined) updateData.budget = budget;
@@ -1098,6 +1320,19 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
     if (description !== undefined) updateData.description = description;
     if (published !== undefined) updateData.published = published;
     if (featured !== undefined) updateData.featured = featured;
+    if (status !== undefined) updateData.status = status;
+
+    if (location !== undefined) updateData.location = location;
+    if (year !== undefined) updateData.year = year;
+    if (category !== undefined) updateData.category = category;
+    if (hero_video !== undefined) updateData.hero_video = hero_video;
+    if (hero_caption !== undefined) updateData.hero_caption = hero_caption;
+    if (meta_title !== undefined) updateData.meta_title = meta_title;
+    if (meta_description !== undefined) updateData.meta_description = meta_description;
+    if (meta_keywords !== undefined) updateData.meta_keywords = meta_keywords;
+    if (meta_og_image !== undefined) updateData.meta_og_image = meta_og_image;
+    if (studio_roles !== undefined) updateData.studio_roles = studio_roles;
+    if (core_deliverables !== undefined) updateData.core_deliverables = core_deliverables;
 
     let project: any = null;
     if (Object.keys(updateData).length > 0) {
@@ -1108,6 +1343,36 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
       const { data } = await supabase.from("projects").select("*").eq("id", projectId).single();
       project = data;
     }
+
+    // Update sections
+    const upsertSection = async (secType: string, title: string | undefined, content: string | undefined) => {
+      if (title === undefined && content === undefined) return;
+      const { data: existing } = await supabase.from("project_sections")
+        .select("id")
+        .eq("project_id", projectId)
+        .eq("section_type", secType)
+        .maybeSingle();
+        
+      if (existing) {
+        await supabase.from("project_sections")
+          .update({ title, content, updated_at: new Date().toISOString() })
+          .eq("id", existing.id);
+      } else {
+        await supabase.from("project_sections")
+          .insert({
+            project_id: projectId,
+            section_type: secType,
+            title: title || (secType === "hero" ? "Overview" : secType === "process" ? "Process" : "Outcome"),
+            content: content || ""
+          });
+      }
+    };
+
+    await Promise.all([
+      upsertSection("hero", overview_title, overview_content),
+      upsertSection("process", process_title, process_content),
+      upsertSection("outcome", outcome_title, outcome_content),
+    ]);
 
     if (deletedImageIds.length > 0) {
       const { error: delErr } = await supabase.from("project_images").delete().in("id", deletedImageIds).eq("project_id", projectId);

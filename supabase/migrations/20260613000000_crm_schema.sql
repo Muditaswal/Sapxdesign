@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS projects (
   client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-  project_type TEXT NOT NULL CHECK (project_type IN ('Architecture', 'Interior Design', 'Product Design', 'Branding', 'Research', 'UI/UX Design')),
+  project_type TEXT NOT NULL CHECK (project_type IN ('Space Design', 'Product Design', 'Brand Design', 'Experience Design', 'Architecture', 'Interior Design', 'Branding', 'Research', 'UI/UX Design')),
   description TEXT,
   status TEXT NOT NULL DEFAULT 'Inquiry' CHECK (status IN ('Inquiry', 'Proposal', 'Design', 'Execution', 'Completed')),
   budget TEXT,
@@ -57,6 +57,14 @@ CREATE TABLE IF NOT EXISTS projects (
   cover_image TEXT,
   featured BOOLEAN DEFAULT FALSE,
   published BOOLEAN DEFAULT FALSE,
+  hero_video TEXT,
+  hero_caption TEXT,
+  meta_title TEXT,
+  meta_description TEXT,
+  meta_keywords TEXT,
+  meta_og_image TEXT,
+  studio_roles TEXT,
+  core_deliverables TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

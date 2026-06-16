@@ -18,7 +18,7 @@ const setStorageItem = (key: string, val: any) => {
 
 // Seed mock database on first load
 const seedMockDB = () => {
-  if (localStorage.getItem("crm-mock-seeded-v7") === "true") return;
+  if (localStorage.getItem("crm-mock-seeded-v8") === "true") return;
 
   const mockServices = [
     { 
@@ -116,13 +116,69 @@ const seedMockDB = () => {
   setStorageItem("services", mockServices);
 
   const mockTestimonials = [
-    { id: "1", quote: "SAP × Design doesn't just design spaces — they design the feeling of being in them. Our cultural centre has become a landmark.", author: "Dr. Elisa Wenger", role: "Director", org: "Kulturhaus München" },
-    { id: "2", quote: "Their ability to translate brand identity into physical and digital space is unmatched.", author: "Marcus Chen", role: "CEO", org: "Lumina Furniture Co." }
+    {
+      id: "1",
+      quote: "Space & Product Studio translated our vision into a physical experience that feels timeless, intentional, and deeply human.",
+      author: "Aurelia Durand",
+      role: "Head of Brand Experience",
+      org: "Luxury Retail Group"
+    },
+    {
+      id: "2",
+      quote: "They brought strategic thinking and design excellence together in a way that transformed both our space and customer journey.",
+      author: "Dr. Vikram Mehta",
+      role: "Innovation Director",
+      org: "Eris Lifesciences"
+    },
+    {
+      id: "3",
+      quote: "The team understood not only what we wanted to build, but why it mattered. The result exceeded expectations.",
+      author: "Ananya Roy",
+      role: "Founder",
+      org: "Issa Foundation"
+    },
+    {
+      id: "4",
+      quote: "From concept to execution, every detail reflected clarity, craftsmanship, and a strong point of view.",
+      author: "Lucas Thorne",
+      role: "Director",
+      org: "Contemporary Lifestyle Brand"
+    },
+    {
+      id: "5",
+      quote: "The studio approached the project as a complete system rather than a collection of deliverables. That perspective made all the difference.",
+      author: "Clara von Preussen",
+      role: "Managing Partner",
+      org: "Design-Led Enterprise"
+    },
+    {
+      id: "6",
+      quote: "The outcome feels effortless, but behind it is an exceptional depth of research, strategy, and design thinking.",
+      author: "Elodie Mercer",
+      role: "Brand Lead",
+      org: "Premium Consumer Brand"
+    },
+    {
+      id: "7",
+      quote: "In reinterpreting our heritage for a global audience, they honored our roots while creating a bold, contemporary vernacular.",
+      author: "Rajeev Gulati",
+      role: "Trustee",
+      org: "Heritage Food & Spice Legacy"
+    },
+    {
+      id: "8",
+      quote: "They designed an ecosystem that is as rigorous in its function as it is poetic in its form, bridging the physical and digital seamlessly.",
+      author: "Siddharth Sen",
+      role: "Chief Product Officer",
+      org: "Healthcare & Digital Therapeutics"
+    }
   ];
   setStorageItem("testimonials", mockTestimonials);
 
   const mockProjects = [
-    { id: "proj-1", client_id: "c-1", name: "Haus am See", slug: "haus-am-see", project_type: "Space Design", description: "A lakeside residence that merges concrete minimalism with the natural landscape. The building emerges from the terrain as if carved by water and wind, creating a dialogue between built form and environment.", budget: "$1.5M", location: "Bavaria, Germany", cover_image: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", featured: true, published: true, year: 2024, created_at: new Date().toISOString() }
+    { id: "proj-1", client_id: "c-1", name: "Haus am See", slug: "haus-am-see", project_type: "Space Design", description: "A lakeside residence that merges concrete minimalism with the natural landscape. The building emerges from the terrain as if carved by water and wind, creating a dialogue between built form and environment.", budget: "$1.5M", location: "Bavaria, Germany", cover_image: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", featured: true, published: true, year: 2024, created_at: new Date().toISOString() },
+    { id: "proj-2", client_id: "c-1", name: "Maison Lumiere", slug: "maison-lumiere", project_type: "Space Design", description: "A Parisian apartment transformed through material restraint and spatial generosity.", budget: "$800K", location: "Paris, France", cover_image: "https://images.unsplash.com/photo-1768488314310-3742b3c75579?q=80&w=1080", featured: true, published: true, year: 2024, created_at: new Date().toISOString() },
+    { id: "proj-3", client_id: "c-1", name: "Forma Chair", slug: "forma-chair", project_type: "Product Design", description: "A dining chair that expresses its construction, balancing geometric clarity with physical comfort.", budget: "$50K", location: "Milan, Italy", cover_image: "https://images.unsplash.com/photo-1551907234-fb773fb08a2a?q=80&w=1080", featured: true, published: true, year: 2023, created_at: new Date().toISOString() }
   ];
   setStorageItem("projects", mockProjects);
 
@@ -130,12 +186,30 @@ const seedMockDB = () => {
     { id: "sec-1", project_id: "proj-1", section_type: "hero", title: "Overview", content: "A lakeside residence that merges concrete minimalism with the natural landscape. The building emerges from the terrain as if carved by water and wind, creating a dialogue between built form and environment." },
     { id: "sec-2", project_id: "proj-1", section_type: "role", title: "Our Role", content: "Architecture, Landscape Integration, Interior Concept" },
     { id: "sec-3", project_id: "proj-1", section_type: "process", title: "Process", content: "Beginning with extensive site analysis, we mapped seasonal light patterns and water levels over 18 months." },
-    { id: "sec-4", project_id: "proj-1", section_type: "outcome", title: "Outcome", content: "A 320m² residence that achieved passive house certification while maintaining an uncompromising architectural vision." }
+    { id: "sec-4", project_id: "proj-1", section_type: "outcome", title: "Outcome", content: "A 320m² residence that achieved passive house certification while maintaining an uncompromising architectural vision." },
+    
+    { id: "sec-5", project_id: "proj-2", section_type: "hero", title: "Overview", content: "A Parisian apartment transformed through material restraint and spatial generosity. Natural light is guided deep into the floorplan via reflective surfaces and open sightlines." },
+    { id: "sec-6", project_id: "proj-2", section_type: "role", title: "Our Role", content: "Interior Architecture, Furniture Curation, Lighting Design" },
+    { id: "sec-7", project_id: "proj-2", section_type: "process", title: "Process", content: "We removed non-load-bearing walls to restore the apartment's original 19th-century volume while introducing modern utilities." },
+    { id: "sec-8", project_id: "proj-2", section_type: "outcome", title: "Outcome", content: "A serene, light-filled sanctuary in the heart of Paris that feels both historically grounded and thoroughly modern." },
+
+    { id: "sec-9", project_id: "proj-3", section_type: "hero", title: "Overview", content: "A dining chair that expresses its construction. Balancing geometric clarity with ergonomic comfort, the chair is constructed from solid ash and CNC-milled joints." },
+    { id: "sec-10", project_id: "proj-3", section_type: "role", title: "Our Role", content: "Industrial Design, Prototyping, Manufacturing Liaison" },
+    { id: "sec-11", project_id: "proj-3", section_type: "process", title: "Process", content: "Over 20 physical scale models were built to test joint durability and seating angles for maximum comfort." },
+    { id: "sec-12", project_id: "proj-3", section_type: "outcome", title: "Outcome", content: "Launched at Milan Design Week, the chair is now in serial production with a leading European manufacturer." }
   ];
   setStorageItem("project_sections", mockProjectSections);
 
   const mockProjectImages = [
-    { id: "img-1", project_id: "proj-1", image_url: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", image_type: "hero", sort_order: 0 }
+    { id: "img-1", project_id: "proj-1", image_url: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", image_type: "hero", sort_order: 0 },
+    { id: "img-2", project_id: "proj-1", image_url: "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080", image_type: "gallery", sort_order: 1 },
+    { id: "img-3", project_id: "proj-1", image_url: "https://images.unsplash.com/photo-1668089677938-b52086753f77?q=80&w=1080", image_type: "process", sort_order: 2 },
+    
+    { id: "img-4", project_id: "proj-2", image_url: "https://images.unsplash.com/photo-1768488314310-3742b3c75579?q=80&w=1080", image_type: "hero", sort_order: 0 },
+    { id: "img-5", project_id: "proj-2", image_url: "https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&w=1080", image_type: "gallery", sort_order: 1 },
+
+    { id: "img-6", project_id: "proj-3", image_url: "https://images.unsplash.com/photo-1551907234-fb773fb08a2a?q=80&w=1080", image_type: "hero", sort_order: 0 },
+    { id: "img-7", project_id: "proj-3", image_url: "https://images.unsplash.com/photo-1668089677938-b52086753f77?q=80&w=1080", image_type: "gallery", sort_order: 1 }
   ];
   setStorageItem("project_images", mockProjectImages);
 
@@ -184,7 +258,7 @@ const seedMockDB = () => {
   setStorageItem("project_notes", []);
   setStorageItem("documents", []);
 
-  localStorage.setItem("crm-mock-seeded-v7", "true");
+  localStorage.setItem("crm-mock-seeded-v8", "true");
 };
 
 if (isPlaceholderMode) {
@@ -589,6 +663,27 @@ export const api = {
       let featured: boolean = false;
       let heroFiles: any[] = [];
 
+      let slug: string = "";
+      let category: string = "";
+      let year: number = new Date().getFullYear();
+      let location: string = "";
+      let status: string = "Inquiry";
+      let hero_video: string = "";
+      let hero_caption: string = "";
+      let meta_title: string = "";
+      let meta_description: string = "";
+      let meta_keywords: string = "";
+      let meta_og_image: string = "";
+      let studio_roles: string = "";
+      let core_deliverables: string = "";
+
+      let overview_title: string = "";
+      let overview_content: string = "";
+      let process_title: string = "";
+      let process_content: string = "";
+      let outcome_title: string = "";
+      let outcome_content: string = "";
+
       if (body instanceof FormData) {
         name = body.get("name") as string || "";
         client_id = body.get("client_id") as string || null;
@@ -600,6 +695,28 @@ export const api = {
         published = body.get("published") === "true";
         featured = body.get("featured") === "true";
         heroFiles = body.getAll("hero_images");
+
+        slug = body.get("slug") as string || "";
+        category = body.get("category") as string || "";
+        const yrVal = body.get("year");
+        if (yrVal) year = parseInt(yrVal as string, 10);
+        location = body.get("location") as string || "";
+        status = body.get("status") as string || "Inquiry";
+        hero_video = body.get("hero_video") as string || "";
+        hero_caption = body.get("hero_caption") as string || "";
+        meta_title = body.get("meta_title") as string || "";
+        meta_description = body.get("meta_description") as string || "";
+        meta_keywords = body.get("meta_keywords") as string || "";
+        meta_og_image = body.get("meta_og_image") as string || "";
+        studio_roles = body.get("studio_roles") as string || "";
+        core_deliverables = body.get("core_deliverables") as string || "";
+
+        overview_title = body.get("overview_title") as string || "";
+        overview_content = body.get("overview_content") as string || "";
+        process_title = body.get("process_title") as string || "";
+        process_content = body.get("process_content") as string || "";
+        outcome_title = body.get("outcome_title") as string || "";
+        outcome_content = body.get("outcome_content") as string || "";
       } else {
         name = body.name || "";
         client_id = body.client_id || null;
@@ -610,6 +727,27 @@ export const api = {
         description = body.description || "";
         published = body.published === true;
         featured = body.featured === true;
+
+        slug = body.slug || "";
+        category = body.category || "";
+        year = body.year !== undefined ? body.year : new Date().getFullYear();
+        location = body.location || "";
+        status = body.status || "Inquiry";
+        hero_video = body.hero_video || "";
+        hero_caption = body.hero_caption || "";
+        meta_title = body.meta_title || "";
+        meta_description = body.meta_description || "";
+        meta_keywords = body.meta_keywords || "";
+        meta_og_image = body.meta_og_image || "";
+        studio_roles = body.studio_roles || "";
+        core_deliverables = body.core_deliverables || "";
+
+        overview_title = body.overview_title || "";
+        overview_content = body.overview_content || "";
+        process_title = body.process_title || "";
+        process_content = body.process_content || "";
+        outcome_title = body.outcome_title || "";
+        outcome_content = body.outcome_content || "";
       }
 
       const projs = getStorageItem<any[]>("projects", []);
@@ -624,11 +762,36 @@ export const api = {
         description,
         published,
         featured,
-        slug: `${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now().toString().slice(-4)}`,
+        slug: slug || `${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now().toString().slice(-4)}`,
+        category: category || project_type,
+        year,
+        location,
+        status,
+        hero_video,
+        hero_caption,
+        meta_title,
+        meta_description,
+        meta_keywords,
+        meta_og_image,
+        studio_roles,
+        core_deliverables,
         cover_image: "",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+
+      // Create sections mock
+      const sections = getStorageItem<any[]>("project_sections", []);
+      if (overview_content) {
+        sections.push({ id: `sec-${Date.now()}-1`, project_id: newP.id, section_type: 'hero', title: overview_title || 'Overview', content: overview_content });
+      }
+      if (process_content) {
+        sections.push({ id: `sec-${Date.now()}-2`, project_id: newP.id, section_type: 'process', title: process_title || 'Process', content: process_content });
+      }
+      if (outcome_content) {
+        sections.push({ id: `sec-${Date.now()}-3`, project_id: newP.id, section_type: 'outcome', title: outcome_title || 'Outcome', content: outcome_content });
+      }
+      setStorageItem("project_sections", sections);
 
       const uploadedImages: any[] = [];
       if (heroFiles && heroFiles.length > 0) {
@@ -803,6 +966,27 @@ export const api = {
       let finalOrder: string[] = [];
       let heroFiles: any[] = [];
 
+      let slug: string | undefined;
+      let category: string | undefined;
+      let year: number | undefined;
+      let location: string | undefined;
+      let status: string | undefined;
+      let hero_video: string | undefined;
+      let hero_caption: string | undefined;
+      let meta_title: string | undefined;
+      let meta_description: string | undefined;
+      let meta_keywords: string | undefined;
+      let meta_og_image: string | undefined;
+      let studio_roles: string | undefined;
+      let core_deliverables: string | undefined;
+
+      let overview_title: string | undefined;
+      let overview_content: string | undefined;
+      let process_title: string | undefined;
+      let process_content: string | undefined;
+      let outcome_title: string | undefined;
+      let outcome_content: string | undefined;
+
       if (body instanceof FormData) {
         name = body.get("name") as string || undefined;
         client_id = body.get("client_id") === "null" ? null : (body.get("client_id") as string || undefined);
@@ -813,6 +997,28 @@ export const api = {
         description = body.get("description") as string || undefined;
         published = body.get("published") === "true" ? true : (body.get("published") === "false" ? false : undefined);
         featured = body.get("featured") === "true" ? true : (body.get("featured") === "false" ? false : undefined);
+
+        slug = (body.get("slug") as string) || undefined;
+        category = (body.get("category") as string) || undefined;
+        const yrVal = body.get("year");
+        if (yrVal) year = parseInt(yrVal as string, 10);
+        location = (body.get("location") as string) || undefined;
+        status = (body.get("status") as string) || undefined;
+        hero_video = (body.get("hero_video") as string) || undefined;
+        hero_caption = (body.get("hero_caption") as string) || undefined;
+        meta_title = (body.get("meta_title") as string) || undefined;
+        meta_description = (body.get("meta_description") as string) || undefined;
+        meta_keywords = (body.get("meta_keywords") as string) || undefined;
+        meta_og_image = (body.get("meta_og_image") as string) || undefined;
+        studio_roles = (body.get("studio_roles") as string) || undefined;
+        core_deliverables = (body.get("core_deliverables") as string) || undefined;
+
+        overview_title = (body.get("overview_title") as string) || undefined;
+        overview_content = (body.get("overview_content") as string) || undefined;
+        process_title = (body.get("process_title") as string) || undefined;
+        process_content = (body.get("process_content") as string) || undefined;
+        outcome_title = (body.get("outcome_title") as string) || undefined;
+        outcome_content = (body.get("outcome_content") as string) || undefined;
 
         const delStr = body.get("deleted_image_ids") as string;
         if (delStr) deletedImageIds = JSON.parse(delStr);
@@ -833,6 +1039,27 @@ export const api = {
         featured = body.featured;
         deletedImageIds = body.deleted_image_ids || [];
         finalOrder = body.final_order || [];
+
+        slug = body.slug;
+        category = body.category;
+        year = body.year;
+        location = body.location;
+        status = body.status;
+        hero_video = body.hero_video;
+        hero_caption = body.hero_caption;
+        meta_title = body.meta_title;
+        meta_description = body.meta_description;
+        meta_keywords = body.meta_keywords;
+        meta_og_image = body.meta_og_image;
+        studio_roles = body.studio_roles;
+        core_deliverables = body.core_deliverables;
+
+        overview_title = body.overview_title;
+        overview_content = body.overview_content;
+        process_title = body.process_title;
+        process_content = body.process_content;
+        outcome_title = body.outcome_title;
+        outcome_content = body.outcome_content;
       }
 
       const p = projs[idx];
@@ -845,7 +1072,46 @@ export const api = {
       if (description !== undefined) p.description = description;
       if (published !== undefined) p.published = published;
       if (featured !== undefined) p.featured = featured;
+
+      if (slug !== undefined) p.slug = slug;
+      if (category !== undefined) p.category = category;
+      if (year !== undefined) p.year = year;
+      if (location !== undefined) p.location = location;
+      if (status !== undefined) p.status = status;
+      if (hero_video !== undefined) p.hero_video = hero_video;
+      if (hero_caption !== undefined) p.hero_caption = hero_caption;
+      if (meta_title !== undefined) p.meta_title = meta_title;
+      if (meta_description !== undefined) p.meta_description = meta_description;
+      if (meta_keywords !== undefined) p.meta_keywords = meta_keywords;
+      if (meta_og_image !== undefined) p.meta_og_image = meta_og_image;
+      if (studio_roles !== undefined) p.studio_roles = studio_roles;
+      if (core_deliverables !== undefined) p.core_deliverables = core_deliverables;
+
       p.updated_at = new Date().toISOString();
+
+      // Update sections mock
+      const sections = getStorageItem<any[]>("project_sections", []);
+      const upsertSectionMock = (secType: string, title: string | undefined, content: string | undefined) => {
+        if (title === undefined && content === undefined) return;
+        const sIdx = sections.findIndex(x => x.project_id === id && x.section_type === secType);
+        if (sIdx !== -1) {
+          if (title !== undefined) sections[sIdx].title = title;
+          if (content !== undefined) sections[sIdx].content = content;
+        } else {
+          sections.push({
+            id: `sec-${Date.now()}-${Math.random()}`,
+            project_id: id,
+            section_type: secType,
+            title: title || (secType === "hero" ? "Overview" : secType === "process" ? "Process" : "Outcome"),
+            content: content || ""
+          });
+        }
+      };
+
+      upsertSectionMock("hero", overview_title, overview_content);
+      upsertSectionMock("process", process_title, process_content);
+      upsertSectionMock("outcome", outcome_title, outcome_content);
+      setStorageItem("project_sections", sections);
 
       let images = getStorageItem<any[]>("project_images", []);
       if (deletedImageIds.length > 0) {
