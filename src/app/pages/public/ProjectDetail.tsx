@@ -137,6 +137,7 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
+    setGalleryIndex(0);
     if (!slug) return;
 
     api.get<ProjectData>(`/projects/${slug}`)
@@ -214,7 +215,13 @@ export default function ProjectDetail() {
     .sort((a, b) => (a.sort_order ?? a.image_order ?? 0) - (b.sort_order ?? b.image_order ?? 0));
   const baseImages = heroImages.length > 0 
     ? heroImages 
-    : [{ id: 'cover', image_url: project.cover_image || "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", caption: "Cover Image", image_type: "hero" }];
+    : (project.cover_image 
+        ? [{ id: 'cover', image_url: project.cover_image, caption: "Cover Image", image_type: "hero" }]
+        : (allImages.length > 0 
+            ? [allImages[0]] 
+            : [{ id: 'cover', image_url: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", caption: "Cover Image", image_type: "hero" }]
+          )
+      );
   const galleryImages = allImages.filter(img => img.image_type === "gallery" || img.image_type === "process")
     .sort((a, b) => (a.image_order ?? a.sort_order ?? 0) - (b.image_order ?? b.sort_order ?? 0));
 
@@ -254,12 +261,12 @@ export default function ProjectDetail() {
         parsedRoles = Array.isArray(parsed) ? parsed : [parsed];
       } catch (e) {
         parsedRoles = typeof project.studio_roles === "string"
-          ? project.studio_roles.split(",").map(r => r.trim())
+          ? project.studio_roles.split(",").map(r => r.trim()).filter(Boolean)
           : [];
       }
     }
   }
-  if (parsedRoles.length === 0) {
+  if (parsedRoles.length === 0 && project.id.startsWith("proj-")) {
     parsedRoles = roleSection?.content ? [roleSection.content] : ["Design & Execution Supervision"];
   }
 
@@ -273,12 +280,12 @@ export default function ProjectDetail() {
         parsedDeliverables = Array.isArray(parsed) ? parsed : [parsed];
       } catch (e) {
         parsedDeliverables = typeof project.core_deliverables === "string"
-          ? project.core_deliverables.split(",").map(d => d.trim())
+          ? project.core_deliverables.split(",").map(d => d.trim()).filter(Boolean)
           : [];
       }
     }
   }
-  if (parsedDeliverables.length === 0) {
+  if (parsedDeliverables.length === 0 && project.id.startsWith("proj-")) {
     parsedDeliverables = [
       "Spatial Design System",
       "Technical Drawings & DDLs",
@@ -622,7 +629,7 @@ export default function ProjectDetail() {
           <div className="lg:col-span-8 space-y-12">
             <div>
               <h3 className="text-xs uppercase tracking-[0.3em] text-[#EC0606] mb-4 font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Overview
+                {overviewSection?.title || "Overview"}
               </h3>
               <p className="text-[16px] md:text-[18px] leading-[1.8] text-white/60 font-light">
                 {overviewSection?.content || project.description || "Detailed overview of the studio project."}
@@ -654,31 +661,35 @@ export default function ProjectDetail() {
 
           {/* Right Column: Roles & Deliverables */}
           <div className="lg:col-span-4 lg:border-l lg:border-white/10 lg:pl-12 space-y-8">
-            <div>
-              <h3 className="text-xs uppercase tracking-[0.3em] text-[#EC0606] mb-4 font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Studio Role
-              </h3>
-              <ul className="space-y-2 text-sm text-white/60">
-                {parsedRoles.map((role, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-[#EC0606] rounded-full" /> {role}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {parsedRoles.length > 0 && (
+              <div>
+                <h3 className="text-xs uppercase tracking-[0.3em] text-[#EC0606] mb-4 font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  Studio Role
+                </h3>
+                <ul className="space-y-2 text-sm text-white/60">
+                  {parsedRoles.map((role, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-[#EC0606] rounded-full" /> {role}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             
-            <div className="pt-6 border-t border-white/10">
-              <h3 className="text-xs uppercase tracking-[0.3em] text-white/40 mb-4 font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Core Deliverables
-              </h3>
-              <ul className="space-y-3 text-sm text-white/60">
-                {parsedDeliverables.map((deliv, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-[#FFFF00] rounded-full" /> {deliv}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {parsedDeliverables.length > 0 && (
+              <div className="pt-6 border-t border-white/10">
+                <h3 className="text-xs uppercase tracking-[0.3em] text-white/40 mb-4 font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  Core Deliverables
+                </h3>
+                <ul className="space-y-3 text-sm text-white/60">
+                  {parsedDeliverables.map((deliv, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-[#FFFF00] rounded-full" /> {deliv}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
 
