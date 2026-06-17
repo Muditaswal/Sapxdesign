@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { api } from "../../services/api";
 import { Navbar } from "../../components/Navbar";
-import { Footer } from "../../components/Footer";
 import { SEO } from "../../components/SEO";
 
 interface Project {
@@ -17,14 +16,24 @@ interface Project {
   description: string;
 }
 
+const portfolioCategories = [
+  { id: "all", label: "All" },
+  { id: "space-design", label: "Space Design" },
+  { id: "product-design", label: "Product Design" },
+  { id: "brand-design", label: "Brand Design" },
+  { id: "experience-design", label: "Immersive Design" }
+];
+
 export default function Portfolios() {
   const { category } = useParams<{ category: string }>();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Format parameter key into clean DB category filter
   const getDBCategory = (param: string) => {
     switch (param.toLowerCase()) {
+      case "all": return "All";
       case "space-design":
       case "space": return "Space Design";
       case "product-design":
@@ -42,6 +51,7 @@ export default function Portfolios() {
 
   const getTitle = (param: string) => {
     switch (param.toLowerCase()) {
+      case "all": return "All Projects";
       case "space-design":
       case "space": return "Space Design Portfolio";
       case "product-design":
@@ -62,7 +72,9 @@ export default function Portfolios() {
     setLoading(true);
     const dbCat = getDBCategory(category || "");
 
-    api.get<Project[]>(`/projects?category=${dbCat}`)
+    const fetchUrl = dbCat === "All" ? "/projects" : `/projects?category=${dbCat}`;
+
+    api.get<Project[]>(fetchUrl)
       .then((data) => {
         setProjects(data || []);
         setLoading(false);
@@ -115,14 +127,36 @@ export default function Portfolios() {
           <h1 className="text-[36px] md:text-[64px] font-extrabold uppercase leading-none tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
             {getTitle(category || "")}
           </h1>
-          <p className="text-white/40 mt-4 max-w-[600px] text-sm md:text-base font-light leading-relaxed">
-            Explorations in architectural geometry, product longevity, and human interaction systems. Curated by the studio.
-          </p>
+        </div>
+      </div>
+
+      {/* Category Filter Tabs */}
+      <div className="max-w-[1400px] mx-auto w-full px-6 md:px-12 pt-10 md:pt-16">
+        <div className="flex flex-wrap gap-x-2 gap-y-3">
+          {portfolioCategories.map((cat) => {
+            const isActive = (category || "").toLowerCase() === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => navigate(`/portfolio/${cat.id}`)}
+                className="text-[13px] tracking-[0.05em] transition-all duration-200 px-4 py-2 cursor-pointer rounded-full"
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: isActive ? 700 : 400,
+                  color: isActive ? "#0A0A0B" : "rgba(255,255,255,0.4)",
+                  backgroundColor: isActive ? "#FFFF00" : "transparent",
+                  border: isActive ? "none" : "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                {cat.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Portfolio Grid */}
-      <main className="max-w-[1400px] mx-auto px-6 md:px-12 py-16 md:py-24 flex-grow w-full">
+      <main className="max-w-[1400px] mx-auto px-6 md:px-12 py-10 md:py-16 flex-grow w-full">
         {loading ? (
           <div className="flex h-64 items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FFFF00] border-t-transparent"></div>
@@ -175,7 +209,6 @@ export default function Portfolios() {
         )}
       </main>
 
-      <Footer />
     </div>
   );
 }

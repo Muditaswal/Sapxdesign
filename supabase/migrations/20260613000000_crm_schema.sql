@@ -330,4 +330,3 @@ DROP POLICY IF EXISTS "Admin write to kv_store" ON kv_store_f1100bc4;
 CREATE POLICY "Admin write to kv_store" ON kv_store_f1100bc4 FOR ALL USING (
   EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
 );
-

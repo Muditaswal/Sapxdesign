@@ -145,7 +145,8 @@ export function ProjectsSection() {
             images: item.images || [],
             description: item.description || "",
             span: spans[index % spans.length],
-            slug: item.slug
+            slug: item.slug,
+            featured: !!item.featured
           }));
           setDbProjects(mapped);
         } else {
@@ -158,9 +159,18 @@ export function ProjectsSection() {
       });
   }, []);
 
-  const filteredProjects = dbProjects.filter(
+  // 1. Filter by category tab
+  const categoryFiltered = dbProjects.filter(
     (p) => filter === "All" || p.category === filter
   );
+
+  // 2. Filter to only Featured projects (selected by user) if they exist. 
+  // Otherwise fall back to all projects in that category.
+  const featuredProjects = categoryFiltered.filter(p => p.featured);
+  const displaySource = featuredProjects.length > 0 ? featuredProjects : categoryFiltered;
+
+  // 3. Limit to top 8 projects
+  const filteredProjects = displaySource.slice(0, 8);
 
   return (
     <section id="works" className="py-20 md:py-28 px-6 md:px-12 relative overflow-hidden bg-[#0A0A0B]">
@@ -275,6 +285,22 @@ export function ProjectsSection() {
               </Link>
             </motion.div>
           ))}
+        </div>
+
+        {/* View All Projects Button */}
+        <div className="mt-16 flex justify-center">
+          <Link
+            to="/portfolio/all"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-transparent border-2 border-[#FFFF00] rounded-full overflow-hidden transition-all duration-300 hover:bg-[#FFFF00] cursor-pointer"
+          >
+            <span
+              className="relative z-10 text-sm font-bold uppercase tracking-widest text-[#FFFF00] group-hover:text-[#0A0A0B] transition-colors duration-300"
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
+              View All Projects
+            </span>
+            <ArrowUpRight className="relative z-10 w-4 h-4 text-[#FFFF00] group-hover:text-[#0A0A0B] transition-colors duration-300" />
+          </Link>
         </div>
       </div>
     </section>
