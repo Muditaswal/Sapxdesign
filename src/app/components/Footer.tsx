@@ -156,6 +156,13 @@ export function Footer() {
                 >
                   149 DDA Flat, Lado Sarai, New Delhi 110030, INDIA
                 </a>
+                <a
+                  href="tel:+918368544334"
+                  className="block text-[15px] text-white/50 hover:text-[#FFFF00] transition-colors duration-300 text-center lg:text-left leading-relaxed max-w-[280px] mx-auto lg:mx-0"
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+                >
+                  +91 8368544334
+                </a>
                 <div className="flex justify-center lg:justify-start">
                   <motion.a
                     href="mailto:spaceandproductstudio@gmail.com"
