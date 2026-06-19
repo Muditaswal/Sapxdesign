@@ -159,18 +159,38 @@ export default function Home() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-[24px] md:text-[40px] tracking-[0.2em] font-extrabold"
+                  className="text-[24px] md:text-[40px] tracking-[0.2em] font-extrabold text-white uppercase text-center"
                   style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
                 >
-                  SAP × DESIGN
+                  Space and Product studio
                 </motion.h1>
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-sm md:text-base tracking-[0.3em] text-white/50 uppercase font-light"
+                  className="text-sm md:text-base tracking-[0.3em] text-white/50 uppercase font-light text-center mt-[3px]"
+                  style={{ fontFamily: "'Nico Moji', sans-serif", fontWeight: 400 }}
                 >
-                  Space and Product studio
+                  SAP{" "}
+                  <motion.span
+                    className="inline-flex items-center justify-center"
+                    style={{
+                      width: "1em",
+                      height: "1em",
+                      lineHeight: 1,
+                      transformOrigin: "center center",
+                    }}
+                    animate={{ rotate: [0, 0, 360, 360] }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      times: [0, 0.4, 0.6, 1],
+                      ease: "easeInOut",
+                    }}
+                  >
+                    ×
+                  </motion.span>{" "}
+                  DESIGN
                 </motion.p>
               </div>
             </motion.div>

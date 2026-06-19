@@ -5,12 +5,10 @@ import { Check, ArrowRight } from "lucide-react";
 import { api } from "../services/api";
 
 const projectTypes = [
-  "Architecture",
-  "Interior Design",
+  "Space Design",
   "Product Design",
-  "UI/UX Design",
-  "Multi-Discipline",
-  "Other",
+  "Brand Design",
+  "Immersive Design",
 ];
 
 export function ContactSection() {

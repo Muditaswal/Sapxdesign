@@ -275,12 +275,7 @@ export function ProjectsSection() {
                       </span>
                     </div>
                   </div>
-                  <p
-                    className="text-[14px] text-white/35 mt-1"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
-                  >
-                    {project.year}
-                  </p>
+
                 </div>
               </Link>
             </motion.div>

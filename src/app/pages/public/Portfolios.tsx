@@ -201,7 +201,7 @@ export default function Portfolios() {
                     </h3>
                     <p className="text-white/40 text-xs mt-1 uppercase tracking-wider">{proj.project_type}</p>
                   </div>
-                  <span className="text-white/30 text-xs font-semibold mt-1">{proj.year}</span>
+
                 </div>
               </Link>
             ))}

@@ -96,7 +96,13 @@ export function Footer() {
                 <div className="flex flex-col leading-none">
                   <span
                     className="text-[20px] tracking-[0.08em] text-white uppercase"
-                    style={{ fontFamily: "'Nico Moji', sans-serif", fontWeight: 700 }}
+                    style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
+                  >
+                    Space and Product
+                  </span>
+                  <span
+                    className="text-[11px] uppercase tracking-[0.2em] text-white/25 mt-[3px]"
+                    style={{ fontFamily: "'Nico Moji', sans-serif", fontWeight: 400 }}
                   >
                     SAP{" "}
                     <motion.span
@@ -118,12 +124,6 @@ export function Footer() {
                       ×
                     </motion.span>{" "}
                     Design
-                  </span>
-                  <span
-                    className="text-[11px] uppercase tracking-[0.2em] text-white/25 mt-[3px]"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}
-                  >
-                    Space and Product
                   </span>
                 </div>
               </div>
