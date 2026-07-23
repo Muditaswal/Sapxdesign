@@ -18,7 +18,7 @@ const setStorageItem = (key: string, val: any) => {
 
 // Seed mock database on first load
 const seedMockDB = () => {
-  if (localStorage.getItem("crm-mock-seeded-v9") === "true") return;
+  if (localStorage.getItem("crm-mock-seeded-v10") === "true") return;
 
   const mockHero = {
     slideshow: [
@@ -350,7 +350,7 @@ const seedMockDB = () => {
   setStorageItem("project_notes", []);
   setStorageItem("documents", []);
 
-  localStorage.setItem("crm-mock-seeded-v8", "true");
+  localStorage.setItem("crm-mock-seeded-v10", "true");
 };
 
 if (isPlaceholderMode) {
@@ -532,6 +532,12 @@ export const api = {
       const featured = path.includes("featured=true");
       let filtered = projs.filter(p => p.published);
       if (featured) filtered = filtered.filter(p => p.featured);
+      if (path.includes("category=")) {
+        const catParam = decodeURIComponent(path.split("category=")[1].split("&")[0]);
+        if (catParam && catParam !== "All") {
+          filtered = filtered.filter(p => p.project_type === catParam || p.category === catParam);
+        }
+      }
       filtered.sort((a, b) => (a.display_order ?? 999) - (b.display_order ?? 999));
       return filtered.map(p => ({
         ...p,
@@ -1110,6 +1116,8 @@ export const api = {
         description = body.get("description") as string || undefined;
         published = body.get("published") === "true" ? true : (body.get("published") === "false" ? false : undefined);
         featured = body.get("featured") === "true" ? true : (body.get("featured") === "false" ? false : undefined);
+        const orderVal = body.get("display_order");
+        if (orderVal) display_order = parseInt(orderVal as string, 10);
 
         slug = (body.get("slug") as string) || undefined;
         category = (body.get("category") as string) || undefined;
@@ -1150,6 +1158,9 @@ export const api = {
         description = body.description;
         published = body.published;
         featured = body.featured;
+        if (body.display_order !== undefined && body.display_order !== null) {
+          display_order = parseInt(body.display_order as any, 10);
+        }
         deletedImageIds = body.deleted_image_ids || [];
         finalOrder = body.final_order || [];
 

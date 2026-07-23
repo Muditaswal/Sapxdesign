@@ -171,8 +171,12 @@ export function ProjectsSection() {
   const featuredProjects = categoryFiltered.filter(p => (p as any).featured);
   const displaySource = featuredProjects.length > 0 ? featuredProjects : categoryFiltered;
 
+  const sortedProjects = [...displaySource].sort(
+    (a, b) => ((a as any).display_order ?? 999) - ((b as any).display_order ?? 999)
+  );
+
   // 3. Limit to top 8 projects
-  const filteredProjects = displaySource.slice(0, 8);
+  const filteredProjects = sortedProjects.slice(0, 8);
 
   return (
     <section id="works" className="py-20 md:py-28 px-6 md:px-12 relative overflow-hidden bg-[#0A0A0B]">
