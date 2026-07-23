@@ -527,7 +527,16 @@ export const api = {
       return { ...p, sections, images } as any;
     }
     if (path.startsWith("/projects")) {
-      const projs = getStorageItem<any[]>("projects", []);
+      let projs = getStorageItem<any[]>("projects", []);
+      let needsSave = false;
+      projs.forEach((p, idx) => {
+        if (p.display_order === undefined || p.display_order === null) {
+          p.display_order = idx + 1;
+          needsSave = true;
+        }
+      });
+      if (needsSave) setStorageItem("projects", projs);
+
       const allImages = getStorageItem<any[]>("project_images", []);
       const featured = path.includes("featured=true");
       let filtered = projs.filter(p => p.published);

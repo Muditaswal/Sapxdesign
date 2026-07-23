@@ -97,11 +97,12 @@ CREATE TABLE IF NOT EXISTS projects (
   meta_description TEXT,
   meta_keywords TEXT,
   meta_og_image TEXT,
-  studio_roles TEXT,
-  core_deliverables TEXT,
+  display_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
 
 -- 5. Create Project Sections
 CREATE TABLE IF NOT EXISTS project_sections (
@@ -651,7 +652,7 @@ app.get(`${P}/testimonials`, async (c) => {
 app.get(`${P}/projects`, async (c) => {
   const featured = c.req.query("featured");
   const category = c.req.query("category");
-  let query = supabase.from("projects").select("*, images:project_images(*)").eq("published", true).order("featured", { ascending: false }).order("created_at", { ascending: false });
+  let query = supabase.from("projects").select("*, images:project_images(*)").eq("published", true).order("display_order", { ascending: true }).order("created_at", { ascending: false });
   if (featured === "true") query = query.eq("featured", true);
   if (category && category !== "All") query = query.eq("category", category);
   const { data, error } = await query;
@@ -961,9 +962,25 @@ app.post(`${P}/admin/clients/:id/notes`, async (c) => {
 
 // ─── PROJECTS CRUD (ADMIN) ───────────────────────────────────────────────────
 app.get(`${P}/admin/projects`, async (c) => {
-  const { data, error } = await supabase.from("projects").select("*, client:clients(name)").order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("projects").select("*, client:clients(name)").order("display_order", { ascending: true }).order("created_at", { ascending: false });
   if (error) return c.json({ error: error.message }, 500);
   return c.json(data ?? []);
+});
+
+app.put(`${P}/admin/projects/reorder`, async (c) => {
+  try {
+    const items = await c.req.json();
+    if (Array.isArray(items)) {
+      for (const item of items) {
+        if (item.id && item.display_order !== undefined) {
+          await supabase.from("projects").update({ display_order: item.display_order }).eq("id", item.id);
+        }
+      }
+    }
+    return c.json({ success: true });
+  } catch (err) {
+    return c.json({ error: err.message }, 500);
+  }
 });
 
 app.get(`${P}/admin/projects/:id`, async (c) => {
@@ -1203,6 +1220,7 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
     let description: string | undefined;
     let published: boolean | undefined;
     let featured: boolean | undefined;
+    let display_order: number | undefined;
     let deletedImageIds: string[] = [];
     let finalOrder: string[] = [];
     let heroFiles: File[] = [];
@@ -1242,6 +1260,8 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
       description = formData.get("description") as string || undefined;
       published = formData.get("published") === "true" ? true : (formData.get("published") === "false" ? false : undefined);
       featured = formData.get("featured") === "true" ? true : (formData.get("featured") === "false" ? false : undefined);
+      const orderVal = formData.get("display_order");
+      if (orderVal) display_order = parseInt(orderVal as string, 10);
 
       slug = (formData.get("slug") as string) || undefined;
       category = (formData.get("category") as string) || undefined;
@@ -1284,6 +1304,9 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
       description = body.description;
       published = body.published;
       featured = body.featured;
+      if (body.display_order !== undefined && body.display_order !== null) {
+        display_order = parseInt(body.display_order as any, 10);
+      }
       deletedImageIds = body.deleted_image_ids || [];
       finalOrder = body.final_order || [];
 
@@ -1320,6 +1343,7 @@ app.put(`${P}/admin/projects/:id`, async (c) => {
     if (description !== undefined) updateData.description = description;
     if (published !== undefined) updateData.published = published;
     if (featured !== undefined) updateData.featured = featured;
+    if (display_order !== undefined) updateData.display_order = display_order;
     if (status !== undefined) updateData.status = status;
 
     if (location !== undefined) updateData.location = location;
