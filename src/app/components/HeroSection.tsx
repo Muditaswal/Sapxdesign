@@ -70,33 +70,43 @@ const AUDIENCES_DEFAULT = [
   },
 ];
 
-interface ServiceProp {
+interface HeroProps {
   services: any[];
+  heroSlides?: any[];
+  heroMatrix?: any[];
+  marquee?: string[];
 }
 
 // --- SLIDESHOW COMPONENT ---
-function WorksSlideshow({ services }: ServiceProp) {
+function WorksSlideshow({ services, heroSlides }: HeroProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Map backend services dynamically to slideshow slides
-  const slides = services.length > 0 
-    ? services.filter(s => s.show_in_slideshow !== false).map((s, index) => {
-        let category = "Studio Capability";
-        if (s.id === "space") category = "Physical Space";
-        else if (s.id === "product") category = "Interface";
-        else if (s.id === "brand") category = "Brand Identity";
-        else if (s.id === "experience") category = "Interaction & Experience";
+  // Use heroSlides if available, otherwise map backend services dynamically
+  const slides = (heroSlides && heroSlides.length > 0)
+    ? heroSlides.filter(s => s.show !== false).map((s) => ({
+        id: s.id,
+        src: s.src,
+        title: (s.title || "").toUpperCase(),
+        category: s.category || "Studio Capability"
+      }))
+    : services.length > 0 
+      ? services.filter(s => s.show_in_slideshow !== false).map((s, index) => {
+          let category = "Studio Capability";
+          if (s.id === "space") category = "Physical Space";
+          else if (s.id === "product") category = "Interface";
+          else if (s.id === "brand") category = "Brand Identity";
+          else if (s.id === "experience") category = "Interaction & Experience";
 
-        const fallbackSlide = WORKS_DEFAULT[index % WORKS_DEFAULT.length];
+          const fallbackSlide = WORKS_DEFAULT[index % WORKS_DEFAULT.length];
 
-        return {
-          id: s.id,
-          src: s.image || fallbackSlide.src,
-          title: s.title.toUpperCase(),
-          category
-        };
-      })
-    : WORKS_DEFAULT;
+          return {
+            id: s.id,
+            src: s.image || fallbackSlide.src,
+            title: s.title.toUpperCase(),
+            category
+          };
+        })
+      : WORKS_DEFAULT;
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -199,42 +209,52 @@ function WorksSlideshow({ services }: ServiceProp) {
 }
 
 // --- AUDIENCE MATRIX COMPONENT ---
-function AudienceMatrix({ services }: ServiceProp) {
+function AudienceMatrix({ services, heroMatrix }: HeroProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isTouch, setIsTouch] = useState(false);
 
-  // Map backend services dynamically to matrix items
-  const audiencesList = services.length > 0
-    ? services.filter(s => s.show_in_matrix !== false).map((s, index) => {
-        const fallbackAud = AUDIENCES_DEFAULT[index % AUDIENCES_DEFAULT.length];
+  // Map backend services dynamically or use heroMatrix if available
+  const audiencesList = (heroMatrix && heroMatrix.length > 0)
+    ? heroMatrix.filter(m => m.show !== false).map((m) => ({
+        id: m.id,
+        title: (m.title || "").toUpperCase(),
+        heading: m.heading || m.title,
+        desc: m.desc,
+        color: m.color || "#0A0A0B",
+        textColor: m.textColor || "#FFFFFF",
+        image: m.image
+      }))
+    : services.length > 0
+      ? services.filter(s => s.show_in_matrix !== false).map((s, index) => {
+          const fallbackAud = AUDIENCES_DEFAULT[index % AUDIENCES_DEFAULT.length];
 
-        let color = "#0A0A0B";
-        let textColor = "#FFFFFF";
-        if (s.id === "space") {
-          color = "#0A0A0B";
-          textColor = "#FFFFFF";
-        } else if (s.id === "product") {
-          color = "#EC0606";
-          textColor = "#FFFFFF";
-        } else if (s.id === "brand") {
-          color = "#FFFF00";
-          textColor = "#0A0A0B";
-        } else if (s.id === "experience") {
-          color = "#FFFFFF";
-          textColor = "#0A0A0B";
-        }
+          let color = "#0A0A0B";
+          let textColor = "#FFFFFF";
+          if (s.id === "space") {
+            color = "#0A0A0B";
+            textColor = "#FFFFFF";
+          } else if (s.id === "product") {
+            color = "#EC0606";
+            textColor = "#FFFFFF";
+          } else if (s.id === "brand") {
+            color = "#FFFF00";
+            textColor = "#0A0A0B";
+          } else if (s.id === "experience") {
+            color = "#FFFFFF";
+            textColor = "#0A0A0B";
+          }
 
-        return {
-          id: s.id,
-          title: s.title.toUpperCase(),
-          heading: s.title.toUpperCase().replace(" DESIGN", "\nDESIGN"),
-          desc: s.short_desc || fallbackAud.desc,
-          color,
-          textColor,
-          image: s.image || fallbackAud.image
-        };
-      })
-    : AUDIENCES_DEFAULT;
+          return {
+            id: s.id,
+            title: s.title.toUpperCase(),
+            heading: s.title.toUpperCase().replace(" DESIGN", "\nDESIGN"),
+            desc: s.short_desc || fallbackAud.desc,
+            color,
+            textColor,
+            image: s.image || fallbackAud.image
+          };
+        })
+      : AUDIENCES_DEFAULT;
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse)");
@@ -410,6 +430,7 @@ import { ClientsMarquee } from "./ClientsMarquee";
 // --- MAIN EXPORT ---
 export function HeroSection() {
   const [services, setServices] = useState<any[]>([]);
+  const [heroConfig, setHeroConfig] = useState<any>(null);
 
   useEffect(() => {
     api.get<any[]>("/services")
@@ -421,13 +442,23 @@ export function HeroSection() {
       .catch((err) => {
         console.warn("Failed to fetch services in HeroSection:", err);
       });
+
+    api.get<any>("/hero")
+      .then((data) => {
+        if (data) {
+          setHeroConfig(data);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch hero config in HeroSection:", err);
+      });
   }, []);
 
   return (
     <div className="flex flex-col w-full">
-      <WorksSlideshow services={services} />
-      <ClientsMarquee />
-      <AudienceMatrix services={services} />
+      <WorksSlideshow services={services} heroSlides={heroConfig?.slideshow} />
+      <ClientsMarquee items={heroConfig?.marquee} />
+      <AudienceMatrix services={services} heroMatrix={heroConfig?.matrix} />
     </div>
   );
 }

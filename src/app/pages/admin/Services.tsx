@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Tag, X, Sparkles } from "lucide-react";
+import { Plus, Edit, Trash2, Tag, X, Sparkles, Upload, Eye } from "lucide-react";
 import { api } from "../../services/api";
 import { ServiceItem } from "../../types/crm";
 
@@ -57,9 +57,10 @@ export default function Services() {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Editor modal states
+  // Editor & Preview modal states
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [previewService, setPreviewService] = useState<ServiceItem | null>(null);
 
   // Form Fields
   const [id, setId] = useState("");
@@ -68,12 +69,23 @@ export default function Services() {
   const [shortDesc, setShortDesc] = useState("");
   const [fullDesc, setFullDesc] = useState("");
   const [image, setImage] = useState("");
+  const [isUrlMode, setIsUrlMode] = useState(false);
   const [showInSlideshow, setShowInSlideshow] = useState(true);
   const [showInMatrix, setShowInMatrix] = useState(true);
   
   // Custom capabilities list management
   const [capabilities, setCapabilities] = useState<string[]>([]);
   const [newCapInput, setNewCapInput] = useState("");
+
+  const handleImageFileUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        setImage(e.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const allAvailableCaps = Array.from(new Set([...STANDARD_CAPABILITIES, ...capabilities]));
 
@@ -251,10 +263,17 @@ export default function Services() {
 
               <div className="flex gap-2 justify-end pt-4 border-t border-white/5">
                 <button
-                  onClick={() => openEditor(service)}
+                  onClick={() => setPreviewService(service)}
                   className="px-3 py-1.5 bg-[#0A0A0B] border border-white/10 hover:border-white/20 text-white/50 hover:text-white rounded-lg text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Preview Service Detail"
                 >
-                  <Edit className="w-3.5 h-3.5" /> Edit Service
+                  <Eye className="w-3.5 h-3.5" /> Preview Detail
+                </button>
+                <button
+                  onClick={() => openEditor(service)}
+                  className="px-3 py-1.5 bg-[#FFFF00] text-[#0A0A0B] font-bold rounded-lg text-xs flex items-center gap-1.5 transition-colors cursor-pointer hover:bg-white"
+                >
+                  <Edit className="w-3.5 h-3.5" /> Edit Detail
                 </button>
                 <button
                   onClick={() => handleDelete(service.id)}
@@ -293,9 +312,59 @@ export default function Services() {
                 <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Space Design" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Cover Image URL</label>
-                <input type="text" value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://images.unsplash.com/..." className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
+              {/* COVER IMAGE UPLOADER */}
+              <div className="space-y-2 border-t border-b border-white/5 py-4">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold flex items-center gap-1.5">
+                    <Upload className="w-3.5 h-3.5 text-[#FFFF00]" /> Service Cover Image
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setIsUrlMode(!isUrlMode)}
+                    className="text-[10px] text-[#FFFF00] hover:underline cursor-pointer"
+                  >
+                    {isUrlMode ? "Use File Upload" : "Paste Image URL"}
+                  </button>
+                </div>
+
+                {isUrlMode ? (
+                  <input
+                    type="text"
+                    value={image}
+                    onChange={(e) => setImage(e.target.value)}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white"
+                  />
+                ) : (
+                  <label className="border-2 border-dashed border-white/15 hover:border-[#FFFF00]/50 bg-[#0A0A0B] rounded-2xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors group">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleImageFileUpload(e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <Upload className="w-6 h-6 text-white/40 group-hover:text-[#FFFF00] transition-colors mb-1.5" />
+                    <p className="text-xs text-white font-semibold">Click to upload image file from computer</p>
+                    <p className="text-[10px] text-white/30 mt-0.5">JPG, PNG, WEBP formats</p>
+                  </label>
+                )}
+
+                {image && (
+                  <div className="relative h-28 w-full rounded-xl overflow-hidden border border-white/10 mt-2 bg-black">
+                    <img src={image} alt="Cover preview" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setImage("")}
+                      className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-red-500 text-white rounded-lg text-xs"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -390,6 +459,87 @@ export default function Services() {
                 <button type="submit" className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] uppercase font-bold tracking-widest text-[10px] rounded-xl">Save Service</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* PREVIEW DETAIL MODAL */}
+      {previewService && (
+        <div className="fixed inset-0 z-50 bg-[#0A0A0B]/85 backdrop-blur-md flex items-center justify-center p-6">
+          <div className="bg-[#141416] border border-white/10 rounded-[30px] w-full max-w-3xl p-8 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <div>
+                <span className="text-[10px] text-[#FFFF00] font-black uppercase tracking-widest">
+                  Service {previewService.number} Detail Preview
+                </span>
+                <h3 className="text-2xl font-bold uppercase text-white tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
+                  {previewService.title}
+                </h3>
+              </div>
+              <button 
+                onClick={() => setPreviewService(null)} 
+                className="p-2 text-white/40 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Cover Image Preview */}
+              {previewService.image && (
+                <div className="h-56 w-full rounded-2xl overflow-hidden border border-white/10 bg-black">
+                  <img src={previewService.image} alt={previewService.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              {/* Short & Full Description */}
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold text-white/40 tracking-wider">Short Summary</h4>
+                  <p className="text-sm text-white/80 mt-1 font-medium">{previewService.short_desc}</p>
+                </div>
+
+                <div>
+                  <h4 className="text-[10px] uppercase font-bold text-white/40 tracking-wider">Detailed Full Description</h4>
+                  <p className="text-xs text-white/60 mt-1 leading-relaxed whitespace-pre-line font-light">{previewService.full_desc}</p>
+                </div>
+              </div>
+
+              {/* Capabilities Pills */}
+              {previewService.capabilities && previewService.capabilities.length > 0 && (
+                <div className="border-t border-white/10 pt-4 space-y-2">
+                  <h4 className="text-[10px] uppercase font-bold text-[#EC0606] tracking-wider">
+                    Capabilities Pills ({previewService.capabilities.length})
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {previewService.capabilities.map((cap) => (
+                      <span key={cap} className="px-3 py-1 bg-black text-[#FFFF00] border border-white/10 rounded-full text-xs font-bold">
+                        {cap}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 border-t border-white/10 pt-4">
+              <button 
+                onClick={() => setPreviewService(null)} 
+                className="px-4 py-2 text-xs text-white/60 border border-white/10 rounded-xl hover:bg-white/5"
+              >
+                Close Preview
+              </button>
+              <button 
+                onClick={() => {
+                  const target = previewService;
+                  setPreviewService(null);
+                  openEditor(target);
+                }} 
+                className="px-5 py-2 bg-[#FFFF00] text-[#0A0A0B] text-xs uppercase font-extrabold rounded-xl hover:bg-white transition-colors"
+              >
+                Edit All Details
+              </button>
+            </div>
           </div>
         </div>
       )}

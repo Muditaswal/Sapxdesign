@@ -146,8 +146,10 @@ export function ProjectsSection() {
             description: item.description || "",
             span: spans[index % spans.length],
             slug: item.slug,
-            featured: !!item.featured
+            featured: !!item.featured,
+            display_order: item.display_order ?? (index + 1)
           }));
+          mapped.sort((a, b) => ((a as any).display_order ?? 999) - ((b as any).display_order ?? 999));
           setDbProjects(mapped);
         } else {
           setDbProjects(fallbackProjects);
@@ -166,7 +168,7 @@ export function ProjectsSection() {
 
   // 2. Filter to only Featured projects (selected by user) if they exist. 
   // Otherwise fall back to all projects in that category.
-  const featuredProjects = categoryFiltered.filter(p => p.featured);
+  const featuredProjects = categoryFiltered.filter(p => (p as any).featured);
   const displaySource = featuredProjects.length > 0 ? featuredProjects : categoryFiltered;
 
   // 3. Limit to top 8 projects

@@ -3,12 +3,14 @@ import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { 
   LayoutDashboard, Users, FolderKanban, CalendarRange, 
   Mail, FileText, CreditCard, Newspaper, Settings, 
-  LogOut, Menu, X, ShieldAlert, Sparkles 
+  LogOut, Menu, X, ShieldAlert, Sparkles, Sliders
 } from "lucide-react";
 import { supabase } from "../../services/supabase";
 
 const menuItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Hero Section", href: "/admin/hero", icon: Sliders },
+  { label: "Services", href: "/admin/services", icon: Sparkles },
   { label: "Leads", href: "/admin/leads", icon: ShieldAlert },
   { label: "Clients", href: "/admin/clients", icon: Users },
   { label: "Projects", href: "/admin/projects", icon: FolderKanban },
@@ -17,7 +19,6 @@ const menuItems = [
   { label: "Documents", href: "/admin/documents", icon: FileText },
   { label: "Payments", href: "/admin/payments", icon: CreditCard },
   { label: "Blog CMS", href: "/admin/blog", icon: Newspaper },
-  { label: "Services", href: "/admin/services", icon: Sparkles },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

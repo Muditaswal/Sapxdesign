@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Calendar, FileText, Image as ImageIcon, Clipboard, Send, ExternalLink, Globe } from "lucide-react";
+import { Plus, Edit, Trash2, Calendar, FileText, Image as ImageIcon, Clipboard, Send, ExternalLink, Globe, ArrowUp, ArrowDown } from "lucide-react";
 import { api } from "../../services/api";
 import { Project, ProjectNote, ProjectImage, DocumentFile, Payment, Client } from "../../types/crm";
 
@@ -32,6 +32,7 @@ export default function Projects() {
   const [endDate, setEndDate] = useState("");
   const [published, setPublished] = useState(false);
   const [featured, setFeatured] = useState(false);
+  const [displayOrder, setDisplayOrder] = useState<number | "">(1);
 
   // New Detailed Fields
   const [slug, setSlug] = useState("");
@@ -205,6 +206,7 @@ export default function Projects() {
     if (endDate) formData.append("end_date", endDate);
     formData.append("published", String(published));
     formData.append("featured", String(featured));
+    formData.append("display_order", String(displayOrder || 1));
 
     // Append new creation fields
     formData.append("slug", slug || `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString().slice(-4)}`);
@@ -255,6 +257,7 @@ export default function Projects() {
     formData.append("end_date", endDate || "null");
     formData.append("published", String(published));
     formData.append("featured", String(featured));
+    formData.append("display_order", String(displayOrder || 1));
 
     // Append new edit fields
     formData.append("slug", slug);
@@ -467,6 +470,26 @@ export default function Projects() {
       .catch((err) => console.error(`Failed to update ${field} flag:`, err));
   };
 
+  const handleMoveProjectOrder = (e: React.MouseEvent, index: number, direction: "up" | "down") => {
+    e.stopPropagation();
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= projects.length) return;
+
+    const copy = [...projects];
+    const [moved] = copy.splice(index, 1);
+    copy.splice(newIndex, 0, moved);
+
+    const reordered = copy.map((p, idx) => ({
+      ...p,
+      display_order: idx + 1
+    }));
+
+    setProjects(reordered);
+
+    api.put("/admin/projects/reorder", reordered.map(p => ({ id: p.id, display_order: p.display_order })))
+      .catch((err) => console.error("Failed to reorder projects:", err));
+  };
+
   const openEdit = (proj: Project) => {
     setEditingProject(proj);
     setName(proj.name);
@@ -478,6 +501,7 @@ export default function Projects() {
     setEndDate(proj.end_date || "");
     setPublished(proj.published);
     setFeatured(proj.featured);
+    setDisplayOrder(proj.display_order || 1);
 
     setSlug(proj.slug || "");
     setCategory(proj.category || "");
@@ -615,6 +639,7 @@ export default function Projects() {
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-white/5 text-white/40 uppercase tracking-widest text-[10px] font-black bg-[#141416]">
+                    <th className="py-4 px-4 text-center">Rank #</th>
                     <th className="py-4 px-6">Project Title</th>
                     <th className="py-4 px-6">Type & Client</th>
                     <th className="py-4 px-6">Status</th>
@@ -622,7 +647,7 @@ export default function Projects() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {projects.map((proj) => (
+                  {projects.map((proj, idx) => (
                     <tr 
                       key={proj.id} 
                       onClick={() => loadProjectDetails(proj.id)}
@@ -630,6 +655,31 @@ export default function Projects() {
                         selectedProject?.id === proj.id ? "bg-[#FFFF00]/5 hover:bg-[#FFFF00]/10" : "hover:bg-white/[0.01]"
                       }`}
                     >
+                      <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-center gap-1">
+                          <span className="w-6 h-6 rounded-lg bg-[#FFFF00]/10 border border-[#FFFF00]/20 text-[#FFFF00] font-black text-[10px] flex items-center justify-center" title={`Display Series Rank #${proj.display_order || idx + 1}`}>
+                            #{proj.display_order || idx + 1}
+                          </span>
+                          <div className="flex flex-col">
+                            <button
+                              onClick={(e) => handleMoveProjectOrder(e, idx, "up")}
+                              disabled={idx === 0}
+                              className="text-white/40 hover:text-[#FFFF00] disabled:opacity-20 transition-colors cursor-pointer"
+                              title="Move Up in Series"
+                            >
+                              <ArrowUp className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={(e) => handleMoveProjectOrder(e, idx, "down")}
+                              disabled={idx === projects.length - 1}
+                              className="text-white/40 hover:text-[#FFFF00] disabled:opacity-20 transition-colors cursor-pointer"
+                              title="Move Down in Series"
+                            >
+                              <ArrowDown className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </td>
                       <td className="py-4 px-6">
                         <div>
                           <p className="font-bold text-white flex items-center gap-2">
@@ -1032,7 +1082,11 @@ export default function Projects() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-[#FFFF00] font-bold">Series Rank #</label>
+                      <input type="number" min={1} value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value === "" ? "" : parseInt(e.target.value, 10))} placeholder="1" className="w-full bg-[#0A0A0B] border border-[#FFFF00]/30 rounded-xl px-4 py-2.5 text-xs text-[#FFFF00] font-bold" />
+                    </div>
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Location</label>
                       <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New Delhi" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />
@@ -1413,7 +1467,11 @@ export default function Projects() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase tracking-wider text-[#FFFF00] font-bold">Series Rank #</label>
+                      <input type="number" min={1} value={displayOrder} onChange={(e) => setDisplayOrder(e.target.value === "" ? "" : parseInt(e.target.value, 10))} placeholder="1" className="w-full bg-[#0A0A0B] border border-[#FFFF00]/30 rounded-xl px-4 py-2.5 text-xs text-[#FFFF00] font-bold" />
+                    </div>
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase tracking-wider text-white/40 font-bold">Location</label>
                       <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. New Delhi" className="w-full bg-[#0A0A0B] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white" />

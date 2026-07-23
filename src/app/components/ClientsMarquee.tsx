@@ -22,7 +22,14 @@ const clients = [
 // Duplicate to create seamless loop
 const duplicatedClients = [...clients, ...clients, ...clients, ...clients];
 
-export function ClientsMarquee() {
+interface MarqueeProps {
+  items?: string[];
+}
+
+export function ClientsMarquee({ items }: MarqueeProps) {
+  const listToUse = items && items.length > 0 ? items : clients;
+  const duplicatedClients = [...listToUse, ...listToUse, ...listToUse, ...listToUse];
+
   return (
     <section className="w-full bg-[#FFFF00] text-[#0A0A0B] py-4 md:py-5 overflow-hidden flex relative z-10">
       <div className="absolute left-0 w-16 md:w-32 h-full bg-gradient-to-r from-[#FFFF00] to-transparent z-10 pointer-events-none" />
@@ -39,13 +46,22 @@ export function ClientsMarquee() {
           }}
         >
           {duplicatedClients.map((client, i) => {
-            const LogoComponent = brandLogos[client];
+            const LogoComponent = (brandLogos as Record<string, React.ComponentType>)[client];
             return (
               <div key={i} className="flex items-center">
                 <div className="flex items-center gap-4 text-[#0A0A0B]">
-                  <div className="h-6 md:h-10 w-auto max-w-[150px] opacity-90 mix-blend-multiply flex items-center justify-center">
-                    <LogoComponent />
-                  </div>
+                  {LogoComponent ? (
+                    <div className="h-6 md:h-10 w-auto max-w-[150px] opacity-90 mix-blend-multiply flex items-center justify-center">
+                      <LogoComponent />
+                    </div>
+                  ) : (
+                    <span 
+                      className="text-xs md:text-sm font-black uppercase tracking-widest text-[#0A0A0B]" 
+                      style={{ fontFamily: "'Syne', sans-serif" }}
+                    >
+                      {client}
+                    </span>
+                  )}
                 </div>
                 {/* Brutalist Red separator cross */}
                 <span 

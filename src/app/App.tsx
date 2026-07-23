@@ -25,6 +25,7 @@ const Payments = lazy(() => import("./pages/admin/Payments"));
 const BlogCMS = lazy(() => import("./pages/admin/BlogCMS"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
 const Services = lazy(() => import("./pages/admin/Services"));
+const HeroCMS = lazy(() => import("./pages/admin/HeroCMS"));
 
 // Route Guard Wrapper for Admin space
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -105,6 +106,7 @@ export default function App() {
               <Route path="blog" element={<BlogCMS />} />
               <Route path="settings" element={<Settings />} />
               <Route path="services" element={<Services />} />
+              <Route path="hero" element={<HeroCMS />} />
             </Route>
 
             {/* Fallback to 404 NotFound Page */}

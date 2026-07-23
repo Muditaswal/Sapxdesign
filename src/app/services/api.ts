@@ -18,7 +18,99 @@ const setStorageItem = (key: string, val: any) => {
 
 // Seed mock database on first load
 const seedMockDB = () => {
-  if (localStorage.getItem("crm-mock-seeded-v8") === "true") return;
+  if (localStorage.getItem("crm-mock-seeded-v9") === "true") return;
+
+  const mockHero = {
+    slideshow: [
+      { 
+        id: "space", 
+        title: "SPACE DESIGN", 
+        category: "Physical Space",
+        src: "https://images.unsplash.com/photo-1695067440629-b5e513976100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcmNoaXRlY3R1cmUlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTY1ODc2MHww&ixlib=rb-4.1.0&q=80&w=1920&utm_source=figma&utm_medium=referral", 
+        description: "We design physical environments and built experiences.",
+        show: true
+      },
+      { 
+        id: "product", 
+        title: "PRODUCT DESIGN", 
+        category: "Interface",
+        src: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwaW50ZXJmYWNlJTIwZGVzaWduJTIwbW9iaWxlJTIwYXBwfGVufDF8fHx8MTc3MTcxMTYyNnww&ixlib=rb-4.1.0&q=80&w=1920&utm_source=figma&utm_medium=referral", 
+        description: "We shape digital products and intelligent systems.",
+        show: true
+      },
+      { 
+        id: "brand", 
+        title: "BRAND DESIGN", 
+        category: "Brand Identity",
+        src: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&w=1920&auto=format&fit=crop", 
+        description: "We build brands and communication systems.",
+        show: true
+      },
+      { 
+        id: "experience", 
+        title: "IMMERSIVE DESIGN", 
+        category: "Interaction & Experience",
+        src: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1920&auto=format&fit=crop", 
+        description: "We design interactions between brands and people.",
+        show: true
+      }
+    ],
+    matrix: [
+      {
+        id: "space",
+        title: "SPACE DESIGN",
+        heading: "SPACE\nDESIGN",
+        desc: "We design physical environments and built experiences.",
+        color: "#0A0A0B",
+        textColor: "#FFFFFF",
+        image: "https://images.unsplash.com/photo-1695067440629-b5e513976100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcmNoaXRlY3R1cmUlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDF8fHx8MTc3MTY1ODc2MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        buttonText: "Explore Capabilities",
+        show: true
+      },
+      {
+        id: "product",
+        title: "PRODUCT DESIGN",
+        heading: "PRODUCT\nDESIGN",
+        desc: "We shape digital products and intelligent systems.",
+        color: "#EC0606",
+        textColor: "#FFFFFF",
+        image: "https://images.unsplash.com/photo-1767449441925-737379bc2c4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwaW50ZXJmYWNlJTIwZGVzaWduJTIwbW9iaWxlJTIwYXBwfGVufDF8fHx8MTc3MTcxMTYyNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        buttonText: "Explore Capabilities",
+        show: true
+      },
+      {
+        id: "brand",
+        title: "BRAND DESIGN",
+        heading: "BRAND\nDESIGN",
+        desc: "We build brands and communication systems.",
+        color: "#FFFF00",
+        textColor: "#0A0A0B",
+        image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&w=1080&auto=format&fit=crop",
+        buttonText: "Explore Capabilities",
+        show: true
+      },
+      {
+        id: "experience",
+        title: "IMMERSIVE DESIGN",
+        heading: "IMMERSIVE\nDESIGN",
+        desc: "We design interactions between brands and people.",
+        color: "#FFFFFF",
+        textColor: "#0A0A0B",
+        image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1080&auto=format&fit=crop",
+        buttonText: "Explore Capabilities",
+        show: true
+      }
+    ],
+    marquee: [
+      "Luxury Retail Group",
+      "Eris Lifesciences",
+      "Issa Foundation",
+      "Contemporary Lifestyle Brand",
+      "Heritage Food & Spice Legacy",
+      "Digital Therapeutics"
+    ]
+  };
+  setStorageItem("hero", mockHero);
 
   const mockServices = [
     { 
@@ -176,9 +268,9 @@ const seedMockDB = () => {
   setStorageItem("testimonials", mockTestimonials);
 
   const mockProjects = [
-    { id: "proj-1", client_id: "c-1", name: "Haus am See", slug: "haus-am-see", project_type: "Space Design", description: "A lakeside residence that merges concrete minimalism with the natural landscape. The building emerges from the terrain as if carved by water and wind, creating a dialogue between built form and environment.", budget: "$1.5M", location: "Bavaria, Germany", cover_image: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", featured: true, published: true, year: 2024, created_at: new Date().toISOString() },
-    { id: "proj-2", client_id: "c-1", name: "Maison Lumiere", slug: "maison-lumiere", project_type: "Space Design", description: "A Parisian apartment transformed through material restraint and spatial generosity.", budget: "$800K", location: "Paris, France", cover_image: "https://images.unsplash.com/photo-1768488314310-3742b3c75579?q=80&w=1080", featured: true, published: true, year: 2024, created_at: new Date().toISOString() },
-    { id: "proj-3", client_id: "c-1", name: "Forma Chair", slug: "forma-chair", project_type: "Product Design", description: "A dining chair that expresses its construction, balancing geometric clarity with physical comfort.", budget: "$50K", location: "Milan, Italy", cover_image: "https://images.unsplash.com/photo-1551907234-fb773fb08a2a?q=80&w=1080", featured: true, published: true, year: 2023, created_at: new Date().toISOString() }
+    { id: "proj-1", client_id: "c-1", name: "Haus am See", slug: "haus-am-see", project_type: "Space Design", description: "A lakeside residence that merges concrete minimalism with the natural landscape. The building emerges from the terrain as if carved by water and wind, creating a dialogue between built form and environment.", budget: "$1.5M", location: "Bavaria, Germany", cover_image: "https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&w=1080", display_order: 1, featured: true, published: true, year: 2024, created_at: new Date().toISOString() },
+    { id: "proj-2", client_id: "c-1", name: "Maison Lumiere", slug: "maison-lumiere", project_type: "Space Design", description: "A Parisian apartment transformed through material restraint and spatial generosity.", budget: "$800K", location: "Paris, France", cover_image: "https://images.unsplash.com/photo-1768488314310-3742b3c75579?q=80&w=1080", display_order: 2, featured: true, published: true, year: 2024, created_at: new Date().toISOString() },
+    { id: "proj-3", client_id: "c-1", name: "Forma Chair", slug: "forma-chair", project_type: "Product Design", description: "A dining chair that expresses its construction, balancing geometric clarity with physical comfort.", budget: "$50K", location: "Milan, Italy", cover_image: "https://images.unsplash.com/photo-1551907234-fb773fb08a2a?q=80&w=1080", display_order: 3, featured: true, published: true, year: 2023, created_at: new Date().toISOString() }
   ];
   setStorageItem("projects", mockProjects);
 
@@ -422,6 +514,7 @@ export const api = {
 
   // ─── LOCAL STORAGE MOCK ENDPOINTS INTERCEPTORS ──────────────────────────────
   mockGet<T>(path: string): T {
+    if (path === "/hero" || path === "/admin/hero") return getStorageItem("hero", {}) as any;
     if (path === "/services") return getStorageItem("services", []) as any;
     if (path === "/testimonials") return getStorageItem("testimonials", []) as any;
     if (path.startsWith("/projects/")) {
@@ -439,6 +532,7 @@ export const api = {
       const featured = path.includes("featured=true");
       let filtered = projs.filter(p => p.published);
       if (featured) filtered = filtered.filter(p => p.featured);
+      filtered.sort((a, b) => (a.display_order ?? 999) - (b.display_order ?? 999));
       return filtered.map(p => ({
         ...p,
         images: allImages.filter(img => img.project_id === p.id)
@@ -517,6 +611,7 @@ export const api = {
     if (path === "/admin/projects") {
       const projs = getStorageItem<any[]>("projects", []);
       const clients = getStorageItem<any[]>("clients", []);
+      projs.sort((a, b) => (a.display_order ?? 999) - (b.display_order ?? 999));
       return projs.map(p => ({
         ...p,
         client: clients.find(c => c.id === p.client_id)
@@ -661,6 +756,7 @@ export const api = {
       let description: string = "";
       let published: boolean = false;
       let featured: boolean = false;
+      let display_order: number = 999;
       let heroFiles: any[] = [];
 
       let slug: string = "";
@@ -715,8 +811,8 @@ export const api = {
         overview_content = body.get("overview_content") as string || "";
         process_title = body.get("process_title") as string || "";
         process_content = body.get("process_content") as string || "";
-        outcome_title = body.get("outcome_title") as string || "";
-        outcome_content = body.get("outcome_content") as string || "";
+        const orderVal = body.get("display_order");
+        if (orderVal) display_order = parseInt(orderVal as string, 10);
       } else {
         name = body.name || "";
         client_id = body.client_id || null;
@@ -727,6 +823,7 @@ export const api = {
         description = body.description || "";
         published = body.published === true;
         featured = body.featured === true;
+        if (body.display_order !== undefined) display_order = parseInt(body.display_order as any, 10);
 
         slug = body.slug || "";
         category = body.category || "";
@@ -762,6 +859,7 @@ export const api = {
         description,
         published,
         featured,
+        display_order: display_order || projs.length + 1,
         slug: slug || `${name.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${Date.now().toString().slice(-4)}`,
         category: category || project_type,
         year,
@@ -947,6 +1045,20 @@ export const api = {
         return clients[idx] as any;
       }
     }
+    if (path === "/admin/projects/reorder") {
+      const projs = getStorageItem<any[]>("projects", []);
+      if (Array.isArray(body)) {
+        body.forEach((item: { id: string; display_order: number }) => {
+          const idx = projs.findIndex(p => p.id === item.id);
+          if (idx !== -1) {
+            projs[idx].display_order = item.display_order;
+          }
+        });
+        setStorageItem("projects", projs);
+      }
+      return { success: true } as any;
+    }
+
     if (path.startsWith("/admin/projects/")) {
       const id = path.split("/")[3];
       const projs = getStorageItem<any[]>("projects", []);
@@ -962,6 +1074,7 @@ export const api = {
       let description: string | undefined;
       let published: boolean | undefined;
       let featured: boolean | undefined;
+      let display_order: number | undefined;
       let deletedImageIds: string[] = [];
       let finalOrder: string[] = [];
       let heroFiles: any[] = [];
@@ -1072,6 +1185,7 @@ export const api = {
       if (description !== undefined) p.description = description;
       if (published !== undefined) p.published = published;
       if (featured !== undefined) p.featured = featured;
+      if (display_order !== undefined) p.display_order = display_order;
 
       if (slug !== undefined) p.slug = slug;
       if (category !== undefined) p.category = category;
@@ -1223,6 +1337,10 @@ export const api = {
         setStorageItem("posts", posts);
         return posts[idx] as any;
       }
+    }
+    if (path === "/admin/hero" || path === "/hero") {
+      setStorageItem("hero", body);
+      return body as any;
     }
     if (path.startsWith("/admin/services/")) {
       const id = path.split("/")[3];

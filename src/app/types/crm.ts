@@ -58,6 +58,7 @@ export interface Project {
   year?: number;      // For portfolio year
   location?: string;
   cover_image?: string;
+  display_order?: number;
   featured: boolean;
   published: boolean;
   hero_video?: string;
@@ -202,6 +203,33 @@ export interface ServiceItem {
   created_at?: string;
 }
 
+export interface HeroSlideItem {
+  id: string;
+  title: string;
+  category: string;
+  src: string;
+  description?: string;
+  show?: boolean;
+}
+
+export interface HeroMatrixItem {
+  id: string;
+  title: string;
+  heading: string;
+  desc: string;
+  color: string;
+  textColor: string;
+  image: string;
+  buttonText?: string;
+  show?: boolean;
+}
+
+export interface HeroConfig {
+  slideshow: HeroSlideItem[];
+  matrix: HeroMatrixItem[];
+  marquee?: string[];
+}
+
 export interface TestimonialItem {
   id: string;
   quote: string;
@@ -210,3 +238,4 @@ export interface TestimonialItem {
   org?: string;
   created_at?: string;
 }
+

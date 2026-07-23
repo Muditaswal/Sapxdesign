@@ -76,7 +76,9 @@ export default function Portfolios() {
 
     api.get<Project[]>(fetchUrl)
       .then((data) => {
-        setProjects(data || []);
+        const sorted = [...(data || [])];
+        sorted.sort((a, b) => ((a as any).display_order ?? 999) - ((b as any).display_order ?? 999));
+        setProjects(sorted);
         setLoading(false);
       })
       .catch((err) => {
