@@ -361,11 +361,17 @@ export default function ProjectDetail() {
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       "name": project.name,
+      "headline": `${project.name} — ${project.project_type} by Space and Product Studio`,
       "description": project.description,
+      "genre": project.project_type,
+      "locationCreated": project.location,
+      "dateCreated": project.year ? String(project.year) : undefined,
       "image": project.cover_image,
+      "url": `https://sapxdesign.com/projects/${project.slug}`,
       "creator": {
         "@type": "Organization",
-        "name": "Space and Product Studio"
+        "name": "Space and Product Studio",
+        "url": "https://sapxdesign.com/"
       }
     }
   ] : [];

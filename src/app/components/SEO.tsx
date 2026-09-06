@@ -62,6 +62,8 @@ export function SEO({
     setMetaTag("property", "og:url", currentUrl);
     setMetaTag("property", "og:type", ogType);
     setMetaTag("property", "og:image", ogImage);
+    setMetaTag("property", "og:site_name", "Space and Product Studio");
+    setMetaTag("property", "og:locale", "en_US");
 
     // 5. Twitter Card Tags
     setMetaTag("property", "twitter:card", "summary_large_image");
@@ -69,6 +71,9 @@ export function SEO({
     setMetaTag("property", "twitter:title", title);
     setMetaTag("property", "twitter:description", description);
     setMetaTag("property", "twitter:image", ogImage);
+
+    // Robots meta tag
+    setMetaTag("name", "robots", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
 
     // 6. Structured Data (JSON-LD)
     const existingScripts = document.querySelectorAll('script[type="application/ld+json"].dynamic-schema');

@@ -1,6 +1,38 @@
+# Robots.txt for Space and Product Studio (https://sapxdesign.com)
 User-agent: *
 Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
 Disallow: /admin/
 Disallow: /admin
 
+# Generative Engine Optimization (GEO) - Allow AI Search & Answering Engines
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+# Sitemaps
 Sitemap: https://sapxdesign.com/sitemap.xml

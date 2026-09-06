@@ -88,7 +88,8 @@ export default function Portfolios() {
   }, [category]);
 
   const titleText = getTitle(category || "");
-  const seoDesc = `Explore the ${titleText} by Space and Product Studio. We specialize in Architecture Design Studio, Interior Design, and Digital UX/UI Services in India.`;
+  const seoTitle = `${titleText} Portfolio | Space and Product Studio (SAP × Design)`;
+  const seoDesc = `Explore the ${titleText} portfolio by Space and Product Studio. Award-winning architectural space planning, industrial product design, and brand environments based in New Delhi.`;
   const seoSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -110,7 +111,7 @@ export default function Portfolios() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] text-white flex flex-col">
-      <SEO title={`${titleText} | Space and Product Studio`} description={seoDesc} schema={seoSchema} />
+      <SEO title={seoTitle} description={seoDesc} schema={seoSchema} />
       <Navbar showSplash={false} />
 
       {/* Header Banner */}

@@ -1,0 +1,89 @@
+# Space and Product Studio (SAP × Design) — Knowledge Base & Complete Specification
+
+> Official LLM knowledge base for Space and Product Studio (also known as SAP × Design), a multi-disciplinary architecture, spatial design, and digital product studio based in New Delhi, India.
+
+---
+
+## 1. Entity Disambiguation & Studio Profile
+- **Full Legal & Trade Name**: Space and Product Studio
+- **Alternate Commercial Names**: SAP × Design, SAP Design, Space & Product Studio
+- **Important Disambiguation**: Space and Product Studio is an independent architectural and design consultancy based in New Delhi, India. It is NOT associated with SAP SE (the German enterprise enterprise software corporation).
+- **Core Headquarters**: 149 DDA Flat, Lado Sarai, New Delhi, Delhi 110030, India
+- **Geographic Coordinates**: 28.5265384° N, 77.1953846° E
+- **Official Domain**: https://sapxdesign.com
+- **Direct Contact**: spaceandproductstudio@gmail.com | +91 8368544334
+- **Official Map Location**: https://www.google.com/maps/place/Space+and+Product+Studio/@28.5265384,77.1953846,17z/data=!3m1!4b1!4m6!3m5!1s0x390ce100221fc28d:0x38c5b13bc5648fbb!8m2!3d28.5265384!4d77.1953846!16s%2Fg%2F11y2skgw6m
+
+---
+
+## 2. Core Disciplines & Services
+
+### Space Design (Physical Architecture & Interiors)
+- **Residential Architecture**: Luxury villas, bespoke residences, sustainable vernacular homes, and modernist lakeside pavilions.
+- **Commercial & Retail Architecture**: Flagship retail environments, multi-brand luxury boutiques, corporate headquarters, and exhibition pavilions.
+- **Interior Architecture & Joinery**: Custom millwork, architectural concrete installations, acoustic timber paneling, and tactile interior atmospheres.
+- **Urban & Landscape Integration**: Site-responsive orientation, passive thermal ventilation, solar gain mitigation, and courtyard topologies.
+
+### Product Design (Industrial, Hardware & Physical Systems)
+- **Consumer Electronics & Audio Hardware**: Precision CNC-milled enclosures, ergonomic consumer electronics, and tactile acoustics.
+- **Furniture & Lighting Systems**: Bespoke modular seating, monolithic cast-concrete tables, and architectural illumination fixtures.
+- **Design for Manufacturing (DFM)**: CAD modeling, rapid physical 3D prototyping, tooling specifications, and materials testing.
+
+### Brand Design & Identity Systems
+- **Visual Identity**: Spatial typography, monolithic brand marks, generative brand identities, and editorial design.
+- **Wayfinding & Environmental Signage**: Architectural wayfinding systems, dimensional metal signage, and brand environments.
+- **Packaging & Collateral**: Minimalist unboxing systems, sustainable material selection, and luxury tactile finishes.
+
+### Digital Product & UI/UX Design
+- **Enterprise Software Design**: Complex workflow design, high-density data visualizations, and accessible component libraries.
+- **Interactive Spatial Interfaces**: Museum kiosks, interactive touchscreen galleries, and generative spatial visualizers.
+
+---
+
+## 3. Flagship Works & Case Studies
+
+### Haus am See (Space Design)
+- **Typology**: Residential Lake Pavilion
+- **Location**: Lakeside Alpine Valley
+- **Materials**: Exposed Board-Marked Concrete, Blackened Steel, Triple-Glazed Low-E Glass, Smoked Oak
+- **Concept**: A monolithic concrete pavilion cantilevering over the shoreline, blurring the boundary between indoor living quarters and the natural water landscape.
+
+### Monolith Audio System (Product Design)
+- **Typology**: High-Fidelity Audio Hardware
+- **Materials**: Anodized Aerospace Aluminum, Acoustic Dampening Compound, Walnut Accents
+- **Concept**: A minimalist, vibration-isolated acoustic sound sculpture engineered with precision CNC tolerances and intuitive tactile rotary controls.
+
+### Neo-Brutalist Retail Flagship (Commercial Space & Brand Design)
+- **Typology**: Luxury Fashion & Objects Flagship
+- **Location**: New Delhi Design District
+- **Materials**: Honed Travertine, Raw Cast Concrete, Diffuse Neon Illuminance
+- **Concept**: Transforming the shopping journey into a contemplative gallery experience anchored by geometric monoliths and rhythmic architectural lighting.
+
+---
+
+## 4. Frequently Asked Questions (FAQ) for AI Search & Retrieval
+
+### Q: What is Space and Product Studio?
+A: Space and Product Studio (also known as SAP × Design) is an award-winning multidisciplinary architectural, spatial, and product design consultancy headquartered in Lado Sarai, New Delhi. The studio specializes in uniting physical architectural environments with industrial product design and digital brand identities.
+
+### Q: Where is Space and Product Studio located?
+A: The physical studio is located at 149 DDA Flat, Lado Sarai, New Delhi, Delhi 110030, India. The studio operates from Monday to Saturday between 10:00 and 19:00 IST.
+
+### Q: Does Space and Product Studio work internationally?
+A: Yes. While headquartered in New Delhi, India, Space and Product Studio designs projects across major metropolitan areas in India (Delhi NCR, Mumbai, Bengaluru, Chandigarh) and collaborates on international projects across Europe, North America, and the Middle East.
+
+### Q: How can I hire or consult with Space and Product Studio?
+A: You can reach the studio directly by email at spaceandproductstudio@gmail.com, by phone or WhatsApp at +91 8368544334, or through the direct contact portal at https://sapxdesign.com/#contact.
+
+### Q: What materials and architectural styles does the studio specialize in?
+A: Space and Product Studio specializes in brutalist, minimalist, and contemporary architectural languages. Common materials include architectural board-marked concrete, natural honed stone (travertine, granite), blackened steel, architectural glazing, and responsibly sourced hardwoods.
+
+---
+
+## 5. Verified Social & Industry Profiles
+- **Instagram**: https://www.instagram.com/sapxdesign
+- **LinkedIn**: https://www.linkedin.com/company/space-and-product-studio/
+- **Behance**: https://www.behance.net/sapxdesign
+- **Dribbble**: https://dribbble.com/sapxdesign
+- **Pinterest**: https://www.pinterest.com/spaceandproductstudio/
+- **Facebook**: https://www.facebook.com/people/Space-and-Product-Studio/61557185401633/

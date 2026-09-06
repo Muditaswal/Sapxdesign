@@ -46,28 +46,28 @@ export default function Home() {
     };
   }, []);
 
-  let seoTitle = "Space and Product Studio | Designing Spaces, Products, Brands & Experiences";
-  let seoDescription = "Space and Product Studio helps businesses and organizations transform spaces, products, brands, and experiences through strategic architecture and digital UX/UI design.";
-  let seoSchema: any = [
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": "https://sapxdesign.com/#website",
-      "name": "Space and Product Studio",
-      "url": "https://sapxdesign.com/"
-    },
+  const seoTitle = "Space and Product Studio | SAP × Design | Architecture & Product Studio New Delhi";
+  const seoDescription = "Space and Product Studio (SAP × Design) is a premier trans-disciplinary architecture, spatial design, and digital product studio based in Lado Sarai, New Delhi. Delivering turnkey residential, commercial, and industrial product design.";
+  const seoKeywords = "Space and Product Studio, SAP Design, SAP x Design, Architecture New Delhi, Space Design India, Interior Design Studio Delhi, Luxury Residence Architecture, Industrial Product Design, Digital Product Design, Brand Design Studio Lado Sarai";
+
+  const seoSchema = [
     {
       "@context": "https://schema.org",
       "@type": "Organization",
       "@id": "https://sapxdesign.com/#organization",
       "name": "Space and Product Studio",
+      "alternateName": ["SAP × Design", "SAP Design", "Space & Product Studio"],
       "url": "https://sapxdesign.com/",
       "logo": "https://sapxdesign.com/og-image.jpg",
       "description": "Space and Product Studio helps businesses and organizations transform spaces, products, brands, and experiences through strategic design.",
+      "disambiguatingDescription": "Space and Product Studio is an architectural and design studio in New Delhi, India, not associated with SAP SE enterprise software.",
       "sameAs": [
         "https://www.instagram.com/sapxdesign",
         "https://www.linkedin.com/company/space-and-product-studio/",
-        "https://www.facebook.com/people/Space-and-Product-Studio/61557185401633/"
+        "https://www.facebook.com/people/Space-and-Product-Studio/61557185401633/",
+        "https://www.pinterest.com/spaceandproductstudio/",
+        "https://www.behance.net/sapxdesign",
+        "https://dribbble.com/sapxdesign"
       ]
     },
     {
@@ -75,10 +75,12 @@ export default function Home() {
       "@type": "ArchitecturalOffice",
       "@id": "https://sapxdesign.com/#localbusiness",
       "name": "Space and Product Studio",
+      "alternateName": "SAP × Design",
       "image": "https://sapxdesign.com/og-image.jpg",
       "url": "https://sapxdesign.com/",
       "telephone": "+91 8368544334",
       "email": "spaceandproductstudio@gmail.com",
+      "priceRange": "$$$$",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "149 DDA Flat, Lado Sarai",
@@ -91,37 +93,57 @@ export default function Home() {
         "@type": "GeoCoordinates",
         "latitude": 28.5265384,
         "longitude": 77.1953846
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "10:00",
+        "closes": "19:00"
       }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What services does Space and Product Studio provide?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Space and Product Studio delivers turnkey architectural and space design, physical industrial product design, brand identity systems, and interactive experience design."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is Space and Product Studio located?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The studio is located at 149 DDA Flat, Lado Sarai, New Delhi, Delhi 110030, India. Operating hours are Monday through Saturday, 10:00 to 19:00 IST."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SAP × Design affiliated with SAP SE software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Space and Product Studio (commercially known as SAP × Design) is an independent trans-disciplinary architecture and design studio in New Delhi, India."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I consult or hire Space and Product Studio for a project?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can reach out via email at spaceandproductstudio@gmail.com, call or WhatsApp +91 8368544334, or submit an inquiry through the contact section on sapxdesign.com."
+          }
+        }
+      ]
     }
   ];
 
-  if (activeSection === "services") {
-    seoTitle = "Studio Design Services | Architecture, Interior & UX/UI Design Services";
-    seoDescription = "Explore our trans-disciplinary design services including Space Design, Architecture Design Studio, Interior Design Consultancy, Product Design Studio, and UI UX Design Services.";
-    seoSchema = {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "name": "Space and Product Studio Services",
-      "provider": {
-        "@type": "LocalBusiness",
-        "name": "Space and Product Studio"
-      },
-      "description": "Professional services across Architecture Design Studio, Interior Design Consultancy, Product Design Studio, UX Design Agency, UI UX Design Services, and Immersive Design."
-    };
-  } else if (activeSection === "about") {
-    seoTitle = "About Space and Product Studio | Human Centered Design & Innovation Consulting";
-    seoDescription = "We are an India-based trans-disciplinary Architecture and Design Studio. We apply Design Strategy, Design Research, and Human Centered Design to create digital & physical ecosystems.";
-  } else if (activeSection === "works") {
-    seoTitle = "Selected Works & Case Studies | Spatial Design & Digital Product Design Portfolio";
-    seoDescription = "Browse selected case studies from Space and Product Studio, demonstrating spatial architecture, enterprise UX/UI design, and brand identity projects.";
-  } else if (activeSection === "contact") {
-    seoTitle = "Contact Space and Product Studio | New Delhi India Design Studio";
-    seoDescription = "Get in touch with Space and Product Studio. Contact us for architectural consulting, interior design services, product innovation, or enterprise UX design inquiries.";
-  }
-
   return (
     <div className="relative min-h-screen bg-[#0A0A0B] text-white flex flex-col md:cursor-none">
-      <SEO title={seoTitle} description={seoDescription} schema={seoSchema} />
+      <SEO title={seoTitle} description={seoDescription} keywords={seoKeywords} schema={seoSchema} />
       <CustomCursor />
       <AnimatePresence>
         {showSplash && (
@@ -202,7 +224,7 @@ export default function Home() {
       
       <div className="w-full">
         <main className="relative">
-          <h1 className="sr-only">Space and Product Studio | SAP × Design</h1>
+          <h1 className="sr-only">Space and Product Studio (SAP × Design) — Architecture, Spatial Design & Product Studio New Delhi</h1>
           <HeroSection />
           <ServicesSection />
 

@@ -1,51 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Homepage -->
   <url>
     <loc>https://sapxdesign.com/</loc>
-    <lastmod>2026-06-15</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://sapxdesign.com/og-image.jpg</image:loc>
+      <image:title>Space and Product Studio | SAP × Design Portfolio</image:title>
+    </image:image>
   </url>
-  <url>
-    <loc>https://sapxdesign.com/blog</loc>
-    <lastmod>2026-06-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://sapxdesign.com/blog/concrete-restraints</loc>
-    <lastmod>2026-06-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
+
+  <!-- Portfolio Category: Space Design -->
   <url>
     <loc>https://sapxdesign.com/portfolio/space-design</loc>
-    <lastmod>2026-06-15</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1695067440629-b5e513976100?q=80&amp;w=1920</image:loc>
+      <image:title>Space Design Architecture &amp; Interiors | Space and Product Studio</image:title>
+    </image:image>
   </url>
+
+  <!-- Portfolio Category: Product Design -->
   <url>
     <loc>https://sapxdesign.com/portfolio/product-design</loc>
-    <lastmod>2026-06-15</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1767449441925-737379bc2c4d?q=80&amp;w=1920</image:loc>
+      <image:title>Industrial &amp; Digital Product Design | Space and Product Studio</image:title>
+    </image:image>
   </url>
+
+  <!-- Portfolio Category: Brand Design -->
   <url>
     <loc>https://sapxdesign.com/portfolio/brand-design</loc>
-    <lastmod>2026-06-15</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1611224923853-80b023f02d71?q=80&amp;w=1920</image:loc>
+      <image:title>Brand Identity &amp; Systems | Space and Product Studio</image:title>
+    </image:image>
   </url>
+
+  <!-- Portfolio Category: Experience / Immersive Design -->
   <url>
     <loc>https://sapxdesign.com/portfolio/experience-design</loc>
-    <lastmod>2026-06-15</lastmod>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&amp;w=1920</image:loc>
+      <image:title>Immersive Experience Design | Space and Product Studio</image:title>
+    </image:image>
+  </url>
+
+  <!-- Projects -->
+  <url>
+    <loc>https://sapxdesign.com/projects/haus-am-see</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&amp;w=1080</image:loc>
+      <image:title>Haus am See - Brutalist Lake Pavilion by Space and Product Studio</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sapxdesign.com/projects/maison-lumiere</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1768488314310-3742b3c75579?q=80&amp;w=1080</image:loc>
+      <image:title>Maison Lumiere - Parisian Apartment Architecture</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://sapxdesign.com/projects/forma-chair</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551907234-fb773fb08a2a?q=80&amp;w=1080</image:loc>
+      <image:title>Forma Chair - Industrial Furniture Design</image:title>
+    </image:image>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://sapxdesign.com/blog</loc>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
-    <loc>https://sapxdesign.com/projects/haus-am-see</loc>
-    <lastmod>2026-06-15</lastmod>
+    <loc>https://sapxdesign.com/blog/concrete-restraints</loc>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.75</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1693901103311-18a38b30a99e?q=80&amp;w=1080</image:loc>
+      <image:title>Concrete Restraints in Alpine Designs - Essay</image:title>
+    </image:image>
   </url>
 </urlset>
