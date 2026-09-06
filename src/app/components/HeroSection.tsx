@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { api } from "../services/api";
 
@@ -210,8 +210,8 @@ function WorksSlideshow({ services, heroSlides }: HeroProps) {
 
 // --- AUDIENCE MATRIX COMPONENT ---
 function AudienceMatrix({ services, heroMatrix }: HeroProps) {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [isTouch, setIsTouch] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollActiveIndex, setScrollActiveIndex] = useState(0);
 
   // Map backend services dynamically or use heroMatrix if available
   const audiencesList = (heroMatrix && heroMatrix.length > 0)
@@ -256,171 +256,177 @@ function AudienceMatrix({ services, heroMatrix }: HeroProps) {
         })
       : AUDIENCES_DEFAULT;
 
-  useEffect(() => {
-    const mq = window.matchMedia("(pointer: coarse)");
-    setIsTouch(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsTouch(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
 
-  const handleInteraction = (id: string, type: "hover" | "click") => {
-    if (type === "hover" && !isTouch) setActiveId(id);
-    if (type === "click" && isTouch) {
-      setActiveId((prev) => (prev === id ? null : id));
-    }
-  };
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (audiencesList.length === 0) return;
+    const index = Math.min(
+      Math.floor(latest * audiencesList.length),
+      audiencesList.length - 1
+    );
+    setScrollActiveIndex(index);
+  });
+
+  const activeId = audiencesList[scrollActiveIndex]?.id || audiencesList[0]?.id;
 
   return (
-    <section id="services" className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-[600px] lg:min-h-screen flex flex-col lg:flex-row bg-[#0A0A0B] overflow-hidden gap-2 p-2">
-      {audiencesList.map((aud) => {
-        const isActive = activeId === aud.id;
-        const isMuted = activeId !== null && activeId !== aud.id;
-        
-        const flexValue = isActive ? 3 : isMuted ? 0.5 : 1;
+    <section 
+      id="services" 
+      ref={containerRef} 
+      className="relative w-full"
+      style={{ height: `${Math.max(audiencesList.length, 1) * 75 + 25}vh` }}
+    >
+      {/* Sticky Viewport Container */}
+      <div className="sticky top-0 w-full h-screen min-h-[600px] flex flex-col lg:flex-row bg-[#0A0A0B] overflow-hidden gap-2 p-2 pt-20 lg:pt-24 pb-3">
+        {audiencesList.map((aud, index) => {
+          const isActive = activeId === aud.id;
+          const isMuted = !isActive;
+          
+          const flexValue = isActive ? 3.2 : 0.6;
 
-        return (
-          <motion.div
-            key={aud.id}
-            onMouseEnter={() => handleInteraction(aud.id, "hover")}
-            onMouseLeave={() => !isTouch && setActiveId(null)}
-            onClick={() => handleInteraction(aud.id, "click")}
-            animate={{
-              flex: flexValue,
-            }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex flex-col justify-between min-h-[150px] lg:min-h-0 p-6 lg:p-8 xl:p-10 rounded-[32px] group overflow-hidden cursor-pointer"
-            style={{
-              backgroundColor: isActive ? aud.color : "#0A0A0B",
-              color: isActive ? aud.textColor : "#FFFFFF",
-            }}
-          >
-            {/* Background Image Reveal */}
+          return (
             <motion.div
+              key={aud.id}
               animate={{
-                opacity: isActive ? 0.8 : 0.4,
-                scale: isActive ? 1 : 1.1,
-                filter: isActive ? "grayscale(0%)" : "grayscale(100%)",
+                flex: flexValue,
               }}
-              transition={{ duration: 0.6 }}
-              className="absolute inset-0 z-0 pointer-events-none"
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="relative flex flex-col justify-between min-h-[120px] lg:min-h-0 p-6 lg:p-8 xl:p-10 rounded-[32px] group overflow-hidden"
+              style={{
+                backgroundColor: isActive ? aud.color : "#0A0A0B",
+                color: isActive ? aud.textColor : "#FFFFFF",
+              }}
             >
-              <img
-                src={aud.image}
-                alt={`${aud.title} Capability | Space and Product Studio`}
-                loading="lazy"
-                width={800}
-                height={600}
-                className="w-full h-full object-cover mix-blend-multiply"
-              />
-            </motion.div>
+              {/* Background Image Reveal */}
+              <motion.div
+                animate={{
+                  opacity: isActive ? 0.8 : 0.25,
+                  scale: isActive ? 1 : 1.12,
+                  filter: isActive ? "grayscale(0%)" : "grayscale(100%)",
+                }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0 z-0 pointer-events-none"
+              >
+                <img
+                  src={aud.image}
+                  alt={`${aud.title} Capability | Space and Product Studio`}
+                  loading="lazy"
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover mix-blend-multiply"
+                />
+              </motion.div>
 
-            {isActive && (
-              <div className="absolute inset-0 bg-white/20 mix-blend-overlay z-0 pointer-events-none" />
-            )}
+              {isActive && (
+                <div className="absolute inset-0 bg-white/20 mix-blend-overlay z-0 pointer-events-none" />
+              )}
 
-            {/* Content Container */}
-            <div className="relative z-10 w-full h-full flex flex-col justify-between pointer-events-none">
-              
-              {/* Top */}
-              <div className="flex justify-between items-start">
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div 
-                      className="w-4 h-[2px] transition-colors duration-500"
-                      style={{ backgroundColor: isActive ? aud.textColor : "rgba(255,255,255,0.4)" }} 
-                    />
-                    <h2
-                      className="text-[11px] md:text-[13px] uppercase tracking-[0.2em] transition-opacity duration-500"
+              {/* Content Container */}
+              <div className="relative z-10 w-full h-full flex flex-col justify-between pointer-events-none">
+                
+                {/* Top */}
+                <div className="flex justify-between items-start">
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div 
+                        className="w-4 h-[2px] transition-colors duration-500"
+                        style={{ backgroundColor: isActive ? aud.textColor : "rgba(255,255,255,0.4)" }} 
+                      />
+                      <h2
+                        className="text-[11px] md:text-[13px] uppercase tracking-[0.2em] transition-opacity duration-500"
+                        style={{ 
+                          fontFamily: "'Montserrat', sans-serif", 
+                          fontWeight: 700,
+                          opacity: isActive ? 0.8 : 0.4
+                        }}
+                      >
+                        {aud.title}
+                      </h2>
+                    </div>
+                  </div>
+                  
+                  <motion.div
+                    animate={{ 
+                      rotate: isActive ? 0 : 45,
+                      opacity: isActive ? 1 : 0.2
+                    }}
+                    className="shrink-0"
+                  >
+                    <ArrowUpRight className="w-5 h-5 md:w-8 md:h-8" />
+                  </motion.div>
+                </div>
+
+                {/* Bottom */}
+                <div className="flex flex-col justify-end h-full">
+                  <h3
+                    className={`leading-[0.9] tracking-[-0.02em] whitespace-pre-line break-normal transition-all duration-500 uppercase ${
+                      isMuted 
+                        ? "text-[11px] md:text-[12px] lg:text-[14px]" 
+                        : isActive 
+                          ? "text-[clamp(20px,3.2vw,40px)] md:text-[clamp(24px,3.6vw,52px)]" 
+                          : "text-[clamp(18px,3vw,28px)] md:text-[clamp(14px,1.6vw,24px)] lg:text-[clamp(18px,2vw,28px)]"
+                    }`}
+                    style={{ 
+                      fontFamily: "'Syne', sans-serif", 
+                      fontWeight: 800,
+                      opacity: isMuted ? 0.3 : 1
+                    }}
+                  >
+                    {aud.heading}
+                  </h3>
+
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: isActive ? "auto" : 0,
+                      opacity: isActive ? 1 : 0,
+                      marginTop: isActive ? 24 : 0,
+                    }}
+                    className="overflow-hidden"
+                  >
+                    <p
+                      className="text-[13px] md:text-[16px] leading-[1.6] max-w-[420px]"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
+                    >
+                      {aud.desc}
+                    </p>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.dispatchEvent(new CustomEvent('open-service', { detail: aud.id }));
+                        setTimeout(() => {
+                          document.getElementById('services-detail')?.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                      }}
+                      className="mt-6 md:mt-8 px-6 py-3 text-[11px] uppercase tracking-[0.15em] border border-current rounded-full pointer-events-auto transition-colors duration-300"
                       style={{ 
                         fontFamily: "'Montserrat', sans-serif", 
                         fontWeight: 700,
-                        opacity: isActive ? 0.8 : 0.4
+                        backgroundColor: "transparent",
+                        color: "inherit"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = aud.textColor;
+                        e.currentTarget.style.color = aud.color;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "inherit";
                       }}
                     >
-                      {aud.title}
-                    </h2>
-                  </div>
+                      Explore Capabilities
+                    </button>
+                  </motion.div>
                 </div>
-                
-                <motion.div
-                  animate={{ 
-                    rotate: isActive ? 0 : 45,
-                    opacity: isActive ? 1 : 0.2
-                  }}
-                  className="shrink-0"
-                >
-                  <ArrowUpRight className="w-5 h-5 md:w-8 md:h-8" />
-                </motion.div>
               </div>
-
-              {/* Bottom */}
-              <div className="flex flex-col justify-end h-full">
-                <h3
-                  className={`leading-[0.9] tracking-[-0.02em] whitespace-pre-line break-normal transition-all duration-500 uppercase ${
-                    isMuted 
-                      ? "text-[11px] md:text-[12px] lg:text-[14px]" 
-                      : isActive 
-                        ? "text-[clamp(20px,3.2vw,40px)] md:text-[clamp(24px,3.6vw,52px)]" 
-                        : "text-[clamp(18px,3vw,28px)] md:text-[clamp(14px,1.6vw,24px)] lg:text-[clamp(18px,2vw,28px)]"
-                  }`}
-                  style={{ 
-                    fontFamily: "'Syne', sans-serif", 
-                    fontWeight: 800,
-                    opacity: isMuted ? 0.3 : 1
-                  }}
-                >
-                  {aud.heading}
-                </h3>
-
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: isActive ? "auto" : 0,
-                    opacity: isActive ? 1 : 0,
-                    marginTop: isActive ? 24 : 0,
-                  }}
-                  className="overflow-hidden"
-                >
-                  <p
-                    className="text-[13px] md:text-[16px] leading-[1.6] max-w-[420px]"
-                    style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 500 }}
-                  >
-                    {aud.desc}
-                  </p>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.dispatchEvent(new CustomEvent('open-service', { detail: aud.id }));
-                      setTimeout(() => {
-                        document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 100);
-                    }}
-                    className="mt-6 md:mt-8 px-6 py-3 text-[11px] uppercase tracking-[0.15em] border border-current rounded-full pointer-events-auto transition-colors duration-300"
-                    style={{ 
-                      fontFamily: "'Montserrat', sans-serif", 
-                      fontWeight: 700,
-                      backgroundColor: "transparent",
-                      color: "inherit"
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = aud.textColor;
-                      e.currentTarget.style.color = aud.color;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "inherit";
-                    }}
-                  >
-                    Explore Capabilities
-                  </button>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        );
-      })}
+            </motion.div>
+          );
+        })}
+      </div>
     </section>
   );
 }

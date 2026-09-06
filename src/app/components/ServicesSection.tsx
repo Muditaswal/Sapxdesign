@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ScrollReveal } from "./ScrollReveal";
 import { X } from "lucide-react";
@@ -142,7 +142,7 @@ export function ServicesSection() {
       if (service) {
         setActiveService(service);
         setTimeout(() => {
-          document.getElementById('services-detail')?.scrollIntoView({ behavior: 'smooth' });
+          document.getElementById("services-detail")?.scrollIntoView({ behavior: "smooth" });
         }, 150);
       }
     };
@@ -232,8 +232,8 @@ export function ServicesSection() {
               <div className="w-full lg:w-[500px] shrink-0">
                 <ScrollReveal delay={0.2}>
                   <div className="aspect-[4/3] w-full bg-[#0A0A0B] overflow-hidden border border-white/5 rounded-3xl">
-                    <img 
-                      src={activeService.image} 
+                    <img
+                      src={activeService.image}
                       alt={activeService.title}
                       loading="lazy"
                       width={800}
