@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { api } from "../services/api";
+import { optimizeImageUrl } from "../utils/image";
 
 // --- FALLBACK DEFAULT DATA ---
 const WORKS_DEFAULT = [
@@ -126,7 +127,7 @@ function WorksSlideshow({ services, heroSlides }: HeroProps) {
   return (
     <section className="relative w-full h-auto min-h-[calc(100vh-60px)] md:min-h-[550px] lg:min-h-screen bg-[#0A0A0B] overflow-hidden group border-b border-white/10">
       {/* Background Images with Crossfade */}
-      <AnimatePresence mode="popLayout" initial={false}>
+      <AnimatePresence initial={false}>
         <motion.div
           key={activeIndex}
           initial={{ opacity: 0, scale: 1.05 }}
@@ -136,7 +137,7 @@ function WorksSlideshow({ services, heroSlides }: HeroProps) {
           className="absolute inset-0"
         >
           <img 
-            src={activeSlide.src} 
+            src={optimizeImageUrl(activeSlide.src, 1600, 75)} 
             alt={`${activeSlide.title} Case Study | Space and Product Studio`} 
             width={1920}
             height={1080}
@@ -311,7 +312,7 @@ function AudienceMatrix({ services, heroMatrix }: HeroProps) {
                 className="absolute inset-0 z-0 pointer-events-none"
               >
                 <img
-                  src={aud.image}
+                  src={optimizeImageUrl(aud.image, 800, 70)}
                   alt={`${aud.title} Capability | Space and Product Studio`}
                   loading="lazy"
                   width={800}

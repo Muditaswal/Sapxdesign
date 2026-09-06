@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ScrollReveal } from "./ScrollReveal";
 import { X } from "lucide-react";
 import { api } from "../services/api";
+import { optimizeImageUrl } from "../utils/image";
 
 interface Service {
   id: string;
@@ -233,7 +234,7 @@ export function ServicesSection() {
                 <ScrollReveal delay={0.2}>
                   <div className="aspect-[4/3] w-full bg-[#0A0A0B] overflow-hidden border border-white/5 rounded-3xl">
                     <img
-                      src={activeService.image}
+                      src={optimizeImageUrl(activeService.image, 800, 70)}
                       alt={activeService.title}
                       loading="lazy"
                       width={800}

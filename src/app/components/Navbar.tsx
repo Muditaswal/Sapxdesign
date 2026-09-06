@@ -17,6 +17,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
   const [navVisible, setNavVisible] = useState(true);
   const lastScrollY = useRef(0);
   const mobileOpenRef = useRef(mobileOpen);
+  const scrollRaf = useRef<number | null>(null);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,38 +39,42 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
     };
 
     const handleScroll = () => {
-      if (location.pathname !== "/") {
-        setActiveSection("");
-        return;
-      }
-      const currentY = window.scrollY;
-      
-      // Detect active section
-      const sections = navLinks.filter(l => !l.isPage).map((l) => l.href.replace("#", ""));
-      let found = false;
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && el.getBoundingClientRect().top <= 300) {
-          setActiveSection(sections[i]);
-          found = true;
-          break;
+      if (scrollRaf.current) return;
+      scrollRaf.current = requestAnimationFrame(() => {
+        scrollRaf.current = null;
+        if (location.pathname !== "/") {
+          setActiveSection("");
+          return;
         }
-      }
-      if (!found) setActiveSection("");
+        const currentY = window.scrollY;
+        
+        // Detect active section
+        const sections = navLinks.filter(l => !l.isPage).map((l) => l.href.replace("#", ""));
+        let found = false;
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const el = document.getElementById(sections[i]);
+          if (el && el.getBoundingClientRect().top <= 300) {
+            setActiveSection(sections[i]);
+            found = true;
+            break;
+          }
+        }
+        if (!found) setActiveSection("");
 
-      // Navbar visibility logic
-      if (currentY < 10) {
-        setNavVisible(true);
-      } else if (currentY > lastScrollY.current && currentY > 50) {
-        // Scrolling down
-        if (!mobileOpenRef.current) setNavVisible(false);
-      } else if (currentY < lastScrollY.current) {
-        // Scrolling up
-        setNavVisible(true);
-      }
-      lastScrollY.current = currentY;
+        // Navbar visibility logic
+        if (currentY < 10) {
+          setNavVisible(true);
+        } else if (currentY > lastScrollY.current && currentY > 50) {
+          // Scrolling down
+          if (!mobileOpenRef.current) setNavVisible(false);
+        } else if (currentY < lastScrollY.current) {
+          // Scrolling up
+          setNavVisible(true);
+        }
+        lastScrollY.current = currentY;
 
-      resetHideTimer();
+        resetHideTimer();
+      });
     };
 
     const handleMouseMove = () => {
@@ -82,6 +87,7 @@ export function Navbar({ showSplash }: { showSplash?: boolean }) {
     resetHideTimer();
 
     return () => {
+      if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
       clearTimeout(timer);

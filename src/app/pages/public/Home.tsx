@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import logo from "figma:asset/2d306c095ea00234c5fa5f873c0b0e0f431e1dc2.png";
 import { Navbar } from "../../components/Navbar";
@@ -19,22 +19,27 @@ import { SEO } from "../../components/SEO";
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const scrollRaf = useRef<number | null>(null);
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
     const timer = setTimeout(() => setShowSplash(false), 4000);
     
     const handleScroll = () => {
-      const sections = ["services", "about", "works", "contact"];
-      let currentSection = "";
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i]);
-        if (el && el.getBoundingClientRect().top <= 300) {
-          currentSection = sections[i];
-          break;
+      if (scrollRaf.current) return;
+      scrollRaf.current = requestAnimationFrame(() => {
+        scrollRaf.current = null;
+        const sections = ["services", "about", "works", "contact"];
+        let currentSection = "";
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const el = document.getElementById(sections[i]);
+          if (el && el.getBoundingClientRect().top <= 300) {
+            currentSection = sections[i];
+            break;
+          }
         }
-      }
-      setActiveSection(currentSection);
+        setActiveSection(currentSection);
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -42,6 +47,7 @@ export default function Home() {
     return () => {
       document.documentElement.style.scrollBehavior = "auto";
       clearTimeout(timer);
+      if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);

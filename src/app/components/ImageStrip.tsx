@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
+import { optimizeImageUrl } from "../utils/image";
 
 const manifestoImage =
   "https://images.unsplash.com/photo-1760927660667-17c8256a5f9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXJrJTIwY29uY3JldGUlMjBhcmNoaXRlY3R1cmUlMjBkcmFtYXRpYyUyMHNoYWRvdyUyMG1vb2R5fGVufDF8fHx8MTc3MTg3NTcyN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
@@ -27,7 +28,7 @@ export function ImageStrip() {
         style={{ y: imgY }}
       >
         <img
-          src={manifestoImage}
+          src={optimizeImageUrl(manifestoImage, 1600, 75)}
           alt="Dramatic architectural space"
           loading="lazy"
           width={1920}

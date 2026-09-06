@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Link } from "react-router-dom";
 import { api } from "../services/api";
+import { optimizeImageUrl } from "../utils/image";
 
 interface Project {
   id: string;
@@ -89,7 +90,7 @@ function ProjectCardSlideshow({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <AnimatePresence mode="popLayout" initial={false}>
+      <AnimatePresence initial={false}>
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0 }}
@@ -99,7 +100,7 @@ function ProjectCardSlideshow({
           className="absolute inset-0 w-full h-full"
         >
           <img
-            src={activeImage.image_url || activeImage.image || defaultImage}
+            src={optimizeImageUrl(activeImage.image_url || activeImage.image || defaultImage, 800, 70)}
             alt={`${title} Project Case Study | Space and Product Studio`}
             loading="lazy"
             width={800}
